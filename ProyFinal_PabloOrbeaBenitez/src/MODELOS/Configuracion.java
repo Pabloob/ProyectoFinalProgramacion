@@ -1,13 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package MODELOS;
 
-/**
- *
- * @author AlumnoDAM
- */
-public class Configuracion {
+public abstract class Configuracion {
+    int id;
+    String titulo;
+    String nomUsuario;
+    int fechaHora;
     
 }

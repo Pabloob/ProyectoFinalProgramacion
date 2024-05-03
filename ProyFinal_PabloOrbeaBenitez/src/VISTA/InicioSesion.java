@@ -9,6 +9,10 @@ public class InicioSesion {
         GestorUsuariosBDO gestor = new GestorUsuariosBDO();
         String nombre = LIBRERIAS.Leer.leerCadena("Introduce el nombre: ", 20);
         int contraseña = LIBRERIAS.Leer.leerNumero("Introduce la contraseña: ");
-        System.out.println(gestor.comprobarInicioSesion(nombre, contraseña));
+        if (gestor.comprobarInicioSesion(nombre, contraseña)) {
+            Ventana1 ventana = new Ventana1();
+            ventana.setVisible(true);
+        }
+
     }
 }
