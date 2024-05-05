@@ -1,6 +1,7 @@
 package CONTROLADORES;
 
-import MODELOS.Producto;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,9 +12,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import java.util.Arrays;
+import java.util.Comparator;
+import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
 
 public class GestorBDR {
 
@@ -49,7 +51,7 @@ public class GestorBDR {
         try {
             conexion = DriverManager.getConnection(url, usuario, clave);
             Statement sentencia = conexion.createStatement();
-            String sql = "DELETE FROM productos WHERE NOMBRE ='" + nombre+"'";
+            String sql = "DELETE FROM productos WHERE NOMBRE ='" + nombre + "'";
             int filasAfectadas = sentencia.executeUpdate(sql);
             return filasAfectadas > 0;
         } catch (SQLException e) {
@@ -77,7 +79,7 @@ public class GestorBDR {
             e.printStackTrace(System.err);
         }
     }
-    
+
     public Object[][] convertir() {
         Object[][] datos = null;
         Statement sentencia;
@@ -91,7 +93,7 @@ public class GestorBDR {
             int numRows = rs.getRow();
             rs.beforeFirst();
 
-            datos = new Object[numRows][4];
+            datos = new Object[numRows][3];
             int indice = 0;
 
             while (rs.next()) {
@@ -133,4 +135,42 @@ public class GestorBDR {
         }
     }
 
+    public Object[][] ordenarNombre(Object[][] datos) {
+        Comparator<Object[]> comparador = new Comparator<Object[]>() {
+            @Override
+            public int compare(Object[] fila1, Object[] fila2) {
+                String nombre1 = (String) fila1[0];
+                String nombre2 = (String) fila2[0];
+                return nombre1.compareTo(nombre2);
+            }
+        };
+        Arrays.sort(datos, comparador);
+        return datos;
+    }
+
+    public Object[][] ordenarPrecio(Object[][] datos) {
+        Comparator<Object[]> comparador = new Comparator<Object[]>() {
+            @Override
+            public int compare(Object[] fila1, Object[] fila2) {
+                Integer precio1 = (Integer) fila1[1];
+                Integer precio2 = (Integer) fila2[1];
+                return precio1.compareTo(precio2);
+            }
+        };
+        Arrays.sort(datos, comparador);
+        return datos;
+    }
+
+    public Object[][] ordenarCantidad(Object[][] datos) {
+        Comparator<Object[]> comparador = new Comparator<Object[]>() {
+            @Override
+            public int compare(Object[] fila1, Object[] fila2) {
+                Integer cantidad1 = (Integer) fila1[2];
+                Integer cantidad2 = (Integer) fila2[2];
+                return cantidad1.compareTo(cantidad2);
+            }
+        };
+        Arrays.sort(datos, comparador);
+        return datos;
+    }
 }

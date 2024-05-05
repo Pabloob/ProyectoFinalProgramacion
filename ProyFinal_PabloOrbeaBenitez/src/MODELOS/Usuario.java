@@ -10,10 +10,23 @@ import javax.persistence.NamedQuery;
 public class Usuario implements Serializable {
 
     @Id
+
     private String nombre;
+
+    public enum Rol {
+        ADMINISTRADOR, USUARIO
+    };
     private int contraseña;
-    private boolean administrador;
+    private Rol rol;
     private boolean activo;
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
 
     public String getNombre() {
         return nombre;
@@ -31,14 +44,6 @@ public class Usuario implements Serializable {
         this.contraseña = contraseña;
     }
 
-    public boolean isAdministrador() {
-        return administrador;
-    }
-
-    public void setAdministrador(boolean administrador) {
-        this.administrador = administrador;
-    }
-
     public boolean isActivo() {
         return activo;
     }
@@ -46,7 +51,7 @@ public class Usuario implements Serializable {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -66,14 +71,14 @@ public class Usuario implements Serializable {
         return true;
     }
 
-    public Usuario(String nombre, int contraseña, boolean administrador, boolean activo) {
+    public Usuario(String nombre, int contraseña, Rol rol, boolean activo) {
         this.nombre = nombre;
         this.contraseña = contraseña;
-        this.administrador = administrador;
+        this.rol = rol;
         this.activo = activo;
     }
 
     public Usuario() {
     }
-    
+
 }
