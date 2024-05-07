@@ -10,10 +10,7 @@ public class Ventana2 extends javax.swing.JFrame {
     GestorUsuariosBDO gestorUsuarios = new GestorUsuariosBDO();
 
     //Nombres de las columnas
-    String[] nomCols = {"NOMBRE",
-        "CONTRASEÑA",
-        "REOL",
-        "ACTIVO"};
+    String[] nomCols = {"NOMBRE", "CONTRASEÑA", "ROL", "ACTIVO"};
 
     //Array de datos
     Object[][] datos;
@@ -44,10 +41,10 @@ public class Ventana2 extends javax.swing.JFrame {
         Contraseña = new javax.swing.JLabel();
         Activo = new javax.swing.JLabel();
         ActivoCheckBox = new javax.swing.JCheckBox();
-        NombreTextField = new javax.swing.JTextField();
         ContraseñaTextField = new javax.swing.JTextField();
         Rol = new javax.swing.JLabel();
         RolComboBox = new javax.swing.JComboBox<>();
+        NombreTextField = new javax.swing.JTextField();
 
         setMaximumSize(new java.awt.Dimension(970, 430));
         setPreferredSize(new java.awt.Dimension(970, 430));
@@ -126,12 +123,6 @@ public class Ventana2 extends javax.swing.JFrame {
 
         ActivoCheckBox.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
 
-        NombreTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NombreTextFieldActionPerformed(evt);
-            }
-        });
-
         Rol.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         Rol.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Rol.setText("ROL");
@@ -159,9 +150,6 @@ public class Ventana2 extends javax.swing.JFrame {
                         .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(ContraseñaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(Panel2Layout.createSequentialGroup()
-                                    .addGap(27, 27, 27)
-                                    .addComponent(NombreTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
                                     .addGap(14, 14, 14)
                                     .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -179,7 +167,10 @@ public class Ventana2 extends javax.swing.JFrame {
                                         .addGap(20, 20, 20))
                                     .addComponent(Activo))
                                 .addGap(5, 5, 5)))
-                        .addGap(114, 114, 114))))
+                        .addGap(114, 114, 114))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addComponent(NombreTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(143, 143, 143))))
         );
         Panel2Layout.setVerticalGroup(
             Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,6 +224,7 @@ public class Ventana2 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BotonAñadirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAñadirMousePressed
+        //Boton que añade un usuario comprobando sus datos y pidiendo siempre usuario y contraseña
         String nombre = NombreTextField.getText();
         int contraseña = 0;
         String rol = RolComboBox.getSelectedItem().toString();
@@ -271,21 +263,16 @@ public class Ventana2 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonAñadirMousePressed
 
     private void BotonBorrarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonBorrarMousePressed
+        //Se borra el usuario seleccionado
 
-        //Se guarda la fila seleccionada
         int filaSeleccionado = jTablaUsuarios.getSelectedRow();
-
-        //Se comprueba que se ha seleccionado alguna fila
         if (filaSeleccionado >= 0) {
-            //Se saca el valor del nombre de la fila seleccionada
             String nombre = (String) datos[filaSeleccionado][0];
 
-            //Se recorre la miniagenda buscando el deportista con el mismo nombre y se borra y se actualiza la tabla
             gestorUsuarios.borrarNombre(nombre);
             actualizarTabla();
 
         } else {
-            //En caso de que no haya ninguna fila seleccionada se muestra un mensaje de error
             JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
         vaciarTextField();
@@ -293,10 +280,9 @@ public class Ventana2 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonBorrarMousePressed
 
     private void BotonActualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonActualizarMousePressed
+        //Se modifican los datos con los datos nuevos que se hayan insertado
 
-//Se guarda la fila seleccionada 
         int filaSeleccionada = jTablaUsuarios.getSelectedRow();
-
         if (filaSeleccionada >= 0) {
             String nombreBorrar = (String) datos[filaSeleccionada][0];
             String nombre = NombreTextField.getText();
@@ -322,7 +308,6 @@ public class Ventana2 extends javax.swing.JFrame {
                 actualizarTabla();
 
             } else {
-                //En caso de que el campo nombre este vacio muestra un mensaje de error
                 JOptionPane.showMessageDialog(this, "El campo del nombre y contraseña no pueden estar vacíos", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
         } else {
@@ -333,6 +318,8 @@ public class Ventana2 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonActualizarMousePressed
 
     private void jTablaUsuariosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablaUsuariosMousePressed
+        //Se muestra la informacion de el usuario en los campos correspondientes
+
         int filaSeleccionada = jTablaUsuarios.getSelectedRow();
         String nombre = (String) datos[filaSeleccionada][0];
         String contraseña = (String) datos[filaSeleccionada][1].toString();
@@ -348,10 +335,6 @@ public class Ventana2 extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jTablaUsuariosMousePressed
-
-    private void NombreTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NombreTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_NombreTextFieldActionPerformed
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -400,7 +383,10 @@ public class Ventana2 extends javax.swing.JFrame {
     private javax.swing.JScrollPane TablaUsuarios;
     private javax.swing.JTable jTablaUsuarios;
     // End of variables declaration//GEN-END:variables
-private void actualizarTabla() {
+
+    //Se actualiza la tabla con los datos de el array [][]
+    
+    private void actualizarTabla() {
         datos = gestorUsuarios.convertir();
         listaProductos = new DefaultTableModel(datos, nomCols) {
             @Override
@@ -413,6 +399,7 @@ private void actualizarTabla() {
 
     }
 
+    //se vacian los camposs
     public void vaciarTextField() {
         NombreTextField.setText("");
         ContraseñaTextField.setText("");

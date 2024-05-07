@@ -161,10 +161,6 @@
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                                   <Component id="ContraseñaTextField" alignment="0" min="-2" pref="159" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                      <Component id="NombreTextField" min="-2" pref="100" max="-2" attributes="0"/>
-                                  </Group>
                                   <Group type="102" alignment="1" attributes="0">
                                       <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="1" attributes="0">
@@ -192,6 +188,10 @@
                           </Group>
                           <EmptySpace min="-2" pref="114" max="-2" attributes="0"/>
                       </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="NombreTextField" min="-2" pref="98" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="143" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
           </Group>
@@ -203,7 +203,7 @@
                   <Component id="Nombre" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="NombreTextField" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   <Component id="Contraseña" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="ContraseñaTextField" min="-2" max="-2" attributes="0"/>
@@ -287,11 +287,6 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="NombreTextField">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NombreTextFieldActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="javax.swing.JTextField" name="Contrase&#xf1;aTextField">
         </Component>
         <Component class="javax.swing.JLabel" name="Rol">
@@ -321,6 +316,8 @@
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
+        </Component>
+        <Component class="javax.swing.JTextField" name="NombreTextField">
         </Component>
       </SubComponents>
     </Container>

@@ -13,13 +13,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 public class GestorBDR {
 
     private Connection conexion;
 
-    public void conectar(String url,String usuario,String clave) {
+    public void conectar(String url, String usuario, String clave) {
         try {
             conexion = DriverManager.getConnection(url, usuario, clave);
         } catch (SQLException e) {
@@ -31,7 +30,7 @@ public class GestorBDR {
         try {
             conexion.close();
         } catch (SQLException e) {
-                        e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -42,7 +41,6 @@ public class GestorBDR {
         try {
             sentencia = conexion.createStatement();
 
-            // INSERT INTO para añadir un deportista individual a la base de datos
             sql = "INSERT INTO productos (NOMBRE, PRECIO, CANTIDAD) VALUES"
                     + "('" + nombre + "', '" + precio + "', '" + cantidad + "');";
 
@@ -123,8 +121,7 @@ public class GestorBDR {
     }
 
     public void guardarEnFichero(Object[][] datos, String nomArchivo) throws IOException {
-        
-        
+
         FileOutputStream fos;
         XMLEncoder xmle;
 
@@ -135,11 +132,11 @@ public class GestorBDR {
             xmle.close();
         } catch (Exception e) {
         }
-        
+
     }
 
     public void cargarDeFichero(String nomArchivo) throws ClassNotFoundException, IOException {
-        
+
         FileInputStream fis;
         XMLDecoder xmld;
         Object[][] datos = null;
@@ -151,13 +148,13 @@ public class GestorBDR {
         } catch (Exception e) {
         }
 
-         for (Object[] dato : datos) {
-                String nombre = dato[0].toString();
-                int precio = Integer.parseInt(dato[1].toString());
-                int cantidad = Integer.parseInt(dato[2].toString());
-                añadir(nombre, precio, cantidad);
-            }
-        
+        for (Object[] dato : datos) {
+            String nombre = dato[0].toString();
+            int precio = Integer.parseInt(dato[1].toString());
+            int cantidad = Integer.parseInt(dato[2].toString());
+            añadir(nombre, precio, cantidad);
+        }
+
     }
 
     public Object[][] ordenarNombre(Object[][] datos) {
@@ -195,7 +192,7 @@ public class GestorBDR {
                 return cantidad1.compareTo(cantidad2);
             }
         };
-        
+
         Arrays.sort(datos, comparador);
         return datos;
     }

@@ -13,17 +13,19 @@ import javax.swing.table.DefaultTableModel;
 
 public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
-    Color color = null;
-    //Objeto miniagenda
+    //Gestos de estilos
     GestorEstilosGUI gestorEstilos = new GestorEstilosGUI();
-    //Ruta del archivo para guardar y cargar
+
+    //Nombre archivo de estilos
     String nomArchivo = "estilos.dat";
 
-    //Nombres de las columnas
-    String[] nomCols = {"TITULO",
-        "COLOR", "FECHA"};
+    //Nombre de las columnas
+    String[] nomCols = {"TITULO", "COLOR FONDO", "COLOR TEXTO", "FECHA"};
+
+    //Array de datos
     Object[][] datos;
-    //Objeto tabla interfaz
+
+    //DTM
     DefaultTableModel listaEstilos = new DefaultTableModel(datos, nomCols);
 
     public Ventana3() {
@@ -38,14 +40,18 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
         PanelPrincipal = new javax.swing.JPanel();
         Datos = new javax.swing.JPanel();
-        NomYApeLabel = new javax.swing.JLabel();
-        DeporteLabel = new javax.swing.JLabel();
+        TITULO = new javax.swing.JLabel();
+        ColorFondo = new javax.swing.JLabel();
         TituloTextField = new javax.swing.JTextField();
         VaciarDespuesAñadirCheckBox = new javax.swing.JCheckBox();
         VaciarButton = new javax.swing.JButton();
         AñadirButton = new javax.swing.JButton();
         ActualizarButton = new javax.swing.JButton();
-        ColoresButton = new javax.swing.JToggleButton();
+        ColoresFondoButton = new javax.swing.JToggleButton();
+        ColorTexto = new javax.swing.JLabel();
+        ColoresTextoButton = new javax.swing.JToggleButton();
+        PanelPrevisualizacion = new javax.swing.JPanel();
+        TextoPrevisualizacion = new javax.swing.JLabel();
         BotonesBorrar = new javax.swing.JPanel();
         BorrarSeleccionadoButton = new javax.swing.JButton();
         CargarEjemplosButton = new javax.swing.JButton();
@@ -57,11 +63,11 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
         Datos.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        NomYApeLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        NomYApeLabel.setText("TITULO");
+        TITULO.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        TITULO.setText("TITULO");
 
-        DeporteLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        DeporteLabel.setText("COLOR");
+        ColorFondo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        ColorFondo.setText("COLOR FONDO");
 
         TituloTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -101,13 +107,41 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             }
         });
 
-        ColoresButton.setBackground(new java.awt.Color(214, 217, 223));
-        ColoresButton.setText("COLORES");
-        ColoresButton.addMouseListener(new java.awt.event.MouseAdapter() {
+        ColoresFondoButton.setBackground(new java.awt.Color(214, 217, 223));
+        ColoresFondoButton.setText("COLORES");
+        ColoresFondoButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                ColoresButtonMousePressed(evt);
+                ColoresFondoButtonMousePressed(evt);
             }
         });
+
+        ColorTexto.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        ColorTexto.setText("COLOR TEXTO");
+
+        ColoresTextoButton.setBackground(new java.awt.Color(214, 217, 223));
+        ColoresTextoButton.setText("COLORES");
+        ColoresTextoButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ColoresTextoButtonMousePressed(evt);
+            }
+        });
+
+        PanelPrevisualizacion.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        TextoPrevisualizacion.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        TextoPrevisualizacion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TextoPrevisualizacion.setText("PRUEBA");
+
+        javax.swing.GroupLayout PanelPrevisualizacionLayout = new javax.swing.GroupLayout(PanelPrevisualizacion);
+        PanelPrevisualizacion.setLayout(PanelPrevisualizacionLayout);
+        PanelPrevisualizacionLayout.setHorizontalGroup(
+            PanelPrevisualizacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(TextoPrevisualizacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        PanelPrevisualizacionLayout.setVerticalGroup(
+            PanelPrevisualizacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(TextoPrevisualizacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout DatosLayout = new javax.swing.GroupLayout(Datos);
         Datos.setLayout(DatosLayout);
@@ -117,36 +151,53 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
                 .addContainerGap()
                 .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(DatosLayout.createSequentialGroup()
-                        .addComponent(VaciarDespuesAñadirCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                        .addComponent(VaciarDespuesAñadirCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(VaciarButton)
-                        .addGap(59, 59, 59)
+                        .addGap(59, 59, 59))
+                    .addGroup(DatosLayout.createSequentialGroup()
+                        .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(DatosLayout.createSequentialGroup()
+                                .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(TITULO)
+                                    .addComponent(ColorFondo))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(ColoresFondoButton, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                                    .addComponent(TituloTextField)))
+                            .addGroup(DatosLayout.createSequentialGroup()
+                                .addComponent(ColorTexto)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(ColoresTextoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(35, 35, 35)))
+                .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(DatosLayout.createSequentialGroup()
                         .addComponent(AñadirButton)
                         .addGap(103, 103, 103)
                         .addComponent(ActualizarButton))
-                    .addGroup(DatosLayout.createSequentialGroup()
-                        .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(NomYApeLabel)
-                            .addComponent(DeporteLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(TituloTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
-                            .addComponent(ColoresButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(PanelPrevisualizacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         DatosLayout.setVerticalGroup(
             DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DatosLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(NomYApeLabel)
-                    .addComponent(TituloTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DatosLayout.createSequentialGroup()
+                        .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TITULO)
+                            .addComponent(TituloTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ColorFondo)
+                            .addComponent(ColoresFondoButton))
+                        .addGap(18, 18, 18)
+                        .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ColorTexto)
+                            .addComponent(ColoresTextoButton))
+                        .addGap(0, 12, Short.MAX_VALUE))
+                    .addComponent(PanelPrevisualizacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(DeporteLabel)
-                    .addComponent(ColoresButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                 .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(VaciarDespuesAñadirCheckBox)
                     .addComponent(AñadirButton)
@@ -203,13 +254,13 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
         jTablaEstilos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Titulo", "Color", "Fecha"
+                "Titulo", "Color fondo", "Color texto", "Fecha"
             }
         ));
         jTablaEstilos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -287,11 +338,16 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
     private void VaciarDespuesAñadirCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VaciarDespuesAñadirCheckBoxActionPerformed
     }//GEN-LAST:event_VaciarDespuesAñadirCheckBoxActionPerformed
 
-    //Boton añadir jugador
     private void AñadirButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AñadirButtonActionPerformed
+        //Boton añadir un estilo con los datos
+
         String titulo = TituloTextField.getText();
-        if (!titulo.isEmpty() && color != null) {
-            gestorEstilos.añadir(titulo, color);
+        Color colorFondo;
+        Color colorTexto;
+        colorFondo = PanelPrevisualizacion.getBackground();
+        colorTexto = TextoPrevisualizacion.getForeground();
+        if (!titulo.isEmpty() && colorFondo != null && colorTexto != null) {
+            gestorEstilos.añadir(titulo, colorFondo, colorTexto);
             actualizarTabla();
             if (VaciarDespuesAñadirCheckBox.isSelected()) {
                 vaciarTextField();
@@ -303,24 +359,26 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
     }//GEN-LAST:event_AñadirButtonActionPerformed
 
-    //Vacia todos los text fields
     private void VaciarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VaciarButtonActionPerformed
+        //Vacia todos los text fields
         vaciarTextField();
     }//GEN-LAST:event_VaciarButtonActionPerformed
 
     private void ActualizarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActualizarButtonActionPerformed
+        //Actualizar un estilo con los nuevos datos de los campos
 
-        //Se guarda la fila seleccionada 
         int filaSeleccionada = jTablaEstilos.getSelectedRow();
-
+        Color colorFondo;
+        Color colorTexto;
         if (filaSeleccionada >= 0) {
             String nombreBorrar = (String) datos[filaSeleccionada][0];
             String titulo = TituloTextField.getText();
-            color = ColoresButton.getBackground();
-            if (!titulo.isEmpty() && color != null) {
+            colorFondo = PanelPrevisualizacion.getBackground();
+            colorTexto = TextoPrevisualizacion.getForeground();
+            if (!titulo.isEmpty() && colorFondo != null && colorTexto != null) {
                 gestorEstilos.borrar(nombreBorrar);
                 actualizarTabla();
-                gestorEstilos.añadir(titulo, color);
+                gestorEstilos.añadir(titulo, colorFondo, colorTexto);
                 actualizarTabla();
                 if (VaciarDespuesAñadirCheckBox.isSelected()) {
                     vaciarTextField();
@@ -336,61 +394,53 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
     }//GEN-LAST:event_ActualizarButtonActionPerformed
 
-    //Cargar ejemplos
     private void CargarEjemplosButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CargarEjemplosButtonActionPerformed
-
+        //Se añaden los ejemplos
         gestorEstilos.añadirEjemplos();
-        //Actualizar tabla
         actualizarTabla();
         guardar();
     }//GEN-LAST:event_CargarEjemplosButtonActionPerformed
 
-    //Boton borrar fila seleccionada
     private void BorrarSeleccionadoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarSeleccionadoButtonActionPerformed
+//Se borra el estilo seleccionado
 
-        //Se guarda la fila seleccionada
         int filaSeleccionado = jTablaEstilos.getSelectedRow();
-
-        //Se comprueba que se ha seleccionado alguna fila
         if (filaSeleccionado >= 0) {
-            //Se saca el valor del nombre de la fila seleccionada
             String nombre = (String) datos[filaSeleccionado][0];
-
-            //Se recorre la miniagenda buscando el deportista con el mismo nombre y se borra y se actualiza la tabla
             gestorEstilos.borrar(nombre);
             actualizarTabla();
             vaciarTextField();
             guardar();
         } else {
-            //En caso de que no haya ninguna fila seleccionada se muestra un mensaje de error
             JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_BorrarSeleccionadoButtonActionPerformed
 
     private void jTablaEstilosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablaEstilosMousePressed
-        int r, g, b;
         int filaSeleccionada = jTablaEstilos.getSelectedRow();
-
+        Color colorFondo, colorTexto;
         String titulo = (String) datos[filaSeleccionada][0];
-        String rgbColor = (String) datos[filaSeleccionada][1];
-        String[] rgb = rgbColor.replaceAll("[^0-9,]", "").split(",");
-
-        r = Integer.parseInt(rgb[0]);
-        g = Integer.parseInt(rgb[1]);
-        b = Integer.parseInt(rgb[2]);
+        colorFondo = gestorEstilos.conseguirColor((String) datos[filaSeleccionada][1]);
+        colorTexto = gestorEstilos.conseguirColor((String) datos[filaSeleccionada][2]);
 
         TituloTextField.setText(titulo);
-        ColoresButton.setBackground(new Color(r, g, b));
+        PanelPrevisualizacion.setBackground(colorFondo);
+        TextoPrevisualizacion.setForeground(colorTexto);
     }//GEN-LAST:event_jTablaEstilosMousePressed
 
     private void BorrarSeleccionadoButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BorrarSeleccionadoButtonMousePressed
 
     }//GEN-LAST:event_BorrarSeleccionadoButtonMousePressed
 
-    private void ColoresButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ColoresButtonMousePressed
-        color = JColorChooser.showDialog(this, "Selecciona color", null);
-        ColoresButton.setBackground(color);
-    }//GEN-LAST:event_ColoresButtonMousePressed
+    private void ColoresFondoButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ColoresFondoButtonMousePressed
+        Color color = JColorChooser.showDialog(this, "Selecciona color", null);
+        PanelPrevisualizacion.setBackground(color);
+    }//GEN-LAST:event_ColoresFondoButtonMousePressed
+
+    private void ColoresTextoButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ColoresTextoButtonMousePressed
+        Color color = JColorChooser.showDialog(this, "Selecciona color", null);
+        TextoPrevisualizacion.setForeground(color);
+    }//GEN-LAST:event_ColoresTextoButtonMousePressed
 
     public static void main(String args[]) {
         try {
@@ -414,12 +464,16 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
     private javax.swing.JButton BorrarSeleccionadoButton;
     private javax.swing.JPanel BotonesBorrar;
     private javax.swing.JButton CargarEjemplosButton;
-    private javax.swing.JToggleButton ColoresButton;
+    private javax.swing.JLabel ColorFondo;
+    private javax.swing.JLabel ColorTexto;
+    private javax.swing.JToggleButton ColoresFondoButton;
+    private javax.swing.JToggleButton ColoresTextoButton;
     private javax.swing.JPanel Datos;
-    private javax.swing.JLabel DeporteLabel;
-    private javax.swing.JLabel NomYApeLabel;
+    private javax.swing.JPanel PanelPrevisualizacion;
     private javax.swing.JPanel PanelPrincipal;
+    private javax.swing.JLabel TITULO;
     private javax.swing.JPanel Tabla;
+    private javax.swing.JLabel TextoPrevisualizacion;
     private javax.swing.JTextField TituloTextField;
     private javax.swing.JButton VaciarButton;
     private javax.swing.JCheckBox VaciarDespuesAñadirCheckBox;
@@ -442,11 +496,13 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
     private void vaciarTextField() {
         TituloTextField.setText("");
-        ColoresButton.setBackground(new Color(214, 217, 223));
+        ColoresFondoButton.setBackground(new Color(214, 217, 223));
     }
 
     private void cargar() {
         int r, g, b;
+        Color colorFondo;
+        Color colorTexto;
         FileInputStream fis;
         ObjectInputStream ois;
         try {
@@ -455,12 +511,11 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             datos = (Object[][]) ois.readObject();
             for (Object[] dato : datos) {
                 String titulo = (String) dato[0];
-                String rgbColor = (String) dato[1];
-                String[] rgb = rgbColor.replaceAll("[^0-9,]", "").split(",");
-                r = Integer.parseInt(rgb[0]);
-                g = Integer.parseInt(rgb[1]);
-                b = Integer.parseInt(rgb[2]);
-                gestorEstilos.añadir(titulo, new Color(r, g, b));
+                String fondo = (String) dato[1];
+                String texto = (String) dato[2];
+                colorFondo = gestorEstilos.conseguirColor(fondo);
+                colorTexto = gestorEstilos.conseguirColor(texto);
+                gestorEstilos.añadir(titulo, colorFondo, colorTexto);
                 actualizarTabla();
             }
         } catch (Exception e) {

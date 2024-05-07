@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -21,12 +22,12 @@ import javax.swing.table.DefaultTableModel;
 
 public class Ventana1 extends javax.swing.JFrame {
 
+    //Gestores de la base de datos
     GestorBDR gestorBDR = new GestorBDR();
     GestorEstilosGUI gestorEstilos = new GestorEstilosGUI();
+
     //Nombres de las columnas
-    String[] nomCols = {"NOMBRE",
-        "PRECIO",
-        "CANTIDAD"};
+    String[] nomCols = {"NOMBRE", "PRECIO", "CANTIDAD"};
 
     //Array de datos
     Object[][] datosProductos;
@@ -35,10 +36,12 @@ public class Ventana1 extends javax.swing.JFrame {
     //Objeto tabla interfaz
     DefaultTableModel listaProductos = new DefaultTableModel(datosProductos, nomCols);
 
+    //Nombres de ficheros
     String nomArchivo = "productos.xml";
     String ficheroUsrContUrl = "ConexionBD.txt";
     String nomArchivoEstilos = "estilos.dat";
 
+    //Se conecta la base de datos y se inicia la ventana
     public Ventana1() {
         conectarBD(ficheroUsrContUrl);
         setTitle("Control inventario tienda");
@@ -355,6 +358,7 @@ public class Ventana1 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BotonGuardarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGuardarMousePressed
+        //Se guardan los datos de los productos en el nombre del archivo
         try {
             gestorBDR.guardarEnFichero(datosProductos, nomArchivo);
             JOptionPane.showMessageDialog(this, "Se han guardado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
@@ -364,7 +368,7 @@ public class Ventana1 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonGuardarMousePressed
 
     private void BotonCargarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCargarMousePressed
-
+        //Se cargan los datos del fichero y se añaden a la base de datos
         try {
             gestorBDR.vaciar();
             gestorBDR.cargarDeFichero(nomArchivo);
@@ -376,6 +380,7 @@ public class Ventana1 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonCargarMousePressed
 
     private void jTablaProductosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablaProductosMousePressed
+        //Se actualizan los textFields con los datos de la tabla al pulsar sobre ella
         int filaSeleccionada = jTablaProductos.getSelectedRow();
         String nombre = (String) datosProductos[filaSeleccionada][0];
         String precio = (String) datosProductos[filaSeleccionada][1].toString();
@@ -384,30 +389,26 @@ public class Ventana1 extends javax.swing.JFrame {
         TextFieldNombre.setText(nombre);
         TextFieldCantidad.setText(cantidad);
         TextFieldPrecio.setText(precio);
-        
+
     }//GEN-LAST:event_jTablaProductosMousePressed
 
     private void BotonEliminarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonEliminarMousePressed
-        //Se guarda la fila seleccionada
+        //Se verifica si se ha seleccionado alguna fila y se borra el producto
+
         int filaSeleccionado = jTablaProductos.getSelectedRow();
-
-        //Se comprueba que se ha seleccionado alguna fila
         if (filaSeleccionado >= 0) {
-            //Se saca el valor del nombre de la fila seleccionada
             String nombre = (String) datosProductos[filaSeleccionado][0];
-
-            //Se recorre la miniagenda buscando el deportista con el mismo nombre y se borra y se actualiza la tabla
             gestorBDR.borrarNombre(nombre);
             actualizarTabla();
-
         } else {
-            //En caso de que no haya ninguna fila seleccionada se muestra un mensaje de error
             JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
         vaciarTextField();
     }//GEN-LAST:event_BotonEliminarMousePressed
 
     private void BotonAñadirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAñadirMousePressed
+        //Se añade un producto con los datos de los textfields y se comprueban los datos
+
         String nombre = TextFieldNombre.getText();
         int precio = 0;
         int cantidad = 0;
@@ -426,6 +427,7 @@ public class Ventana1 extends javax.swing.JFrame {
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Debes introducir un numero entero", "Cantidad", JOptionPane.WARNING_MESSAGE);
         }
+
         if (precioCorrecto && cantidadCorrecto) {
 
             if (!TextFieldNombre.getText().trim().isEmpty()) {
@@ -439,7 +441,8 @@ public class Ventana1 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonAñadirMousePressed
 
     private void BotonActualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonActualizarMousePressed
-        //Se guarda la fila seleccionada 
+        //Se muestran los datos de el producto seleccionado en los texfields y se cogen los nuevos datos actualizando el producto 
+
         int filaSeleccionada = jTablaProductos.getSelectedRow();
 
         if (filaSeleccionada >= 0) {
@@ -455,33 +458,31 @@ public class Ventana1 extends javax.swing.JFrame {
 
                 gestorBDR.añadir(nombre, precio, cantidad);
                 actualizarTabla();
-
+                vaciarTextField();
             } else {
-                //En caso de que el campo nombre este vacio muestra un mensaje de error
                 JOptionPane.showMessageDialog(this, "El campo del nombre no puede estar vacío", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun producto", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
-        vaciarTextField();
     }//GEN-LAST:event_BotonActualizarMousePressed
 
     private void BotonGestionarUsuariosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGestionarUsuariosMousePressed
+        //Boton activar la ventana 2 
         Ventana2 ventana = new Ventana2();
         ventana.setVisible(true);
     }//GEN-LAST:event_BotonGestionarUsuariosMousePressed
 
     private void BotonConfigurarpantallaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonConfigurarpantallaMousePressed
-
+        //Boton activar la ventana 3
         Ventana3 ventana = new Ventana3();
         ventana.setVisible(true);
 
     }//GEN-LAST:event_BotonConfigurarpantallaMousePressed
 
     private void ActualizarEstilosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ActualizarEstilosMousePressed
-
+        //Boton que actualiza los estilos disponibles
         actualizarOpciones();
-
     }//GEN-LAST:event_ActualizarEstilosMousePressed
 
     public static void main(String args[]) {
@@ -541,6 +542,7 @@ public class Ventana1 extends javax.swing.JFrame {
     private javax.swing.JTable jTablaProductos;
     // End of variables declaration//GEN-END:variables
 
+    //Metodo actualizar la tabla con los valores de el array[][]
     private void actualizarTabla() {
         datosProductos = gestorBDR.convertir();
         listaProductos = new DefaultTableModel(datosProductos, nomCols) {
@@ -553,16 +555,20 @@ public class Ventana1 extends javax.swing.JFrame {
         jTablaProductos.setModel(listaProductos);
     }
 
+    //se actualizan los datos de la tabla con los datos de los productos 
+    //Este metodo se usa solamente para ordenar los productos
     private void ordenarTabla() {
         listaProductos.setDataVector(datosProductos, nomCols);
     }
 
-    public void vaciarTextField() {
+    //Metodo para vaciar los textFields
+    private void vaciarTextField() {
         TextFieldCantidad.setText("");
         TextFieldNombre.setText("");
         TextFieldPrecio.setText("");
     }
 
+    //Metodo para activar o desactivar los botones de las ventanas de administrador
     public void setAdministrador(boolean esAdmin) {
         if (esAdmin) {
             BotonGestionarUsuarios.setVisible(true);
@@ -577,6 +583,7 @@ public class Ventana1 extends javax.swing.JFrame {
         }
     }
 
+    //Metodo para el reloj
     Timer reloj = new Timer(0, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -587,7 +594,8 @@ public class Ventana1 extends javax.swing.JFrame {
         }
     });
 
-    public void eventoOrdenar() {
+    //Metodo para ordenar los datos de la tabla dependiendo de la opcion del desplegable que se elija
+    private void eventoOrdenar() {
         OrdenarPor.addActionListener(new ActionListener() {
             String opcion = null;
 
@@ -613,26 +621,31 @@ public class Ventana1 extends javax.swing.JFrame {
         });
     }
 
-    public void eventoEstilos() {
+    //Evento para aplicar el estilo seleccionado de el desplegable
+    private void eventoEstilos() {
         DiseñoComboBox.addActionListener(new ActionListener() {
             String opcion = null;
             JPanel paneles[] = {Panel1, Panel2};
+            JLabel textos[] = {Nombre, Precio, Cantidad, ORDENAR, DISEÑO};
             Color color;
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 opcion = (String) DiseñoComboBox.getSelectedItem();
-                color = buscarColor(opcion);
+                color = gestorEstilos.buscarColor(opcion, 1, nomArchivoEstilos, datosEstilos);
                 gestorEstilos.cambiarColorFondo(paneles, color);
+                color = gestorEstilos.buscarColor(opcion, 2, nomArchivoEstilos, datosEstilos);
+                gestorEstilos.cambiarColorTexto(textos, color);
             }
         });
     }
 
-    public void actualizarOpciones() {
+    //Metodo que refresca las opciones del deplegable con los datos de el fichero de estilos
+    private void actualizarOpciones() {
         FileInputStream fis;
         ObjectInputStream ois;
         DiseñoComboBox.removeAllItems();
-        
+
         try {
             fis = new FileInputStream(nomArchivoEstilos);
             ois = new ObjectInputStream(fis);
@@ -645,34 +658,9 @@ public class Ventana1 extends javax.swing.JFrame {
             System.out.println(e.getMessage());
         }
     }
-
-    public Color buscarColor(String titulo) {
-        int r, g, b;
-        Color color = null;
-        FileInputStream fis;
-        ObjectInputStream ois;
-        try {
-            fis = new FileInputStream(nomArchivoEstilos);
-            ois = new ObjectInputStream(fis);
-            datosEstilos = (Object[][]) ois.readObject();
-            for (Object[] dato : datosEstilos) {
-                String tituloArchivo = (String) dato[0];
-                if (titulo.equalsIgnoreCase(tituloArchivo)) {
-                    String rgbColor = (String) dato[1];
-                    String[] rgb = rgbColor.replaceAll("[^0-9,]", "").split(",");
-                    r = Integer.parseInt(rgb[0]);
-                    g = Integer.parseInt(rgb[1]);
-                    b = Integer.parseInt(rgb[2]);
-                    color = new Color(r, g, b);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return color;
-    }
-
-    public void conectarBD(String fichero) {
+    
+    //Metodo de conectar con la base de datos con los datos de un fichero 
+    private void conectarBD(String fichero) {
         String url, usuario, clave;
 
         List<String> datosFichero = new ArrayList<>();
