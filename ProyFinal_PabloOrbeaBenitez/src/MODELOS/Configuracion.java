@@ -1,19 +1,12 @@
 package MODELOS;
 
-public abstract class Configuracion {
+import java.io.Serializable;
+import java.util.Date;
 
-    private int id;
+public abstract class Configuracion implements Comparable<Configuracion>, Serializable {
+
     private String titulo;
-    private String nomUsuario;
-    private int fechaHora;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private Date fechaHora;
 
     public String getTitulo() {
         return titulo;
@@ -23,20 +16,25 @@ public abstract class Configuracion {
         this.titulo = titulo;
     }
 
-    public String getNomUsuario() {
-        return nomUsuario;
-    }
-
-    public void setNomUsuario(String nomUsuario) {
-        this.nomUsuario = nomUsuario;
-    }
-
-    public int getFechaHora() {
+    public Date getFechaHora() {
         return fechaHora;
     }
 
-    public void setFechaHora(int fechaHora) {
+    public void setFechaHora(Date fechaHora) {
         this.fechaHora = fechaHora;
     }
 
+    public Configuracion(String titulo, Date fechaHora) {
+        this.titulo = titulo;
+        this.fechaHora = fechaHora;
+    }
+
+    public Configuracion(String titulo) {
+        this.titulo = titulo;
+    }
+
+    @Override
+    public int compareTo(Configuracion conf) {
+        return this.titulo.compareTo(conf.titulo);
+    }
 }

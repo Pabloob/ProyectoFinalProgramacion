@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="20.0.2" class="java.beans.XMLDecoder">
+ <array class="[Ljava.lang.Object;" length="3">
+  <void index="0">
+   <array class="java.lang.Object" length="3">
+    <void index="0">
+     <string>Manzana</string>
+    </void>
+    <void index="1">
+     <int>3</int>
+    </void>
+    <void index="2">
+     <int>1</int>
+    </void>
+   </array>
+  </void>
+  <void index="1">
+   <array class="java.lang.Object" length="3">
+    <void index="0">
+     <string>Pera</string>
+    </void>
+    <void index="1">
+     <int>2</int>
+    </void>
+    <void index="2">
+     <int>3</int>
+    </void>
+   </array>
+  </void>
+  <void index="2">
+   <array class="java.lang.Object" length="3">
+    <void index="0">
+     <string>Platano</string>
+    </void>
+    <void index="1">
+     <int>1</int>
+    </void>
+    <void index="2">
+     <int>2</int>
+    </void>
+   </array>
+  </void>
+ </array>
+</java>

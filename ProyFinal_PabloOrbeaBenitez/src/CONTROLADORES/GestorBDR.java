@@ -1,12 +1,11 @@
 package CONTROLADORES;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -14,22 +13,33 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Comparator;
-import javax.swing.JTable;
-import javax.swing.table.JTableHeader;
+import java.util.List;
 
 public class GestorBDR {
 
     private Connection conexion;
-    String usuario = "Pablo";
-    String clave = "1234";
-    String url = "jdbc:mysql://localhost:3306/proyfinal_datos";
+
+    public void conectar(String url,String usuario,String clave) {
+        try {
+            conexion = DriverManager.getConnection(url, usuario, clave);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void desconectar() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+                        e.printStackTrace();
+        }
+    }
 
     public void añadir(String nombre, int precio, int cantidad) {
         Statement sentencia;
         String sql;
 
         try {
-            conexion = DriverManager.getConnection(url, usuario, clave);
             sentencia = conexion.createStatement();
 
             // INSERT INTO para añadir un deportista individual a la base de datos
@@ -49,7 +59,6 @@ public class GestorBDR {
 
     public boolean borrarNombre(String nombre) {
         try {
-            conexion = DriverManager.getConnection(url, usuario, clave);
             Statement sentencia = conexion.createStatement();
             String sql = "DELETE FROM productos WHERE NOMBRE ='" + nombre + "'";
             int filasAfectadas = sentencia.executeUpdate(sql);
@@ -64,7 +73,6 @@ public class GestorBDR {
         Statement sentencia;
         String sql;
         try {
-            conexion = DriverManager.getConnection(url, usuario, clave);
             sentencia = conexion.createStatement();
 
             sql = "DELETE FROM productos;";
@@ -85,7 +93,6 @@ public class GestorBDR {
         Statement sentencia;
         ResultSet rs;
         try {
-            conexion = DriverManager.getConnection(url, usuario, clave);
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = sentencia.executeQuery("SELECT * FROM productos");
 
@@ -116,23 +123,41 @@ public class GestorBDR {
     }
 
     public void guardarEnFichero(Object[][] datos, String nomArchivo) throws IOException {
-        try (ObjectOutputStream objectOutputDatos = new ObjectOutputStream(
-                new FileOutputStream(nomArchivo))) {
-            objectOutputDatos.writeObject(datos);
+        
+        
+        FileOutputStream fos;
+        XMLEncoder xmle;
+
+        try {
+            fos = new FileOutputStream(nomArchivo);
+            xmle = new XMLEncoder(new BufferedOutputStream(fos));
+            xmle.writeObject(datos);
+            xmle.close();
+        } catch (Exception e) {
         }
+        
     }
 
     public void cargarDeFichero(String nomArchivo) throws ClassNotFoundException, IOException {
-        try (ObjectInputStream objectInput = new ObjectInputStream(new FileInputStream(nomArchivo))) {
-            Object[][] datos = (Object[][]) objectInput.readObject();
-            for (Object[] dato : datos) {
+        
+        FileInputStream fis;
+        XMLDecoder xmld;
+        Object[][] datos = null;
+        try {
+            fis = new FileInputStream(nomArchivo);
+            xmld = new XMLDecoder(fis);
+            datos = (Object[][]) xmld.readObject();
+            xmld.close();
+        } catch (Exception e) {
+        }
+
+         for (Object[] dato : datos) {
                 String nombre = dato[0].toString();
                 int precio = Integer.parseInt(dato[1].toString());
                 int cantidad = Integer.parseInt(dato[2].toString());
                 añadir(nombre, precio, cantidad);
             }
-
-        }
+        
     }
 
     public Object[][] ordenarNombre(Object[][] datos) {
@@ -170,6 +195,7 @@ public class GestorBDR {
                 return cantidad1.compareTo(cantidad2);
             }
         };
+        
         Arrays.sort(datos, comparador);
         return datos;
     }
