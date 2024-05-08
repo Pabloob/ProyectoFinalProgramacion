@@ -12,14 +12,16 @@ public class Producto {
     private String nombre;
     private int precio;
     private int cantidad;
+    private byte [] imagen;
 
     public Producto() {
     }
 
-    public Producto(String nombre, int precio, int cantidad) {
+    public Producto(String nombre, int precio, int cantidad,byte[] imagen) {
         this.nombre = nombre;
         this.precio = precio;
         this.cantidad = cantidad;
+        this.imagen = imagen;
     }
 
     public int getCantidad() {
@@ -63,6 +65,14 @@ public class Producto {
             return false;
         }
         return true;
+    }
+
+    public byte[] getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(byte[] imagen) {
+        this.imagen = imagen;
     }
     
 }

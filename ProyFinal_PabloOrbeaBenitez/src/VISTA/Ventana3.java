@@ -44,9 +44,6 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         ColorFondo = new javax.swing.JLabel();
         TituloTextField = new javax.swing.JTextField();
         VaciarDespuesAñadirCheckBox = new javax.swing.JCheckBox();
-        VaciarButton = new javax.swing.JButton();
-        AñadirButton = new javax.swing.JButton();
-        ActualizarButton = new javax.swing.JButton();
         ColoresFondoButton = new javax.swing.JToggleButton();
         ColorTexto = new javax.swing.JLabel();
         ColoresTextoButton = new javax.swing.JToggleButton();
@@ -55,6 +52,9 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         BotonesBorrar = new javax.swing.JPanel();
         BorrarSeleccionadoButton = new javax.swing.JButton();
         CargarEjemplosButton = new javax.swing.JButton();
+        VaciarButton = new javax.swing.JButton();
+        ActualizarButton = new javax.swing.JButton();
+        AñadirButton = new javax.swing.JButton();
         Tabla = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablaEstilos = new javax.swing.JTable();
@@ -80,30 +80,6 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         VaciarDespuesAñadirCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 VaciarDespuesAñadirCheckBoxActionPerformed(evt);
-            }
-        });
-
-        VaciarButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        VaciarButton.setText("Vaciar campos");
-        VaciarButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                VaciarButtonActionPerformed(evt);
-            }
-        });
-
-        AñadirButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        AñadirButton.setText("Añadir");
-        AñadirButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AñadirButtonActionPerformed(evt);
-            }
-        });
-
-        ActualizarButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        ActualizarButton.setText("Actualizar");
-        ActualizarButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ActualizarButtonActionPerformed(evt);
             }
         });
 
@@ -136,7 +112,7 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         PanelPrevisualizacion.setLayout(PanelPrevisualizacionLayout);
         PanelPrevisualizacionLayout.setHorizontalGroup(
             PanelPrevisualizacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(TextoPrevisualizacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(TextoPrevisualizacion, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
         );
         PanelPrevisualizacionLayout.setVerticalGroup(
             PanelPrevisualizacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -152,9 +128,7 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
                 .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(DatosLayout.createSequentialGroup()
                         .addComponent(VaciarDespuesAñadirCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(VaciarButton)
-                        .addGap(59, 59, 59))
+                        .addGap(165, 165, 165))
                     .addGroup(DatosLayout.createSequentialGroup()
                         .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(DatosLayout.createSequentialGroup()
@@ -170,12 +144,7 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(ColoresTextoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(35, 35, 35)))
-                .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(DatosLayout.createSequentialGroup()
-                        .addComponent(AñadirButton)
-                        .addGap(103, 103, 103)
-                        .addComponent(ActualizarButton))
-                    .addComponent(PanelPrevisualizacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(PanelPrevisualizacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         DatosLayout.setVerticalGroup(
@@ -198,12 +167,8 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
                         .addGap(0, 12, Short.MAX_VALUE))
                     .addComponent(PanelPrevisualizacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(DatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(VaciarDespuesAñadirCheckBox)
-                    .addComponent(AñadirButton)
-                    .addComponent(VaciarButton)
-                    .addComponent(ActualizarButton))
-                .addGap(30, 30, 30))
+                .addComponent(VaciarDespuesAñadirCheckBox)
+                .addGap(32, 32, 32))
         );
 
         BotonesBorrar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -229,25 +194,58 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             }
         });
 
+        VaciarButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        VaciarButton.setText("Vaciar campos");
+        VaciarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                VaciarButtonActionPerformed(evt);
+            }
+        });
+
+        ActualizarButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        ActualizarButton.setText("Actualizar");
+        ActualizarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ActualizarButtonActionPerformed(evt);
+            }
+        });
+
+        AñadirButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        AñadirButton.setText("Añadir");
+        AñadirButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AñadirButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout BotonesBorrarLayout = new javax.swing.GroupLayout(BotonesBorrar);
         BotonesBorrar.setLayout(BotonesBorrarLayout);
         BotonesBorrarLayout.setHorizontalGroup(
             BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BotonesBorrarLayout.createSequentialGroup()
-                .addGap(178, 178, 178)
-                .addComponent(BorrarSeleccionadoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(CargarEjemplosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap()
+                .addComponent(VaciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(BorrarSeleccionadoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(AñadirButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ActualizarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(CargarEjemplosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         BotonesBorrarLayout.setVerticalGroup(
             BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BotonesBorrarLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(VaciarButton)
+                    .addComponent(ActualizarButton)
+                    .addComponent(AñadirButton)
                     .addComponent(BorrarSeleccionadoButton)
                     .addComponent(CargarEjemplosButton))
-                .addGap(36, 36, 36))
+                .addGap(52, 52, 52))
         );
 
         Tabla.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));

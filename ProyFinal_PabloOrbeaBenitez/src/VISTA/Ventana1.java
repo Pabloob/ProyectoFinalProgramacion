@@ -2,22 +2,31 @@ package VISTA;
 
 import CONTROLADORES.GestorBDR;
 import CONTROLADORES.GestorEstilosGUI;
+import MODELOS.Producto;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 public class Ventana1 extends javax.swing.JFrame {
@@ -27,11 +36,10 @@ public class Ventana1 extends javax.swing.JFrame {
     GestorEstilosGUI gestorEstilos = new GestorEstilosGUI();
 
     //Nombres de las columnas
-    String[] nomCols = {"NOMBRE", "PRECIO", "CANTIDAD"};
-
+    String[] nomCols = {"NOMBRE", "PRECIO", "CANTIDAD", "IMAGEN"};
     //Array de datos
-    Object[][] datosProductos;
-    Object[][] datosEstilos;
+    Object[][] datosProductos = null;
+    Object[][] datosEstilos = null;
 
     //Objeto tabla interfaz
     DefaultTableModel listaProductos = new DefaultTableModel(datosProductos, nomCols);
@@ -41,13 +49,16 @@ public class Ventana1 extends javax.swing.JFrame {
     String ficheroUsrContUrl = "ConexionBD.txt";
     String nomArchivoEstilos = "estilos.dat";
 
+    //Ruta imagen a añadir
+    String ruta = "";
+
     //Se conecta la base de datos y se inicia la ventana
     public Ventana1() {
         conectarBD(ficheroUsrContUrl);
         setTitle("Control inventario tienda");
         initComponents();
-        setAlwaysOnTop(true);
         actualizarTabla();
+        setAlwaysOnTop(true);
         setLocationRelativeTo(null);
         eventoOrdenar();
         eventoEstilos();
@@ -79,6 +90,8 @@ public class Ventana1 extends javax.swing.JFrame {
         DISEÑO = new javax.swing.JLabel();
         DiseñoComboBox = new javax.swing.JComboBox<>();
         ActualizarEstilos = new javax.swing.JToggleButton();
+        ImgaenButton = new javax.swing.JButton();
+        ImagenLabel = new javax.swing.JLabel();
         Panel1 = new javax.swing.JPanel();
         TablaProductos = new javax.swing.JScrollPane();
         jTablaProductos = new javax.swing.JTable();
@@ -195,99 +208,117 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         });
 
+        ImgaenButton.setText("IMAGEN");
+        ImgaenButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ImgaenButtonMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout Panel2Layout = new javax.swing.GroupLayout(Panel2);
         Panel2.setLayout(Panel2Layout);
         Panel2Layout.setHorizontalGroup(
             Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(BotonGestionarUsuarios)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(BotonConfigurarpantalla)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 329, Short.MAX_VALUE)
                 .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(FECHA, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(HORA, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
-                .addContainerGap(54, Short.MAX_VALUE)
-                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(Panel2Layout.createSequentialGroup()
-                        .addComponent(Precio, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addComponent(BotonAñadir, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(Panel2Layout.createSequentialGroup()
-                        .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BotonEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(Panel2Layout.createSequentialGroup()
-                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, Panel2Layout.createSequentialGroup()
-                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(Panel2Layout.createSequentialGroup()
-                                        .addComponent(DISEÑO, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(DiseñoComboBox, 0, 150, Short.MAX_VALUE))
+                        .addComponent(BotonActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(240, 240, 240)
+                        .addComponent(HORA, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addGap(0, 48, Short.MAX_VALUE)
+                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(Panel2Layout.createSequentialGroup()
+                                .addComponent(Precio, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(TextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(Panel2Layout.createSequentialGroup()
+                                .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(TextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(Panel2Layout.createSequentialGroup()
+                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, Panel2Layout.createSequentialGroup()
                                         .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(Cantidad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(ORDENAR, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(OrdenarPor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(TextFieldCantidad, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(ActualizarEstilos))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, Panel2Layout.createSequentialGroup()
-                                .addComponent(BotonAñadir, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(BotonEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(BotonActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(BotonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(OrdenarPor, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(TextFieldCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(Panel2Layout.createSequentialGroup()
+                                        .addComponent(DISEÑO, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(DiseñoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
+                                .addComponent(ActualizarEstilos)))
+                        .addGap(15, 15, 15)
+                        .addComponent(ImagenLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addComponent(BotonGestionarUsuarios)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BotonCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(35, 35, 35))
+                        .addComponent(BotonConfigurarpantalla)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                        .addComponent(BotonCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BotonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ImgaenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(FECHA, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         Panel2Layout.setVerticalGroup(
             Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel2Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Nombre)
-                    .addComponent(TextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(TextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Precio))
-                .addGap(18, 18, 18)
-                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(TextFieldCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Cantidad))
-                .addGap(18, 18, 18)
-                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ORDENAR)
-                    .addComponent(OrdenarPor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(Panel2Layout.createSequentialGroup()
+                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Nombre)
+                            .addComponent(TextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Precio))
+                        .addGap(18, 18, 18)
+                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TextFieldCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Cantidad))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ORDENAR)
+                            .addComponent(OrdenarPor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(ImagenLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DISEÑO)
                     .addComponent(DiseñoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ActualizarEstilos))
-                .addGap(58, 58, 58)
-                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BotonAñadir)
-                    .addComponent(BotonEliminar)
-                    .addComponent(BotonActualizar)
-                    .addComponent(BotonGuardar)
-                    .addComponent(BotonCargar))
-                .addGap(88, 88, 88)
-                .addComponent(HORA, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19)
+                    .addComponent(ActualizarEstilos)
+                    .addComponent(ImgaenButton))
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(Panel2Layout.createSequentialGroup()
+                        .addGap(170, 170, 170)
+                        .addComponent(HORA, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(BotonAñadir)
+                            .addComponent(BotonEliminar)
+                            .addComponent(BotonActualizar))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BotonConfigurarpantalla)
                     .addComponent(BotonGestionarUsuarios)
-                    .addComponent(FECHA, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
+                    .addComponent(FECHA, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                    .addComponent(BotonGuardar)
+                    .addComponent(BotonCargar))
                 .addContainerGap())
         );
 
@@ -300,13 +331,13 @@ public class Ventana1 extends javax.swing.JFrame {
         jTablaProductos.setBackground(new java.awt.Color(255, 255, 255));
         jTablaProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "NOMBRE", "PRECIO", "CANTIDAD"
+                "NOMBRE", "PRECIO", "CANTIDAD", "IMAGEN"
             }
         ));
         jTablaProductos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -380,7 +411,18 @@ public class Ventana1 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonCargarMousePressed
 
     private void jTablaProductosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablaProductosMousePressed
-        //Se actualizan los textFields con los datos de la tabla al pulsar sobre ella
+//        int filaSeleccionada = jTablaProductos.getSelectedRow();
+//        String nombre = (String) datosProductos[filaSeleccionada][0];
+//        String precio = datosProductos[filaSeleccionada][1].toString();
+//        String cantidad = datosProductos[filaSeleccionada][2].toString();
+//        JLabel imagenLabel = (JLabel) datosProductos[filaSeleccionada][3];
+//
+//        TextFieldNombre.setText(nombre);
+//        TextFieldCantidad.setText(cantidad);
+//        TextFieldPrecio.setText(precio);
+//
+//        ImageIcon imagenIcono = (ImageIcon) imagenLabel.getIcon();
+//        ImagenLabel.setIcon(imagenIcono);
         int filaSeleccionada = jTablaProductos.getSelectedRow();
         String nombre = (String) datosProductos[filaSeleccionada][0];
         String precio = (String) datosProductos[filaSeleccionada][1].toString();
@@ -430,10 +472,14 @@ public class Ventana1 extends javax.swing.JFrame {
 
         if (precioCorrecto && cantidadCorrecto) {
 
-            if (!TextFieldNombre.getText().trim().isEmpty()) {
-                gestorBDR.añadir(nombre, precio, cantidad);
-                actualizarTabla();
-                vaciarTextField();
+            if (!TextFieldNombre.getText().trim().isEmpty() && !ruta.trim().isEmpty()) {
+                try {
+                    Producto producto = new Producto(nombre, precio, cantidad, gestorBDR.getImagen(ruta));
+                    gestorBDR.añadir(producto);
+                    actualizarTabla();
+                    vaciarTextField();
+                } catch (IOException ex) {
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "El campo del nombre no puede estar vacío", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
@@ -453,12 +499,15 @@ public class Ventana1 extends javax.swing.JFrame {
 
             if (!nombre.isEmpty()) {
 
-                gestorBDR.borrarNombre(nombreBorrar);
-                actualizarTabla();
-
-                gestorBDR.añadir(nombre, precio, cantidad);
-                actualizarTabla();
-                vaciarTextField();
+                try {
+                    gestorBDR.borrarNombre(nombreBorrar);
+                    actualizarTabla();
+                    Producto producto = new Producto(nombre, precio, cantidad, gestorBDR.getImagen(ruta));
+                    gestorBDR.añadir(producto);
+                    actualizarTabla();
+                    vaciarTextField();
+                } catch (IOException ex) {
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "El campo del nombre no puede estar vacío", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
@@ -484,6 +533,19 @@ public class Ventana1 extends javax.swing.JFrame {
         //Boton que actualiza los estilos disponibles
         actualizarOpciones();
     }//GEN-LAST:event_ActualizarEstilosMousePressed
+
+    private void ImgaenButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ImgaenButtonMousePressed
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("JPG, PNG & GIF", "jpg", "png", "gif");
+        fileChooser.setFileFilter(extensionFilter);
+
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            ruta = fileChooser.getSelectedFile().getAbsolutePath();
+            Image mImagen = new ImageIcon(ruta).getImage();
+            ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(ImagenLabel.getWidth(), ImagenLabel.getHeight(), 0));
+            ImagenLabel.setIcon(mIcono);
+        }
+    }//GEN-LAST:event_ImgaenButtonMousePressed
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -529,6 +591,8 @@ public class Ventana1 extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> DiseñoComboBox;
     private javax.swing.JLabel FECHA;
     private javax.swing.JLabel HORA;
+    private javax.swing.JLabel ImagenLabel;
+    private javax.swing.JButton ImgaenButton;
     private javax.swing.JLabel Nombre;
     private javax.swing.JLabel ORDENAR;
     private javax.swing.JComboBox<String> OrdenarPor;
@@ -544,7 +608,31 @@ public class Ventana1 extends javax.swing.JFrame {
 
     //Metodo actualizar la tabla con los valores de el array[][]
     private void actualizarTabla() {
+
+
+      jTablaProductos.setDefaultRenderer(Object.class, new ImagenTabla());
+
         datosProductos = gestorBDR.convertir();
+        int i = 0;
+        for (Object[] producto : datosProductos) {
+            datosProductos[i][0]=producto[0];
+            datosProductos[i][1]=producto[1];
+            datosProductos[i][2]=producto[2];
+            byte img [] = gestorBDR.getByte();
+            try {
+                BufferedImage bufferedImage = null;
+                InputStream inputStream = new ByteArrayInputStream(img);
+                bufferedImage = ImageIO.read(inputStream);
+                ImageIcon mIcono = new ImageIcon(bufferedImage.getScaledInstance(60, 60, 0));
+                datosProductos[i][3] = new JLabel(mIcono);
+            } catch (Exception e) {
+                e.printStackTrace();
+                datosProductos[i][3] = new JLabel("No imagen");
+            }
+
+            i++;
+        }
+
         listaProductos = new DefaultTableModel(datosProductos, nomCols) {
             @Override
             public boolean isCellEditable(int fila, int columna) {
@@ -552,7 +640,8 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         };
 
-        jTablaProductos.setModel(listaProductos);
+        jTablaProductos.setModel(listaProductos);  
+
     }
 
     //se actualizan los datos de la tabla con los datos de los productos 
@@ -563,9 +652,9 @@ public class Ventana1 extends javax.swing.JFrame {
 
     //Metodo para vaciar los textFields
     private void vaciarTextField() {
-        TextFieldCantidad.setText("");
-        TextFieldNombre.setText("");
-        TextFieldPrecio.setText("");
+        TextFieldCantidad.setText(null);
+        TextFieldNombre.setText(null);
+        TextFieldPrecio.setText(null);
     }
 
     //Metodo para activar o desactivar los botones de las ventanas de administrador
@@ -658,7 +747,7 @@ public class Ventana1 extends javax.swing.JFrame {
             System.out.println(e.getMessage());
         }
     }
-    
+
     //Metodo de conectar con la base de datos con los datos de un fichero 
     private void conectarBD(String fichero) {
         String url, usuario, clave;
