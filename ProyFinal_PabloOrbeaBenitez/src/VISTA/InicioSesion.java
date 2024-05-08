@@ -16,7 +16,7 @@ public class InicioSesion {
             if (gestor.comprobarInicioSesion(nombre, contraseña)) {
                 Ventana1 ventana = new Ventana1();
                 ventana.setVisible(true);
-                ventana.setAdministrador(gestor.comprobarAdministrador(nombre));
+                ventana.setAdministrador(gestor.comprobarUsuarioAdministrador(nombre));
                 inicioCorrecto = true;
             } else {
                 fallos--;

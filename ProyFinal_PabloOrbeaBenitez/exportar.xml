@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="21.0.1" class="java.beans.XMLDecoder">
+ <array class="[Ljava.lang.Object;" length="3">
+  <void index="0">
+   <array class="java.lang.Object" length="5">
+    <void index="0">
+     <string>CLARO</string>
+    </void>
+    <void index="1">
+     <string>[r=255,g=255,b=255]</string>
+    </void>
+    <void index="2">
+     <string>[r=0,g=0,b=0]</string>
+    </void>
+    <void index="3">
+     <object class="java.util.Date" id="Date0">
+      <long>1715188005122</long>
+     </object>
+    </void>
+   </array>
+  </void>
+  <void index="1">
+   <array class="java.lang.Object" length="5">
+    <void index="0">
+     <string>OSCURO</string>
+    </void>
+    <void index="1">
+     <string>[r=0,g=0,b=0]</string>
+    </void>
+    <void index="2">
+     <string>[r=255,g=255,b=255]</string>
+    </void>
+    <void index="3">
+     <object idref="Date0"/>
+    </void>
+   </array>
+  </void>
+  <void index="2">
+   <array class="java.lang.Object" length="5">
+    <void index="0">
+     <string>PRUEBA</string>
+    </void>
+    <void index="1">
+     <string>[r=0,g=102,b=204]</string>
+    </void>
+    <void index="2">
+     <string>[r=153,g=102,b=0]</string>
+    </void>
+    <void index="3">
+     <object idref="Date0"/>
+    </void>
+   </array>
+  </void>
+ </array>
+</java>

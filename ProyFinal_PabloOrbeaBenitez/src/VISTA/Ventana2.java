@@ -249,9 +249,9 @@ public class Ventana2 extends javax.swing.JFrame {
 
             if (!NombreTextField.getText().trim().isEmpty() && !ContraseñaTextField.getText().trim().isEmpty()) {
                 if (!admin) {
-                    gestorUsuarios.añadir(nombre, contraseña, Usuario.Rol.USUARIO, activo);
+                    gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.USUARIO, activo);
                 } else if (admin) {
-                    gestorUsuarios.añadir(nombre, contraseña, Usuario.Rol.ADMINISTRADOR, activo);
+                    gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.ADMINISTRADOR, activo);
                 }
                 actualizarTabla();
                 vaciarTextField();
@@ -269,13 +269,13 @@ public class Ventana2 extends javax.swing.JFrame {
         if (filaSeleccionado >= 0) {
             String nombre = (String) datos[filaSeleccionado][0];
 
-            gestorUsuarios.borrarNombre(nombre);
+            gestorUsuarios.borrarUsuarioPorNombre(nombre);
             actualizarTabla();
+                vaciarTextField();
 
         } else {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
-        vaciarTextField();
 
     }//GEN-LAST:event_BotonBorrarMousePressed
 
@@ -298,15 +298,15 @@ public class Ventana2 extends javax.swing.JFrame {
 
             if (!NombreTextField.getText().trim().isEmpty() && !ContraseñaTextField.getText().trim().isEmpty()) {
 
-                gestorUsuarios.borrarNombre(nombreBorrar);
+                gestorUsuarios.borrarUsuarioPorNombre(nombreBorrar);
                 actualizarTabla();
                 if (!admin) {
-                    gestorUsuarios.añadir(nombre, contraseña, Usuario.Rol.USUARIO, activo);
+                    gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.USUARIO, activo);
                 } else if (admin) {
-                    gestorUsuarios.añadir(nombre, contraseña, Usuario.Rol.ADMINISTRADOR, activo);
+                    gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.ADMINISTRADOR, activo);
                 }
                 actualizarTabla();
-
+                vaciarTextField();
             } else {
                 JOptionPane.showMessageDialog(this, "El campo del nombre y contraseña no pueden estar vacíos", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
@@ -387,7 +387,7 @@ public class Ventana2 extends javax.swing.JFrame {
     //Se actualiza la tabla con los datos de el array [][]
     
     private void actualizarTabla() {
-        datos = gestorUsuarios.convertir();
+        datos = gestorUsuarios.convertirBDOADTM();
         listaProductos = new DefaultTableModel(datos, nomCols) {
             @Override
             public boolean isCellEditable(int fila, int columna) {

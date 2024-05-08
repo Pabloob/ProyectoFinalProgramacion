@@ -46,7 +46,7 @@ public class GestorUsuariosBDO implements Serializable {
         return inicioSesion;
     }
 
-    public boolean comprobarAdministrador(String nomUsuario) {
+    public boolean comprobarUsuarioAdministrador(String nomUsuario) {
         boolean administrador = false;
 
         Object[][] usuarioRol;
@@ -77,7 +77,7 @@ public class GestorUsuariosBDO implements Serializable {
         return administrador;
     }
 
-    public void añadir(String nombre, int contraseña, Usuario.Rol rol, boolean activo) {
+    public void añadirUsuario(String nombre, int contraseña, Usuario.Rol rol, boolean activo) {
         Usuario u1 = new Usuario(nombre, contraseña, rol, activo);
         try {
             em.getTransaction().begin();
@@ -88,7 +88,7 @@ public class GestorUsuariosBDO implements Serializable {
         }
     }
 
-    public boolean borrarNombre(String nombre) {
+    public boolean borrarUsuarioPorNombre(String nombre) {
         try {
             em.getTransaction().begin();
             String jpql = "DELETE FROM Usuario u WHERE u.nombre= :nombre";
@@ -103,7 +103,7 @@ public class GestorUsuariosBDO implements Serializable {
         }
     }
 
-    public boolean vaciar() {
+    public boolean vaciarUsuarios() {
         try {
             em.getTransaction().begin();
             String jpql = "DELETE FROM Usuario u";
@@ -117,14 +117,14 @@ public class GestorUsuariosBDO implements Serializable {
         }
     }
 
-    public void cargarDeportistas() {
+    public void cargarUsuario() {
         Usuario u1 = new Usuario("Pablo", 1234, Usuario.Rol.ADMINISTRADOR, true);
         em.getTransaction().begin();
         em.persist(u1);
         em.getTransaction().commit();
     }
 
-    public Object[][] convertir() {
+    public Object[][] convertirBDOADTM() {
         boolean inicioSesion = false;
 
         Object datos[][] = null;

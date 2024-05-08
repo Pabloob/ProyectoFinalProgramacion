@@ -29,6 +29,9 @@ public abstract class Configuracion implements Comparable<Configuracion>, Serial
         this.fechaHora = fechaHora;
     }
 
+    public Configuracion() {
+    }
+
     public Configuracion(String titulo) {
         this.titulo = titulo;
     }

@@ -1,89 +1,79 @@
 package CONTROLADORES;
 
 import MODELOS.Producto;
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
-import java.io.File;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 public class GestorBDR {
 
     private Connection conexion;
 
-    public void conectar(String url, String usuario, String clave) {
+    public void conectarBDR(String url, String usuario, String clave) {
         try {
             conexion = DriverManager.getConnection(url, usuario, clave);
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    public void desconectar() {
+    public void desconectarBDR() {
         try {
             conexion.close();
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    public byte[] getImagen(String Ruta) {
-        File imagen = new File(Ruta);
+    public void añadirProducto(Producto producto) throws FileNotFoundException, IOException {
+        PreparedStatement preparedStatement = null;
+        String SQL_AGREGAR = "INSERT INTO productos (NOMBRE, PRECIO, CANTIDAD, IMAGEN) VALUES (?, ?, ?, ?)";
         try {
-            byte[] icono = new byte[(int) imagen.length()];
-            InputStream input = new FileInputStream(imagen);
-            input.read(icono);
-            return icono;
-        } catch (Exception ex) {
-            return null;
+            preparedStatement = conexion.prepareStatement(SQL_AGREGAR);
+            preparedStatement.setString(1, producto.getNombre());
+            preparedStatement.setFloat(2, producto.getPrecio());
+            preparedStatement.setInt(3, producto.getCantidad());
+
+            if (producto.getImagen() != null) {
+                preparedStatement.setBytes(4, producto.getImagen());
+            } else {
+                preparedStatement.setNull(4, 0);
+            }
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
         }
     }
 
-    public void añadir(Producto producto) throws FileNotFoundException, IOException {
-        Statement sentencia;
-        String sql;
-
-        try {
-            sentencia = conexion.createStatement();
-
-            sql = "INSERT INTO productos (NOMBRE, PRECIO, CANTIDAD, IMAGEN) VALUES"
-                    + "('" + producto.getNombre() + "', '" + producto.getPrecio() + "', '" + producto.getCantidad() + "','" + producto.getImagen() + "');";
-            sentencia.executeUpdate(sql);
-
-        } catch (SQLException e) {
-            e.getMessage();
-            e.getSQLState();
-            e.getErrorCode();
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
-
-    }
-
-    public boolean borrarNombre(String nombre) {
+    public boolean borrarProductoPorNombre(String nombre) {
         try {
             Statement sentencia = conexion.createStatement();
             String sql = "DELETE FROM productos WHERE NOMBRE ='" + nombre + "'";
             int filasAfectadas = sentencia.executeUpdate(sql);
             return filasAfectadas > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
 
-    public void vaciar() {
+    public void vaciarBDR() {
         Statement sentencia;
         String sql;
         try {
@@ -98,142 +88,76 @@ public class GestorBDR {
             e.getSQLState();
             e.getErrorCode();
         } catch (Exception e) {
-            e.printStackTrace(System.err);
         }
     }
 
-//    public Producto[] getProductos() {
-//        Producto[] productos = null;
-//        Statement sentencia;
-//        ResultSet rs;
-//        try {
-//            sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-//            rs = sentencia.executeQuery("SELECT * FROM productos");
-//
-//            rs.last();
-//            int numRows = rs.getRow();
-//            rs.beforeFirst();
-//
-//            productos = new Producto[numRows];
-//            int indice = 0;
-//
-//            while (rs.next()) {
-//                String nombre = rs.getString("NOMBRE");
-//                int precio = rs.getInt("PRECIO");
-//                int cantidad = rs.getInt("CANTIDAD");
-//                byte icono[] = rs.getBytes("IMAGEN");
-//
-//                Producto producto = new Producto();
-//                producto.setNombre(nombre);
-//                producto.setPrecio(precio);
-//                producto.setCantidad(cantidad);
-//                producto.setImagen(icono);
-//                
-//                productos[indice] = producto;
-//
-//                indice++;
-//            }
-//
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//
-//        return productos;
-//    }
-
-    public Object[][] convertir() {
-        Object[][] datos = null;
+    public ArrayList convertirBDRADTM() {
+        ArrayList datos = new ArrayList();
         Statement sentencia;
         ResultSet rs;
         try {
-            sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            sentencia = conexion.createStatement();
             rs = sentencia.executeQuery("SELECT * FROM productos");
 
-            rs.last();
-            int numRows = rs.getRow();
-            rs.beforeFirst();
-
-            datos = new Object[numRows][4];
-            int indice = 0;
-
             while (rs.next()) {
-                String nombre = rs.getString("NOMBRE");
-                int precio = rs.getInt("PRECIO");
-                int cantidad = rs.getInt("CANTIDAD");
-                byte img [] = rs.getBytes("IMAGEN");
-                datos[indice][0] = nombre;
-                datos[indice][1] = precio;
-                datos[indice][2] = cantidad;
-                datos[indice][3] = img;
-                indice++;
+                Producto producto = new Producto();
+                producto.setNombre(rs.getString("NOMBRE"));
+                producto.setPrecio(rs.getFloat("PRECIO"));
+                producto.setCantidad(rs.getInt("CANTIDAD"));
+                producto.setImagen(rs.getBytes("IMAGEN"));
+                datos.add(producto);
             }
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            return null;
         }
+
         return datos;
     }
-    
-    public byte [] getByte (){
-    byte[] img = null;
-        Statement sentencia;
-        ResultSet rs;
-        try {
-            sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            rs = sentencia.executeQuery("SELECT * FROM productos");
 
-            rs.last();
-            int numRows = rs.getRow();
-            rs.beforeFirst();
+    public void guardarProductosEnFichero(Object[][] datos, String nomArchivo) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(nomArchivo);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(datos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-            img = new byte[4];
-            int indice = 0;
-
-            while (rs.next()) {
-                img  = rs.getBytes("IMAGEN");
+    public void cargarProductosDeFichero(String nomArchivo) throws ClassNotFoundException, IOException {
+        try (FileInputStream fis = new FileInputStream(nomArchivo);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            Object[][] datos = (Object[][]) ois.readObject();
+            for (Object[] dato : datos) {
+                Producto producto = new Producto();
+                producto.setNombre((String) dato[0]);
+                producto.setPrecio(Float.parseFloat(dato[1].toString()));
+                producto.setCantidad(Integer.parseInt(dato[2].toString()));
+                producto.setImagen(jLbalelABytes((JLabel) dato[3]));
+                añadirProducto(producto);
             }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
         }
-        return img;
     }
     
-    public void guardarEnFichero(Object[][] datos, String nomArchivo) throws IOException {
-
-        FileOutputStream fos;
-        XMLEncoder xmle;
+    
+    
+    public byte[] jLbalelABytes(JLabel jlbl) {
 
         try {
-            fos = new FileOutputStream(nomArchivo);
-            xmle = new XMLEncoder(new BufferedOutputStream(fos));
-            xmle.writeObject(datos);
-            xmle.close();
+            ImageIcon icono = (ImageIcon) jlbl.getIcon();
+            Image imagen = icono.getImage();
+            BufferedImage bufferedImage = new BufferedImage(imagen.getWidth(null), imagen.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            Graphics g = bufferedImage.getGraphics();
+            g.drawImage(imagen, 0, 0, null);
+            g.dispose();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", baos);
+            byte[] bytesImagen = baos.toByteArray();
+            return bytesImagen;
         } catch (Exception e) {
-        }
-
-    }
-
-    public void cargarDeFichero(String nomArchivo) throws ClassNotFoundException, IOException {
-
-        FileInputStream fis;
-        XMLDecoder xmld;
-        Object[][] datos = null;
-        try {
-            fis = new FileInputStream(nomArchivo);
-            xmld = new XMLDecoder(fis);
-            datos = (Object[][]) xmld.readObject();
-            xmld.close();
-        } catch (Exception e) {
-        }
-
-        for (Object[] dato : datos) {
-            String nombre = dato[0].toString();
-            int precio = Integer.parseInt(dato[1].toString());
-            int cantidad = Integer.parseInt(dato[2].toString());
-            byte icono[] = (byte[]) dato[3];
-            Producto producto = new Producto(nombre, precio, cantidad, icono);
-            añadir(producto);
+            return null;
         }
 
     }
@@ -255,8 +179,10 @@ public class GestorBDR {
         Comparator<Object[]> comparador = new Comparator<Object[]>() {
             @Override
             public int compare(Object[] fila1, Object[] fila2) {
-                Integer precio1 = (Integer) fila1[1];
-                Integer precio2 = (Integer) fila2[1];
+                String precioStr1 = ((String) fila1[1]).replaceAll("[^\\d]", "");
+                String precioStr2 = ((String) fila2[1]).replaceAll("[^\\d]", "");
+                Float precio1 = Float.parseFloat(precioStr1);
+                Float precio2 = Float.parseFloat(precioStr2);
                 return precio1.compareTo(precio2);
             }
         };

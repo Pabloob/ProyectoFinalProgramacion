@@ -2,7 +2,11 @@ package CONTROLADORES;
 
 import MODELOS.ConfigPantalla;
 import java.awt.Color;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.util.Date;
 import java.util.TreeSet;
@@ -12,26 +16,26 @@ import javax.swing.JPanel;
 public class GestorEstilosGUI {
 
     private TreeSet<ConfigPantalla> estilos = new TreeSet<>();
-    Date hora = new Date();
+    private Date hora = new Date();
 
-    public void añadirEjemplos() {
+    public void añadirEjemplosEstilos() {
 
-        ConfigPantalla c1 = new ConfigPantalla(Color.WHITE,  Color.BLACK, "CLARO", hora);
-        ConfigPantalla c2 = new ConfigPantalla(Color.BLACK,  Color.WHITE, "OSCURO", hora);
+        ConfigPantalla c1 = new ConfigPantalla(Color.WHITE, Color.BLACK, "CLARO", hora);
+        ConfigPantalla c2 = new ConfigPantalla(Color.BLACK, Color.WHITE, "OSCURO", hora);
 
         estilos.add(c1);
         estilos.add(c2);
 
     }
 
-    public void añadir(String titulo, Color colorFondo, Color colorTexto) {
+    public void añadirEstilo(String titulo, Color colorFondo, Color colorTexto) {
 
         ConfigPantalla config = new ConfigPantalla(colorFondo, colorTexto, titulo.toUpperCase(), hora);
         estilos.add(config);
 
     }
 
-    public void borrar(String nombre) {
+    public void borrarEstilo(String nombre) {
 
         estilos.remove(new ConfigPantalla(nombre));
 
@@ -52,8 +56,8 @@ public class GestorEstilosGUI {
         }
 
     }
-    
-    public Color conseguirColor(String rgbColor) {
+
+    public Color conseguirColorPorRGB(String rgbColor) {
         Color color;
         int r, g, b;
         String[] rgb = rgbColor.replaceAll("[^0-9,]", "").split(",");
@@ -64,7 +68,7 @@ public class GestorEstilosGUI {
         return color = new Color(r, g, b);
     }
 
-    public Color buscarColor(String titulo, int colorBuscar,String nomArchivoEstilos,Object[][]datosEstilos) {
+    public Color buscarColorEnFichero(String titulo, int colorBuscar, String nomArchivoEstilos, Object[][] datosEstilos) {
         int r, g, b;
         Color color = null;
         FileInputStream fis;
@@ -90,7 +94,7 @@ public class GestorEstilosGUI {
         return color;
     }
 
-    public Object[][] convertirAMatrizObjetos() {
+    public Object[][] convertirListaADTM() {
         Object[][] matrizObjeto = new Object[estilos.size()][5];
         int id = 0;
         for (ConfigPantalla conf : this.estilos) {
@@ -103,4 +107,44 @@ public class GestorEstilosGUI {
         return matrizObjeto;
     }
 
+    public void cargarEstilosDeFicheroXML(String nomArchivo) {
+
+        FileInputStream fis;
+        XMLDecoder xmld;
+        Object[][] datos = null;
+        try {
+            fis = new FileInputStream(nomArchivo);
+            xmld = new XMLDecoder(fis);
+            datos = (Object[][]) xmld.readObject();
+            xmld.close();
+            for (Object[] dato : datos) {
+                String titulo = (String) dato[0];
+                Color colorFondo = conseguirColorPorRGB((String) dato[1]);
+                Color colorTexto = conseguirColorPorRGB((String) dato[2]);
+                añadirEstilo(titulo, colorFondo, colorTexto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void guardarEstilosEnFicheroXML(Object[][] datos, String nomArchivo) {
+
+        FileOutputStream fos;
+        XMLEncoder xmle;
+
+        try {
+            fos = new FileOutputStream(nomArchivo);
+            xmle = new XMLEncoder(new BufferedOutputStream(fos));
+            xmle.writeObject(datos);
+            xmle.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    
+    
 }

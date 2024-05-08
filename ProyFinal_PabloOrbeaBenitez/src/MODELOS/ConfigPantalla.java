@@ -1,7 +1,6 @@
 package MODELOS;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.util.Date;
 
 public class ConfigPantalla extends Configuracion {
@@ -25,10 +24,6 @@ public class ConfigPantalla extends Configuracion {
         return "[r=" + colorFondo.getRed() + ",g=" + colorFondo.getGreen() + ",b=" + colorFondo.getBlue() + "]";
     }
 
-    public void setColor(Color color) {
-        this.colorFondo = color;
-    }
-
     public ConfigPantalla(Color colorFondo, Color colorTexto, String titulo, Date fechaHora) {
         super(titulo, fechaHora);
         this.colorFondo = colorFondo;
@@ -37,6 +32,9 @@ public class ConfigPantalla extends Configuracion {
 
     public ConfigPantalla(String titulo) {
         super(titulo);
+    }
+
+    public ConfigPantalla() {
     }
 
 }

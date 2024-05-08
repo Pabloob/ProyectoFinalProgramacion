@@ -4,9 +4,12 @@ import CONTROLADORES.GestorEstilosGUI;
 import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +21,7 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
     //Nombre archivo de estilos
     String nomArchivo = "estilos.dat";
+    String nomArchivoxml = "exportar.xml";
 
     //Nombre de las columnas
     String[] nomCols = {"TITULO", "COLOR FONDO", "COLOR TEXTO", "FECHA"};
@@ -58,6 +62,8 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         Tabla = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablaEstilos = new javax.swing.JTable();
+        GUARDAR = new javax.swing.JButton();
+        CARGAR = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 0, 0));
 
@@ -102,9 +108,12 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             }
         });
 
+        PanelPrevisualizacion.setBackground(new java.awt.Color(255, 255, 255));
         PanelPrevisualizacion.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        TextoPrevisualizacion.setBackground(new java.awt.Color(255, 255, 255));
         TextoPrevisualizacion.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        TextoPrevisualizacion.setForeground(new java.awt.Color(0, 0, 0));
         TextoPrevisualizacion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TextoPrevisualizacion.setText("PRUEBA");
 
@@ -310,21 +319,44 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
                 .addContainerGap())
         );
 
+        GUARDAR.setText("GUARDAR");
+        GUARDAR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                GUARDARMousePressed(evt);
+            }
+        });
+
+        CARGAR.setText("CARGAR");
+        CARGAR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                CARGARMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(PanelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(GUARDAR)
+                        .addGap(46, 46, 46)
+                        .addComponent(CARGAR))
+                    .addComponent(PanelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addComponent(PanelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(GUARDAR)
+                    .addComponent(CARGAR))
+                .addGap(0, 88, Short.MAX_VALUE))
         );
 
         pack();
@@ -345,12 +377,11 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         colorFondo = PanelPrevisualizacion.getBackground();
         colorTexto = TextoPrevisualizacion.getForeground();
         if (!titulo.isEmpty() && colorFondo != null && colorTexto != null) {
-            gestorEstilos.añadir(titulo, colorFondo, colorTexto);
+            gestorEstilos.añadirEstilo(titulo, colorFondo, colorTexto);
             actualizarTabla();
             if (VaciarDespuesAñadirCheckBox.isSelected()) {
                 vaciarTextField();
             }
-            guardar();
         } else {
             JOptionPane.showMessageDialog(this, "No puedes dejar campos vacios", "Error", JOptionPane.WARNING_MESSAGE);
         }
@@ -374,14 +405,13 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             colorFondo = PanelPrevisualizacion.getBackground();
             colorTexto = TextoPrevisualizacion.getForeground();
             if (!titulo.isEmpty() && colorFondo != null && colorTexto != null) {
-                gestorEstilos.borrar(nombreBorrar);
+                gestorEstilos.borrarEstilo(nombreBorrar);
                 actualizarTabla();
-                gestorEstilos.añadir(titulo, colorFondo, colorTexto);
+                gestorEstilos.añadirEstilo(titulo, colorFondo, colorTexto);
                 actualizarTabla();
                 if (VaciarDespuesAñadirCheckBox.isSelected()) {
                     vaciarTextField();
                 }
-                guardar();
             } else {
                 JOptionPane.showMessageDialog(this, "No puedes dejar campos vacios", "Error", JOptionPane.WARNING_MESSAGE);
             }
@@ -394,9 +424,8 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
     private void CargarEjemplosButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CargarEjemplosButtonActionPerformed
         //Se añaden los ejemplos
-        gestorEstilos.añadirEjemplos();
+        gestorEstilos.añadirEjemplosEstilos();
         actualizarTabla();
-        guardar();
     }//GEN-LAST:event_CargarEjemplosButtonActionPerformed
 
     private void BorrarSeleccionadoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarSeleccionadoButtonActionPerformed
@@ -405,10 +434,9 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         int filaSeleccionado = jTablaEstilos.getSelectedRow();
         if (filaSeleccionado >= 0) {
             String nombre = (String) datos[filaSeleccionado][0];
-            gestorEstilos.borrar(nombre);
+            gestorEstilos.borrarEstilo(nombre);
             actualizarTabla();
             vaciarTextField();
-            guardar();
         } else {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -418,8 +446,8 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         int filaSeleccionada = jTablaEstilos.getSelectedRow();
         Color colorFondo, colorTexto;
         String titulo = (String) datos[filaSeleccionada][0];
-        colorFondo = gestorEstilos.conseguirColor((String) datos[filaSeleccionada][1]);
-        colorTexto = gestorEstilos.conseguirColor((String) datos[filaSeleccionada][2]);
+        colorFondo = gestorEstilos.conseguirColorPorRGB((String) datos[filaSeleccionada][1]);
+        colorTexto = gestorEstilos.conseguirColorPorRGB((String) datos[filaSeleccionada][2]);
 
         TituloTextField.setText(titulo);
         PanelPrevisualizacion.setBackground(colorFondo);
@@ -439,6 +467,18 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         Color color = JColorChooser.showDialog(this, "Selecciona color", null);
         TextoPrevisualizacion.setForeground(color);
     }//GEN-LAST:event_ColoresTextoButtonMousePressed
+
+    private void GUARDARMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_GUARDARMousePressed
+        gestorEstilos.guardarEstilosEnFicheroXML(datos, nomArchivoxml);
+        actualizarTabla();
+
+    }//GEN-LAST:event_GUARDARMousePressed
+
+    private void CARGARMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CARGARMousePressed
+        gestorEstilos.cargarEstilosDeFicheroXML(nomArchivo);
+        actualizarTabla();
+
+    }//GEN-LAST:event_CARGARMousePressed
 
     public static void main(String args[]) {
         try {
@@ -461,12 +501,14 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
     private javax.swing.JButton AñadirButton;
     private javax.swing.JButton BorrarSeleccionadoButton;
     private javax.swing.JPanel BotonesBorrar;
+    private javax.swing.JButton CARGAR;
     private javax.swing.JButton CargarEjemplosButton;
     private javax.swing.JLabel ColorFondo;
     private javax.swing.JLabel ColorTexto;
     private javax.swing.JToggleButton ColoresFondoButton;
     private javax.swing.JToggleButton ColoresTextoButton;
     private javax.swing.JPanel Datos;
+    private javax.swing.JButton GUARDAR;
     private javax.swing.JPanel PanelPrevisualizacion;
     private javax.swing.JPanel PanelPrincipal;
     private javax.swing.JLabel TITULO;
@@ -480,7 +522,7 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
     // End of variables declaration//GEN-END:variables
 
     private void actualizarTabla() {
-        datos = gestorEstilos.convertirAMatrizObjetos();
+        datos = gestorEstilos.convertirListaADTM();
         listaEstilos = new DefaultTableModel(datos, nomCols) {
             @Override
             public boolean isCellEditable(int fila, int columna) {
@@ -489,12 +531,13 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         };
 
         jTablaEstilos.setModel(listaEstilos);
-
+        guardar();
     }
 
     private void vaciarTextField() {
         TituloTextField.setText("");
-        ColoresFondoButton.setBackground(new Color(214, 217, 223));
+        PanelPrevisualizacion.setBackground(Color.WHITE);
+TextoPrevisualizacion.setForeground(Color.BLACK);
     }
 
     private void cargar() {
@@ -511,9 +554,9 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
                 String titulo = (String) dato[0];
                 String fondo = (String) dato[1];
                 String texto = (String) dato[2];
-                colorFondo = gestorEstilos.conseguirColor(fondo);
-                colorTexto = gestorEstilos.conseguirColor(texto);
-                gestorEstilos.añadir(titulo, colorFondo, colorTexto);
+                colorFondo = gestorEstilos.conseguirColorPorRGB(fondo);
+                colorTexto = gestorEstilos.conseguirColorPorRGB(texto);
+                gestorEstilos.añadirEstilo(titulo, colorFondo, colorTexto);
                 actualizarTabla();
             }
         } catch (Exception e) {
@@ -527,7 +570,7 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         try {
             fos = new FileOutputStream(nomArchivo);
             oos = new ObjectOutputStream(fos);
-            oos.writeObject(gestorEstilos.convertirAMatrizObjetos());
+            oos.writeObject(gestorEstilos.convertirListaADTM());
             Ventana1 ventana = new Ventana1();
         } catch (Exception e) {
             System.out.println(e.getMessage());

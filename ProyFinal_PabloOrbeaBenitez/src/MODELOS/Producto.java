@@ -1,23 +1,19 @@
 package MODELOS;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
+import java.io.Serializable;
 
-@NamedQuery(name = "queryEstática2", query = "SELECT p FROM Producto p")
-@Entity
-public class Producto {
 
-    @Id
+public class Producto implements Serializable {
+    
     private String nombre;
-    private int precio;
+    private float precio;
     private int cantidad;
     private byte [] imagen;
 
     public Producto() {
     }
 
-    public Producto(String nombre, int precio, int cantidad,byte[] imagen) {
+    public Producto(String nombre, float precio, int cantidad,byte[] imagen) {
         this.nombre = nombre;
         this.precio = precio;
         this.cantidad = cantidad;
@@ -40,31 +36,12 @@ public class Producto {
         this.nombre = nombre;
     }
 
-    public int getPrecio() {
+    public float getPrecio() {
         return precio;
     }
 
-    public void setPrecio(int precio) {
+    public void setPrecio(float precio) {
         this.precio = precio;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (nombre != null ? nombre.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Producto)) {
-            return false;
-        }
-        Producto other = (Producto) object;
-        if ((this.nombre == null && other.nombre != null) || (this.nombre != null && !this.nombre.equals(other.nombre))) {
-            return false;
-        }
-        return true;
     }
 
     public byte[] getImagen() {

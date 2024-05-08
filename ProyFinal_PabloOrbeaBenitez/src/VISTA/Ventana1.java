@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -38,23 +39,28 @@ public class Ventana1 extends javax.swing.JFrame {
     //Nombres de las columnas
     String[] nomCols = {"NOMBRE", "PRECIO", "CANTIDAD", "IMAGEN"};
     //Array de datos
-    Object[][] datosProductos = null;
-    Object[][] datosEstilos = null;
+    Object[][] datosProductos;
+    Object[][] datosEstilos;
 
     //Objeto tabla interfaz
-    DefaultTableModel listaProductos = new DefaultTableModel(datosProductos, nomCols);
+    DefaultTableModel listaProductos = new DefaultTableModel(datosProductos, nomCols) {
+        @Override
+        public boolean isCellEditable(int fila, int columna) {
+            return false;
+        }
+    };
 
     //Nombres de ficheros
-    String nomArchivo = "productos.xml";
+    String nomArchivo = "productos.dat";
     String ficheroUsrContUrl = "ConexionBD.txt";
     String nomArchivoEstilos = "estilos.dat";
 
     //Ruta imagen a añadir
-    String ruta = "";
+    String ruta;
 
     //Se conecta la base de datos y se inicia la ventana
     public Ventana1() {
-        conectarBD(ficheroUsrContUrl);
+        conectarBDR(ficheroUsrContUrl);
         setTitle("Control inventario tienda");
         initComponents();
         actualizarTabla();
@@ -90,7 +96,7 @@ public class Ventana1 extends javax.swing.JFrame {
         DISEÑO = new javax.swing.JLabel();
         DiseñoComboBox = new javax.swing.JComboBox<>();
         ActualizarEstilos = new javax.swing.JToggleButton();
-        ImgaenButton = new javax.swing.JButton();
+        ImagenButton = new javax.swing.JButton();
         ImagenLabel = new javax.swing.JLabel();
         Panel1 = new javax.swing.JPanel();
         TablaProductos = new javax.swing.JScrollPane();
@@ -208,10 +214,10 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         });
 
-        ImgaenButton.setText("IMAGEN");
-        ImgaenButton.addMouseListener(new java.awt.event.MouseAdapter() {
+        ImagenButton.setText("IMAGEN");
+        ImagenButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                ImgaenButtonMousePressed(evt);
+                ImagenButtonMousePressed(evt);
             }
         });
 
@@ -269,7 +275,7 @@ public class Ventana1 extends javax.swing.JFrame {
                         .addComponent(BotonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ImgaenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ImagenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(FECHA, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -300,7 +306,7 @@ public class Ventana1 extends javax.swing.JFrame {
                     .addComponent(DISEÑO)
                     .addComponent(DiseñoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ActualizarEstilos)
-                    .addComponent(ImgaenButton))
+                    .addComponent(ImagenButton))
                 .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(Panel2Layout.createSequentialGroup()
                         .addGap(170, 170, 170)
@@ -329,17 +335,16 @@ public class Ventana1 extends javax.swing.JFrame {
         TablaProductos.setForeground(new java.awt.Color(255, 255, 255));
 
         jTablaProductos.setBackground(new java.awt.Color(255, 255, 255));
+        jTablaProductos.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jTablaProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "NOMBRE", "PRECIO", "CANTIDAD", "IMAGEN"
             }
         ));
+        jTablaProductos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         jTablaProductos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jTablaProductosMousePressed(evt);
@@ -391,9 +396,10 @@ public class Ventana1 extends javax.swing.JFrame {
     private void BotonGuardarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGuardarMousePressed
         //Se guardan los datos de los productos en el nombre del archivo
         try {
-            gestorBDR.guardarEnFichero(datosProductos, nomArchivo);
+            gestorBDR.guardarProductosEnFichero(datosProductos, nomArchivo);
             JOptionPane.showMessageDialog(this, "Se han guardado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_BotonGuardarMousePressed
@@ -401,36 +407,37 @@ public class Ventana1 extends javax.swing.JFrame {
     private void BotonCargarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCargarMousePressed
         //Se cargan los datos del fichero y se añaden a la base de datos
         try {
-            gestorBDR.vaciar();
-            gestorBDR.cargarDeFichero(nomArchivo);
+            gestorBDR.vaciarBDR();
+            gestorBDR.cargarProductosDeFichero(nomArchivo);
             actualizarTabla();
         } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_BotonCargarMousePressed
 
     private void jTablaProductosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablaProductosMousePressed
-//        int filaSeleccionada = jTablaProductos.getSelectedRow();
-//        String nombre = (String) datosProductos[filaSeleccionada][0];
-//        String precio = datosProductos[filaSeleccionada][1].toString();
-//        String cantidad = datosProductos[filaSeleccionada][2].toString();
-//        JLabel imagenLabel = (JLabel) datosProductos[filaSeleccionada][3];
-//
-//        TextFieldNombre.setText(nombre);
-//        TextFieldCantidad.setText(cantidad);
-//        TextFieldPrecio.setText(precio);
-//
-//        ImageIcon imagenIcono = (ImageIcon) imagenLabel.getIcon();
-//        ImagenLabel.setIcon(imagenIcono);
         int filaSeleccionada = jTablaProductos.getSelectedRow();
         String nombre = (String) datosProductos[filaSeleccionada][0];
-        String precio = (String) datosProductos[filaSeleccionada][1].toString();
+        String precio = (String) datosProductos[filaSeleccionada][1].toString().replaceAll("[^\\d.]", "");
         String cantidad = (String) datosProductos[filaSeleccionada][2].toString();
-
         TextFieldNombre.setText(nombre);
         TextFieldCantidad.setText(cantidad);
         TextFieldPrecio.setText(precio);
+
+        try {
+            JLabel imagenLabel = (JLabel) datosProductos[filaSeleccionada][3];
+            ImageIcon imagenIcono = (ImageIcon) imagenLabel.getIcon();
+            Image imagenOriginal = imagenIcono.getImage();
+            Image imagenEscalada = imagenOriginal.getScaledInstance(ImagenLabel.getWidth(), ImagenLabel.getHeight(), Image.SCALE_SMOOTH);
+            ImageIcon imagenEscaladaIcono = new ImageIcon(imagenEscalada);
+            ImagenLabel.setIcon(imagenEscaladaIcono);
+        } catch (Exception e) {
+            ImagenLabel.setIcon(null);
+            ImagenLabel.setText("NO HAY IMAGEN DISPONIBLE");
+        }
+
 
     }//GEN-LAST:event_jTablaProductosMousePressed
 
@@ -440,7 +447,7 @@ public class Ventana1 extends javax.swing.JFrame {
         int filaSeleccionado = jTablaProductos.getSelectedRow();
         if (filaSeleccionado >= 0) {
             String nombre = (String) datosProductos[filaSeleccionado][0];
-            gestorBDR.borrarNombre(nombre);
+            gestorBDR.borrarProductoPorNombre(nombre);
             actualizarTabla();
         } else {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
@@ -452,64 +459,107 @@ public class Ventana1 extends javax.swing.JFrame {
         //Se añade un producto con los datos de los textfields y se comprueban los datos
 
         String nombre = TextFieldNombre.getText();
-        int precio = 0;
+        float precio = 0;
         int cantidad = 0;
+        byte img[] = conseguirImagenPorRuta(ruta);
         boolean precioCorrecto = false;
         boolean cantidadCorrecto = false;
 
         try {
-            precio = TextFieldPrecio.getText().isEmpty() ? 0 : Integer.parseInt(TextFieldPrecio.getText());
-            precioCorrecto = true;
+            precio = Float.parseFloat(TextFieldPrecio.getText());
+            if (precio > 0) {
+                precioCorrecto = true;
+            }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Debes introducir un numero entero", "Precio", JOptionPane.WARNING_MESSAGE);
         }
         try {
-            cantidad = TextFieldCantidad.getText().isEmpty() ? 0 : Integer.parseInt(TextFieldCantidad.getText());
-            cantidadCorrecto = true;
+            cantidad = Integer.parseInt(TextFieldCantidad.getText());
+            if (cantidad > 0) {
+                cantidadCorrecto = true;
+            }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Debes introducir un numero entero", "Cantidad", JOptionPane.WARNING_MESSAGE);
         }
 
         if (precioCorrecto && cantidadCorrecto) {
 
-            if (!TextFieldNombre.getText().trim().isEmpty() && !ruta.trim().isEmpty()) {
+            if (!nombre.isEmpty()) {
                 try {
-                    Producto producto = new Producto(nombre, precio, cantidad, gestorBDR.getImagen(ruta));
-                    gestorBDR.añadir(producto);
+                    Producto producto = new Producto();
+                    producto.setNombre(nombre);
+                    producto.setPrecio(precio);
+                    producto.setCantidad(cantidad);
+                    if (img == null) {
+                        producto.setImagen(null);
+                    } else {
+                        producto.setImagen(conseguirImagenPorRuta(ruta));
+                    }
+                    gestorBDR.añadirProducto(producto);
                     actualizarTabla();
                     vaciarTextField();
                 } catch (IOException ex) {
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "El campo del nombre no puede estar vacío", "No añadido", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No puede haber ningun campo vacio", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
         }
     }//GEN-LAST:event_BotonAñadirMousePressed
 
     private void BotonActualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonActualizarMousePressed
         //Se muestran los datos de el producto seleccionado en los texfields y se cogen los nuevos datos actualizando el producto 
-
+        Producto producto = new Producto();
         int filaSeleccionada = jTablaProductos.getSelectedRow();
-
         if (filaSeleccionada >= 0) {
             String nombreBorrar = (String) datosProductos[filaSeleccionada][0];
+
             String nombre = TextFieldNombre.getText();
-            int precio = TextFieldPrecio.getText().isEmpty() ? 0 : Integer.parseInt(TextFieldPrecio.getText());
-            int cantidad = TextFieldCantidad.getText().isEmpty() ? 0 : Integer.parseInt(TextFieldCantidad.getText());
+            byte img[] = gestorBDR.jLbalelABytes(ImagenLabel);
+            float precio = 0;
+            int cantidad = 0;
+            boolean precioCorrecto = false;
+            boolean cantidadCorrecto = false;
 
-            if (!nombre.isEmpty()) {
-
-                try {
-                    gestorBDR.borrarNombre(nombreBorrar);
-                    actualizarTabla();
-                    Producto producto = new Producto(nombre, precio, cantidad, gestorBDR.getImagen(ruta));
-                    gestorBDR.añadir(producto);
-                    actualizarTabla();
-                    vaciarTextField();
-                } catch (IOException ex) {
+            try {
+                precio = Float.parseFloat(TextFieldPrecio.getText());
+                if (precio < 0) {
+                    precioCorrecto = false;
                 }
-            } else {
-                JOptionPane.showMessageDialog(this, "El campo del nombre no puede estar vacío", "No añadido", JOptionPane.WARNING_MESSAGE);
+                precioCorrecto = true;
+            } catch (NumberFormatException e) {
+            }
+            try {
+                cantidad = Integer.parseInt(TextFieldCantidad.getText());
+                if (cantidad < 0) {
+                    cantidadCorrecto = false;
+                }
+                cantidadCorrecto = true;
+            } catch (NumberFormatException e) {
+            }
+            if (precioCorrecto && cantidadCorrecto) {
+
+                if (!nombre.isEmpty()) {
+                    gestorBDR.borrarProductoPorNombre(nombreBorrar);
+                    actualizarTabla();
+                    producto.setNombre(nombre);
+                    producto.setPrecio(precio);
+                    producto.setCantidad(cantidad);
+                    if (img == null) {
+                        producto.setImagen(null);
+                    } else {
+                        producto.setImagen(img);
+                    }
+                    try {
+                        gestorBDR.añadirProducto(producto);
+                        actualizarTabla();
+                        vaciarTextField();
+                    } catch (IOException ex) {
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(this, "Debes rellenar todos los campos", "No añadido", JOptionPane.WARNING_MESSAGE);
+                }
+
             }
         } else {
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun producto", "Message", JOptionPane.INFORMATION_MESSAGE);
@@ -531,10 +581,10 @@ public class Ventana1 extends javax.swing.JFrame {
 
     private void ActualizarEstilosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ActualizarEstilosMousePressed
         //Boton que actualiza los estilos disponibles
-        actualizarOpciones();
+        actualizarOpcionesEstilos();
     }//GEN-LAST:event_ActualizarEstilosMousePressed
 
-    private void ImgaenButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ImgaenButtonMousePressed
+    private void ImagenButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ImagenButtonMousePressed
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("JPG, PNG & GIF", "jpg", "png", "gif");
         fileChooser.setFileFilter(extensionFilter);
@@ -545,7 +595,8 @@ public class Ventana1 extends javax.swing.JFrame {
             ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(ImagenLabel.getWidth(), ImagenLabel.getHeight(), 0));
             ImagenLabel.setIcon(mIcono);
         }
-    }//GEN-LAST:event_ImgaenButtonMousePressed
+
+    }//GEN-LAST:event_ImagenButtonMousePressed
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -591,8 +642,8 @@ public class Ventana1 extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> DiseñoComboBox;
     private javax.swing.JLabel FECHA;
     private javax.swing.JLabel HORA;
+    private javax.swing.JButton ImagenButton;
     private javax.swing.JLabel ImagenLabel;
-    private javax.swing.JButton ImgaenButton;
     private javax.swing.JLabel Nombre;
     private javax.swing.JLabel ORDENAR;
     private javax.swing.JComboBox<String> OrdenarPor;
@@ -608,29 +659,30 @@ public class Ventana1 extends javax.swing.JFrame {
 
     //Metodo actualizar la tabla con los valores de el array[][]
     private void actualizarTabla() {
+        jTablaProductos.setDefaultRenderer(Object.class, new ImagenTabla());
 
+        ArrayList productos = gestorBDR.convertirBDRADTM();
+        Producto producto;
+        datosProductos = new Object[productos.size()][4];
 
-      jTablaProductos.setDefaultRenderer(Object.class, new ImagenTabla());
+        if (productos != null) {
+            for (int i = 0; i < productos.size(); i++) {
+                producto = (Producto) productos.get(i);
+                datosProductos[i][0] = producto.getNombre();
+                datosProductos[i][1] = producto.getPrecio() + "€";
+                datosProductos[i][2] = producto.getCantidad();
 
-        datosProductos = gestorBDR.convertir();
-        int i = 0;
-        for (Object[] producto : datosProductos) {
-            datosProductos[i][0]=producto[0];
-            datosProductos[i][1]=producto[1];
-            datosProductos[i][2]=producto[2];
-            byte img [] = gestorBDR.getByte();
-            try {
-                BufferedImage bufferedImage = null;
-                InputStream inputStream = new ByteArrayInputStream(img);
-                bufferedImage = ImageIO.read(inputStream);
-                ImageIcon mIcono = new ImageIcon(bufferedImage.getScaledInstance(60, 60, 0));
-                datosProductos[i][3] = new JLabel(mIcono);
-            } catch (Exception e) {
-                e.printStackTrace();
-                datosProductos[i][3] = new JLabel("No imagen");
+                try {
+                    byte[] imagen = producto.getImagen();
+                    BufferedImage bufferedImage = null;
+                    InputStream inputStream = new ByteArrayInputStream(imagen);
+                    bufferedImage = ImageIO.read(inputStream);
+                    ImageIcon mIcono = new ImageIcon(bufferedImage.getScaledInstance(100, 100, 0));
+                    datosProductos[i][3] = new JLabel(mIcono);
+                } catch (Exception e) {
+                    datosProductos[i][3] = new JLabel("No imagen");
+                }
             }
-
-            i++;
         }
 
         listaProductos = new DefaultTableModel(datosProductos, nomCols) {
@@ -640,13 +692,18 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         };
 
-        jTablaProductos.setModel(listaProductos);  
+        jTablaProductos.setModel(listaProductos);
+        jTablaProductos.setRowHeight(100);
+        jTablaProductos.getColumnModel().getColumn(0).setPreferredWidth(100);
+        jTablaProductos.getColumnModel().getColumn(1).setPreferredWidth(100);
+        jTablaProductos.getColumnModel().getColumn(2).setPreferredWidth(100);
+        jTablaProductos.getColumnModel().getColumn(3).setPreferredWidth(100);
 
     }
 
     //se actualizan los datos de la tabla con los datos de los productos 
     //Este metodo se usa solamente para ordenar los productos
-    private void ordenarTabla() {
+    private void actualizarTablaOrdenada() {
         listaProductos.setDataVector(datosProductos, nomCols);
     }
 
@@ -655,6 +712,9 @@ public class Ventana1 extends javax.swing.JFrame {
         TextFieldCantidad.setText(null);
         TextFieldNombre.setText(null);
         TextFieldPrecio.setText(null);
+        ImagenLabel.setText(null);
+        ImagenLabel.setIcon(null);
+        ruta = null;
     }
 
     //Metodo para activar o desactivar los botones de las ventanas de administrador
@@ -691,7 +751,6 @@ public class Ventana1 extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 opcion = (String) OrdenarPor.getSelectedItem();
-                System.out.println(opcion);
                 switch (opcion.toUpperCase()) {
                     case "NOMBRE":
                         datosProductos = gestorBDR.ordenarNombre(datosProductos);
@@ -705,7 +764,7 @@ public class Ventana1 extends javax.swing.JFrame {
                     default:
                         throw new AssertionError();
                 }
-                ordenarTabla();
+                actualizarTablaOrdenada();
             }
         });
     }
@@ -715,22 +774,22 @@ public class Ventana1 extends javax.swing.JFrame {
         DiseñoComboBox.addActionListener(new ActionListener() {
             String opcion = null;
             JPanel paneles[] = {Panel1, Panel2};
-            JLabel textos[] = {Nombre, Precio, Cantidad, ORDENAR, DISEÑO};
+            JLabel textos[] = {Nombre, Precio, Cantidad, ORDENAR, DISEÑO, FECHA};
             Color color;
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 opcion = (String) DiseñoComboBox.getSelectedItem();
-                color = gestorEstilos.buscarColor(opcion, 1, nomArchivoEstilos, datosEstilos);
+                color = gestorEstilos.buscarColorEnFichero(opcion, 1, nomArchivoEstilos, datosEstilos);
                 gestorEstilos.cambiarColorFondo(paneles, color);
-                color = gestorEstilos.buscarColor(opcion, 2, nomArchivoEstilos, datosEstilos);
+                color = gestorEstilos.buscarColorEnFichero(opcion, 2, nomArchivoEstilos, datosEstilos);
                 gestorEstilos.cambiarColorTexto(textos, color);
             }
         });
     }
 
     //Metodo que refresca las opciones del deplegable con los datos de el fichero de estilos
-    private void actualizarOpciones() {
+    private void actualizarOpcionesEstilos() {
         FileInputStream fis;
         ObjectInputStream ois;
         DiseñoComboBox.removeAllItems();
@@ -744,12 +803,11 @@ public class Ventana1 extends javax.swing.JFrame {
                 DiseñoComboBox.addItem(titulo);
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
     }
 
     //Metodo de conectar con la base de datos con los datos de un fichero 
-    private void conectarBD(String fichero) {
+    private void conectarBDR(String fichero) {
         String url, usuario, clave;
 
         List<String> datosFichero = new ArrayList<>();
@@ -765,14 +823,30 @@ public class Ventana1 extends javax.swing.JFrame {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
         }
 
         usuario = datosFichero.get(0);
         clave = datosFichero.get(1);
         url = datosFichero.get(2);
 
-        gestorBDR.conectar(url, usuario, clave);
+        gestorBDR.conectarBDR(url, usuario, clave);
 
     }
+
+    public byte[] conseguirImagenPorRuta(String Ruta) {
+        if (Ruta != null) {
+            File imagen = new File(Ruta);
+            try {
+                byte[] icono = new byte[(int) imagen.length()];
+                InputStream input = new FileInputStream(imagen);
+                input.read(icono);
+                return icono;
+            } catch (Exception ex) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
 }
