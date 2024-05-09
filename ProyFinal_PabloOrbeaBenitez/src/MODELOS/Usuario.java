@@ -16,7 +16,12 @@ public class Usuario implements Serializable {
     public enum Rol {
         ADMINISTRADOR, USUARIO
     };
-    private int contraseña;
+
+    public Usuario(String nombre, String contraseña) {
+        this.nombre = nombre;
+        this.contraseña = contraseña;
+    }
+    private String contraseña;
     private Rol rol;
     private boolean activo;
 
@@ -36,11 +41,11 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
     }
 
-    public int getContraseña() {
+    public String getContraseña() {
         return contraseña;
     }
 
-    public void setContraseña(int contraseña) {
+    public void setContraseña(String contraseña) {
         this.contraseña = contraseña;
     }
 
@@ -71,7 +76,7 @@ public class Usuario implements Serializable {
         return true;
     }
 
-    public Usuario(String nombre, int contraseña, Rol rol, boolean activo) {
+    public Usuario(String nombre, String contraseña, Rol rol, boolean activo) {
         this.nombre = nombre;
         this.contraseña = contraseña;
         this.rol = rol;

@@ -4,12 +4,9 @@ import CONTROLADORES.GestorEstilosGUI;
 import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -59,11 +56,11 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         VaciarButton = new javax.swing.JButton();
         ActualizarButton = new javax.swing.JButton();
         AñadirButton = new javax.swing.JButton();
+        GUARDAR = new javax.swing.JButton();
+        CARGAR = new javax.swing.JButton();
         Tabla = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablaEstilos = new javax.swing.JTable();
-        GUARDAR = new javax.swing.JButton();
-        CARGAR = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 0, 0));
 
@@ -227,34 +224,58 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             }
         });
 
+        GUARDAR.setText("GUARDAR");
+        GUARDAR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                GUARDARMousePressed(evt);
+            }
+        });
+
+        CARGAR.setText("CARGAR");
+        CARGAR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                CARGARMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout BotonesBorrarLayout = new javax.swing.GroupLayout(BotonesBorrar);
         BotonesBorrar.setLayout(BotonesBorrarLayout);
         BotonesBorrarLayout.setHorizontalGroup(
             BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(BotonesBorrarLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(VaciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(BorrarSeleccionadoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(AñadirButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BotonesBorrarLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(BotonesBorrarLayout.createSequentialGroup()
+                        .addComponent(GUARDAR)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(CARGAR))
+                    .addGroup(BotonesBorrarLayout.createSequentialGroup()
+                        .addComponent(VaciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BorrarSeleccionadoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(AñadirButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ActualizarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CargarEjemplosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         BotonesBorrarLayout.setVerticalGroup(
             BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BotonesBorrarLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(VaciarButton)
                     .addComponent(ActualizarButton)
                     .addComponent(AñadirButton)
                     .addComponent(BorrarSeleccionadoButton)
                     .addComponent(CargarEjemplosButton))
-                .addGap(52, 52, 52))
+                .addGap(28, 28, 28)
+                .addGroup(BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(GUARDAR)
+                    .addComponent(CARGAR))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         Tabla.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -315,23 +336,10 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
                     .addGroup(PanelPrincipalLayout.createSequentialGroup()
                         .addComponent(Datos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BotonesBorrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(BotonesBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-
-        GUARDAR.setText("GUARDAR");
-        GUARDAR.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                GUARDARMousePressed(evt);
-            }
-        });
-
-        CARGAR.setText("CARGAR");
-        CARGAR.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                CARGARMousePressed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -339,24 +347,13 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(GUARDAR)
-                        .addGap(46, 46, 46)
-                        .addComponent(CARGAR))
-                    .addComponent(PanelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(PanelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(PanelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(GUARDAR)
-                    .addComponent(CARGAR))
-                .addGap(0, 88, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(PanelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -469,14 +466,21 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
     }//GEN-LAST:event_ColoresTextoButtonMousePressed
 
     private void GUARDARMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_GUARDARMousePressed
-        gestorEstilos.guardarEstilosEnFicheroXML(datos, nomArchivoxml);
-        actualizarTabla();
+        if (gestorEstilos.guardarEstilosEnFicheroXML(datos, nomArchivoxml)) {
+            JOptionPane.showMessageDialog(this, "Se han guardado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+            actualizarTabla();
+        } else {
+        }
 
     }//GEN-LAST:event_GUARDARMousePressed
 
     private void CARGARMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CARGARMousePressed
-        gestorEstilos.cargarEstilosDeFicheroXML(nomArchivo);
-        actualizarTabla();
+        if (gestorEstilos.cargarEstilosDeFicheroXML(nomArchivoxml)) {
+            JOptionPane.showMessageDialog(this, "Se han cargado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+            actualizarTabla();
+        } else {
+            JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
     }//GEN-LAST:event_CARGARMousePressed
 
@@ -536,8 +540,8 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
 
     private void vaciarTextField() {
         TituloTextField.setText("");
-        PanelPrevisualizacion.setBackground(Color.WHITE);
-TextoPrevisualizacion.setForeground(Color.BLACK);
+        PanelPrevisualizacion.setBackground(null);
+        TextoPrevisualizacion.setForeground(null);
     }
 
     private void cargar() {
@@ -560,7 +564,6 @@ TextoPrevisualizacion.setForeground(Color.BLACK);
                 actualizarTabla();
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
     }
 
@@ -573,7 +576,6 @@ TextoPrevisualizacion.setForeground(Color.BLACK);
             oos.writeObject(gestorEstilos.convertirListaADTM());
             Ventana1 ventana = new Ventana1();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
     }
 

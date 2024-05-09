@@ -7,11 +7,14 @@ import java.beans.XMLEncoder;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Date;
 import java.util.TreeSet;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 
 public class GestorEstilosGUI {
 
@@ -42,19 +45,15 @@ public class GestorEstilosGUI {
     }
 
     public void cambiarColorFondo(JPanel[] paneles, Color color) {
-
         for (JPanel panel : paneles) {
             panel.setBackground(color);
         }
-
     }
 
     public void cambiarColorTexto(JLabel[] textos, Color color) {
-
         for (JLabel texto : textos) {
             texto.setForeground(color);
         }
-
     }
 
     public Color conseguirColorPorRGB(String rgbColor) {
@@ -69,29 +68,31 @@ public class GestorEstilosGUI {
     }
 
     public Color buscarColorEnFichero(String titulo, int colorBuscar, String nomArchivoEstilos, Object[][] datosEstilos) {
-        int r, g, b;
-        Color color = null;
-        FileInputStream fis;
-        ObjectInputStream ois;
-        try {
-            fis = new FileInputStream(nomArchivoEstilos);
-            ois = new ObjectInputStream(fis);
-            datosEstilos = (Object[][]) ois.readObject();
-            for (Object[] dato : datosEstilos) {
-                String tituloArchivo = (String) dato[0];
-                if (titulo.equalsIgnoreCase(tituloArchivo)) {
-                    String rgbColor = (String) dato[colorBuscar];
-                    String[] rgb = rgbColor.replaceAll("[^0-9,]", "").split(",");
-                    r = Integer.parseInt(rgb[0]);
-                    g = Integer.parseInt(rgb[1]);
-                    b = Integer.parseInt(rgb[2]);
-                    color = new Color(r, g, b);
+        if (titulo != null) {
+            int r, g, b;
+            Color color = null;
+            FileInputStream fis;
+            ObjectInputStream ois;
+            try {
+                fis = new FileInputStream(nomArchivoEstilos);
+                ois = new ObjectInputStream(fis);
+                datosEstilos = (Object[][]) ois.readObject();
+                for (Object[] dato : datosEstilos) {
+                    String tituloArchivo = (String) dato[0];
+                    if (titulo.equalsIgnoreCase(tituloArchivo)) {
+                        String rgbColor = (String) dato[colorBuscar];
+                        String[] rgb = rgbColor.replaceAll("[^0-9,]", "").split(",");
+                        r = Integer.parseInt(rgb[0]);
+                        g = Integer.parseInt(rgb[1]);
+                        b = Integer.parseInt(rgb[2]);
+                        color = new Color(r, g, b);
+                    }
                 }
+                return color;
+            } catch (IOException | ClassNotFoundException | NumberFormatException e) {
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
-        return color;
+        return null;
     }
 
     public Object[][] convertirListaADTM() {
@@ -107,11 +108,11 @@ public class GestorEstilosGUI {
         return matrizObjeto;
     }
 
-    public void cargarEstilosDeFicheroXML(String nomArchivo) {
+    public boolean cargarEstilosDeFicheroXML(String nomArchivo) {
 
         FileInputStream fis;
         XMLDecoder xmld;
-        Object[][] datos = null;
+        Object[][] datos;
         try {
             fis = new FileInputStream(nomArchivo);
             xmld = new XMLDecoder(fis);
@@ -123,13 +124,14 @@ public class GestorEstilosGUI {
                 Color colorTexto = conseguirColorPorRGB((String) dato[2]);
                 añadirEstilo(titulo, colorFondo, colorTexto);
             }
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-
     }
 
-    public void guardarEstilosEnFicheroXML(Object[][] datos, String nomArchivo) {
+    public boolean guardarEstilosEnFicheroXML(Object[][] datos, String nomArchivo) {
 
         FileOutputStream fos;
         XMLEncoder xmle;
@@ -139,12 +141,12 @@ public class GestorEstilosGUI {
             xmle = new XMLEncoder(new BufferedOutputStream(fos));
             xmle.writeObject(datos);
             xmle.close();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
 
     }
 
-    
-    
 }

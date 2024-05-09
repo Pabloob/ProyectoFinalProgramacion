@@ -14,9 +14,8 @@ public class GestorUsuariosBDO implements Serializable {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/ProyFinal.odb");
     EntityManager em = emf.createEntityManager();
 
-    public boolean comprobarInicioSesion(String nomUsuario, int contraseña) {
+    public boolean comprobarInicioSesion(String nomUsuario, String contraseña) {
         boolean inicioSesion = false;
-
         Object[][] usuarioContraseña;
         try {
             TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) FROM Usuario u", Long.class);
@@ -29,16 +28,11 @@ public class GestorUsuariosBDO implements Serializable {
 
             int indice = 0;
             for (Usuario usuario : usuarios) {
-                usuarioContraseña[indice][0] = usuario.getNombre();
-                usuarioContraseña[indice][1] = usuario.getContraseña();
-                indice++;
-            }
-
-            for (Object[] usuario : usuarioContraseña) {
-                if (usuario[0].equals(nomUsuario) && usuario[1].equals(contraseña)) {
-                    inicioSesion = true;
+                if (usuario.getNombre().equals(nomUsuario) && usuario.getContraseña().equals(contraseña)) {
+                                       inicioSesion = true; 
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,6 +57,7 @@ public class GestorUsuariosBDO implements Serializable {
             for (Usuario usuario : usuarios) {
                 usuarioRol[indice][0] = usuario.getNombre();
                 usuarioRol[indice][1] = usuario.getRol();
+                
                 indice++;
             }
             for (Object[] usuario : usuarioRol) {
@@ -77,14 +72,15 @@ public class GestorUsuariosBDO implements Serializable {
         return administrador;
     }
 
-    public void añadirUsuario(String nombre, int contraseña, Usuario.Rol rol, boolean activo) {
+    public boolean añadirUsuario(String nombre, String contraseña, Usuario.Rol rol, boolean activo) {
         Usuario u1 = new Usuario(nombre, contraseña, rol, activo);
         try {
             em.getTransaction().begin();
             em.persist(u1);
             em.getTransaction().commit();
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
     }
 
@@ -118,7 +114,7 @@ public class GestorUsuariosBDO implements Serializable {
     }
 
     public void cargarUsuario() {
-        Usuario u1 = new Usuario("Pablo", 1234, Usuario.Rol.ADMINISTRADOR, true);
+        Usuario u1 = new Usuario("Pablo", "1234", Usuario.Rol.ADMINISTRADOR, true);
         em.getTransaction().begin();
         em.persist(u1);
         em.getTransaction().commit();
@@ -152,6 +148,14 @@ public class GestorUsuariosBDO implements Serializable {
 
         return datos;
 
+    }
+
+    public String convertirContraseña(char caracteresContraseña[]) {
+        String contraseña = "";
+        for (char c : caracteresContraseña) {
+            contraseña = contraseña+ c;
+        }
+        return contraseña.trim();
     }
 
 }

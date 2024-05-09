@@ -42,7 +42,7 @@ public class GestorBDR {
         }
     }
 
-    public void añadirProducto(Producto producto) throws FileNotFoundException, IOException {
+    public boolean añadirProducto(Producto producto) {
         PreparedStatement preparedStatement = null;
         String SQL_AGREGAR = "INSERT INTO productos (NOMBRE, PRECIO, CANTIDAD, IMAGEN) VALUES (?, ?, ?, ?)";
         try {
@@ -57,8 +57,11 @@ public class GestorBDR {
                 preparedStatement.setNull(4, 0);
             }
 
-            preparedStatement.executeUpdate();
+            int filasAfectadas = preparedStatement.executeUpdate();
+            return (filasAfectadas > 0);
         } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
         }
     }
 
@@ -70,24 +73,6 @@ public class GestorBDR {
             return filasAfectadas > 0;
         } catch (SQLException e) {
             return false;
-        }
-    }
-
-    public void vaciarBDR() {
-        Statement sentencia;
-        String sql;
-        try {
-            sentencia = conexion.createStatement();
-
-            sql = "DELETE FROM productos;";
-
-            sentencia.executeUpdate(sql);
-
-        } catch (SQLException e) {
-            e.getMessage();
-            e.getSQLState();
-            e.getErrorCode();
-        } catch (Exception e) {
         }
     }
 
@@ -115,18 +100,18 @@ public class GestorBDR {
         return datos;
     }
 
-    public void guardarProductosEnFichero(Object[][] datos, String nomArchivo) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(nomArchivo);
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+    public boolean guardarProductosEnFichero(Object[][] datos, String nomArchivo) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(nomArchivo); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(datos);
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void cargarProductosDeFichero(String nomArchivo) throws ClassNotFoundException, IOException {
-        try (FileInputStream fis = new FileInputStream(nomArchivo);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
+    public boolean cargarProductosDeFichero(String nomArchivo) throws ClassNotFoundException, IOException {
+        try (FileInputStream fis = new FileInputStream(nomArchivo); ObjectInputStream ois = new ObjectInputStream(fis)) {
             Object[][] datos = (Object[][]) ois.readObject();
             for (Object[] dato : datos) {
                 Producto producto = new Producto();
@@ -136,13 +121,13 @@ public class GestorBDR {
                 producto.setImagen(jLbalelABytes((JLabel) dato[3]));
                 añadirProducto(producto);
             }
+            return true;
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
-    
-    
-    
+
     public byte[] jLbalelABytes(JLabel jlbl) {
 
         try {

@@ -11,7 +11,7 @@ public class InicioSesion {
         boolean inicioCorrecto = false;
         do {
             String nombre = LIBRERIAS.Leer.leerCadena("Introduce el nombre: ", 20);
-            int contraseña = LIBRERIAS.Leer.leerNumero("Introduce la contraseña: ");
+            String contraseña = LIBRERIAS.Leer.leerCadena("Introduce la contraseña: ",20);
             
             if (gestor.comprobarInicioSesion(nombre, contraseña)) {
                 Ventana1 ventana = new Ventana1();

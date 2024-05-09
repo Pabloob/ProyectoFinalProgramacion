@@ -2,6 +2,7 @@ package VISTA;
 
 import CONTROLADORES.GestorBDR;
 import CONTROLADORES.GestorEstilosGUI;
+import LIBRERIAS.MisUtiles;
 import MODELOS.Producto;
 import java.awt.Color;
 import java.awt.Image;
@@ -69,6 +70,11 @@ public class Ventana1 extends javax.swing.JFrame {
         eventoOrdenar();
         eventoEstilos();
         reloj.start();
+        jTablaProductos.setRowHeight(100);
+        jTablaProductos.getColumnModel().getColumn(0).setPreferredWidth(100);
+        jTablaProductos.getColumnModel().getColumn(1).setPreferredWidth(100);
+        jTablaProductos.getColumnModel().getColumn(2).setPreferredWidth(100);
+        jTablaProductos.getColumnModel().getColumn(3).setPreferredWidth(100);
     }
 
     @SuppressWarnings("unchecked")
@@ -221,6 +227,12 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         });
 
+        ImagenLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ImagenLabelMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout Panel2Layout = new javax.swing.GroupLayout(Panel2);
         Panel2.setLayout(Panel2Layout);
         Panel2Layout.setHorizontalGroup(
@@ -345,6 +357,7 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         ));
         jTablaProductos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        jTablaProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jTablaProductos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jTablaProductosMousePressed(evt);
@@ -394,12 +407,15 @@ public class Ventana1 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BotonGuardarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGuardarMousePressed
-        //Se guardan los datos de los productos en el nombre del archivo
         try {
-            gestorBDR.guardarProductosEnFichero(datosProductos, nomArchivo);
-            JOptionPane.showMessageDialog(this, "Se han guardado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException e) {
-            e.printStackTrace();
+            //Se guardan los datos de los productos en el nombre del archivo
+            if (gestorBDR.guardarProductosEnFichero(datosProductos, nomArchivo)) {
+                JOptionPane.showMessageDialog(this, "Se han guardado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_BotonGuardarMousePressed
@@ -407,13 +423,19 @@ public class Ventana1 extends javax.swing.JFrame {
     private void BotonCargarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCargarMousePressed
         //Se cargan los datos del fichero y se añaden a la base de datos
         try {
-            gestorBDR.vaciarBDR();
-            gestorBDR.cargarProductosDeFichero(nomArchivo);
-            actualizarTabla();
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
+            //Se guardan los datos de los productos en el nombre del archivo
+            if (gestorBDR.cargarProductosDeFichero(nomArchivo)) {
+                JOptionPane.showMessageDialog(this, "Se han cargado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
 
     }//GEN-LAST:event_BotonCargarMousePressed
 
@@ -447,8 +469,11 @@ public class Ventana1 extends javax.swing.JFrame {
         int filaSeleccionado = jTablaProductos.getSelectedRow();
         if (filaSeleccionado >= 0) {
             String nombre = (String) datosProductos[filaSeleccionado][0];
-            gestorBDR.borrarProductoPorNombre(nombre);
-            actualizarTabla();
+            if (gestorBDR.borrarProductoPorNombre(nombre)) {
+                actualizarTabla();
+            } else {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Message", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -459,107 +484,77 @@ public class Ventana1 extends javax.swing.JFrame {
         //Se añade un producto con los datos de los textfields y se comprueban los datos
 
         String nombre = TextFieldNombre.getText();
-        float precio = 0;
-        int cantidad = 0;
+        float precio = MisUtiles.comprobarFloatPositivo(TextFieldPrecio.getText());
+        int cantidad = MisUtiles.comprobarIntPositivo(TextFieldCantidad.getText());
         byte img[] = conseguirImagenPorRuta(ruta);
-        boolean precioCorrecto = false;
-        boolean cantidadCorrecto = false;
 
-        try {
-            precio = Float.parseFloat(TextFieldPrecio.getText());
-            if (precio > 0) {
-                precioCorrecto = true;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Debes introducir un numero entero", "Precio", JOptionPane.WARNING_MESSAGE);
-        }
-        try {
-            cantidad = Integer.parseInt(TextFieldCantidad.getText());
-            if (cantidad > 0) {
-                cantidadCorrecto = true;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Debes introducir un numero entero", "Cantidad", JOptionPane.WARNING_MESSAGE);
-        }
-
-        if (precioCorrecto && cantidadCorrecto) {
-
+        if (precio > 0 && cantidad > 0) {
             if (!nombre.isEmpty()) {
-                try {
-                    Producto producto = new Producto();
-                    producto.setNombre(nombre);
-                    producto.setPrecio(precio);
-                    producto.setCantidad(cantidad);
-                    if (img == null) {
-                        producto.setImagen(null);
-                    } else {
-                        producto.setImagen(conseguirImagenPorRuta(ruta));
-                    }
-                    gestorBDR.añadirProducto(producto);
+                Producto producto = new Producto();
+                producto.setNombre(nombre);
+                producto.setPrecio(precio);
+                producto.setCantidad(cantidad);
+                if (img == null) {
+                    producto.setImagen(null);
+                } else {
+                    producto.setImagen(conseguirImagenPorRuta(ruta));
+                }
+                if (gestorBDR.añadirProducto(producto)) {
                     actualizarTabla();
                     vaciarTextField();
-                } catch (IOException ex) {
+                } else {
+                    JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Message", JOptionPane.INFORMATION_MESSAGE);
                 }
+
             } else {
                 JOptionPane.showMessageDialog(this, "No puede haber ningun campo vacio", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Los numeros deben ser positivos y validos", "No añadido", JOptionPane.WARNING_MESSAGE);
         }
+
     }//GEN-LAST:event_BotonAñadirMousePressed
 
     private void BotonActualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonActualizarMousePressed
         //Se muestran los datos de el producto seleccionado en los texfields y se cogen los nuevos datos actualizando el producto 
-        Producto producto = new Producto();
         int filaSeleccionada = jTablaProductos.getSelectedRow();
         if (filaSeleccionada >= 0) {
+            Producto producto = new Producto();
             String nombreBorrar = (String) datosProductos[filaSeleccionada][0];
 
             String nombre = TextFieldNombre.getText();
             byte img[] = gestorBDR.jLbalelABytes(ImagenLabel);
-            float precio = 0;
-            int cantidad = 0;
-            boolean precioCorrecto = false;
-            boolean cantidadCorrecto = false;
+            float precio = MisUtiles.comprobarFloatPositivo(TextFieldPrecio.getText());
+            int cantidad = MisUtiles.comprobarIntPositivo(TextFieldCantidad.getText());
 
-            try {
-                precio = Float.parseFloat(TextFieldPrecio.getText());
-                if (precio < 0) {
-                    precioCorrecto = false;
-                }
-                precioCorrecto = true;
-            } catch (NumberFormatException e) {
-            }
-            try {
-                cantidad = Integer.parseInt(TextFieldCantidad.getText());
-                if (cantidad < 0) {
-                    cantidadCorrecto = false;
-                }
-                cantidadCorrecto = true;
-            } catch (NumberFormatException e) {
-            }
-            if (precioCorrecto && cantidadCorrecto) {
+            if (precio > 0 && cantidad > 0) {
 
                 if (!nombre.isEmpty()) {
-                    gestorBDR.borrarProductoPorNombre(nombreBorrar);
-                    actualizarTabla();
-                    producto.setNombre(nombre);
-                    producto.setPrecio(precio);
-                    producto.setCantidad(cantidad);
-                    if (img == null) {
-                        producto.setImagen(null);
-                    } else {
-                        producto.setImagen(img);
-                    }
-                    try {
-                        gestorBDR.añadirProducto(producto);
+                    if (gestorBDR.borrarProductoPorNombre(nombreBorrar)) {
                         actualizarTabla();
-                        vaciarTextField();
-                    } catch (IOException ex) {
+                        producto.setNombre(nombre);
+                        producto.setPrecio(precio);
+                        producto.setCantidad(cantidad);
+                        if (img == null) {
+                            producto.setImagen(null);
+                        } else {
+                            producto.setImagen(img);
+                        }
+                        if (gestorBDR.añadirProducto(producto)) {
+                            actualizarTabla();
+                            vaciarTextField();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Message", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Message", JOptionPane.INFORMATION_MESSAGE);
                     }
-
                 } else {
                     JOptionPane.showMessageDialog(this, "Debes rellenar todos los campos", "No añadido", JOptionPane.WARNING_MESSAGE);
                 }
 
+            } else {
+                JOptionPane.showMessageDialog(this, "Los numeros deben ser positivos y validos", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun producto", "Message", JOptionPane.INFORMATION_MESSAGE);
@@ -597,6 +592,12 @@ public class Ventana1 extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_ImagenButtonMousePressed
+
+    private void ImagenLabelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ImagenLabelMousePressed
+
+        ImagenLabel.setIcon(null);
+        ImagenLabel.setText(null);
+    }//GEN-LAST:event_ImagenLabelMousePressed
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -693,11 +694,6 @@ public class Ventana1 extends javax.swing.JFrame {
         };
 
         jTablaProductos.setModel(listaProductos);
-        jTablaProductos.setRowHeight(100);
-        jTablaProductos.getColumnModel().getColumn(0).setPreferredWidth(100);
-        jTablaProductos.getColumnModel().getColumn(1).setPreferredWidth(100);
-        jTablaProductos.getColumnModel().getColumn(2).setPreferredWidth(100);
-        jTablaProductos.getColumnModel().getColumn(3).setPreferredWidth(100);
 
     }
 
@@ -771,6 +767,7 @@ public class Ventana1 extends javax.swing.JFrame {
 
     //Evento para aplicar el estilo seleccionado de el desplegable
     private void eventoEstilos() {
+
         DiseñoComboBox.addActionListener(new ActionListener() {
             String opcion = null;
             JPanel paneles[] = {Panel1, Panel2};
@@ -784,25 +781,22 @@ public class Ventana1 extends javax.swing.JFrame {
                 gestorEstilos.cambiarColorFondo(paneles, color);
                 color = gestorEstilos.buscarColorEnFichero(opcion, 2, nomArchivoEstilos, datosEstilos);
                 gestorEstilos.cambiarColorTexto(textos, color);
+
             }
         });
     }
 
-    //Metodo que refresca las opciones del deplegable con los datos de el fichero de estilos
     private void actualizarOpcionesEstilos() {
-        FileInputStream fis;
-        ObjectInputStream ois;
-        DiseñoComboBox.removeAllItems();
-
         try {
-            fis = new FileInputStream(nomArchivoEstilos);
-            ois = new ObjectInputStream(fis);
+            DiseñoComboBox.removeAllItems();
+            FileInputStream fis = new FileInputStream(nomArchivoEstilos);
+            ObjectInputStream ois = new ObjectInputStream(fis);
             datosEstilos = (Object[][]) ois.readObject();
             for (Object[] dato : datosEstilos) {
                 String titulo = (String) dato[0];
                 DiseñoComboBox.addItem(titulo);
             }
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
         }
     }
 
@@ -824,13 +818,10 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         } catch (IOException e) {
         }
-
         usuario = datosFichero.get(0);
         clave = datosFichero.get(1);
         url = datosFichero.get(2);
-
         gestorBDR.conectarBDR(url, usuario, clave);
-
     }
 
     public byte[] conseguirImagenPorRuta(String Ruta) {

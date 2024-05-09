@@ -41,10 +41,10 @@ public class Ventana2 extends javax.swing.JFrame {
         Contraseña = new javax.swing.JLabel();
         Activo = new javax.swing.JLabel();
         ActivoCheckBox = new javax.swing.JCheckBox();
-        ContraseñaTextField = new javax.swing.JTextField();
         Rol = new javax.swing.JLabel();
         RolComboBox = new javax.swing.JComboBox<>();
         NombreTextField = new javax.swing.JTextField();
+        ContraseñaPasswordField = new javax.swing.JPasswordField();
 
         setMaximumSize(new java.awt.Dimension(970, 430));
         setPreferredSize(new java.awt.Dimension(970, 430));
@@ -148,14 +148,14 @@ public class Ventana2 extends javax.swing.JFrame {
                         .addGap(29, 29, 29))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
                         .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(ContraseñaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
                                     .addGap(14, 14, 14)
                                     .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(18, 18, 18)))
+                                    .addGap(18, 18, 18))
+                                .addComponent(ContraseñaPasswordField))
                             .addGroup(Panel2Layout.createSequentialGroup()
                                 .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(Rol, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -181,9 +181,9 @@ public class Ventana2 extends javax.swing.JFrame {
                 .addComponent(NombreTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(Contraseña)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ContraseñaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
+                .addGap(36, 36, 36)
+                .addComponent(ContraseñaPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Activo)
                     .addComponent(Rol))
@@ -225,39 +225,27 @@ public class Ventana2 extends javax.swing.JFrame {
 
     private void BotonAñadirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAñadirMousePressed
         //Boton que añade un usuario comprobando sus datos y pidiendo siempre usuario y contraseña
-        String nombre = NombreTextField.getText();
-        int contraseña = 0;
+        String nombre = NombreTextField.getText().trim();
+        String contraseña = gestorUsuarios.convertirContraseña(ContraseñaPasswordField.getPassword());
         String rol = RolComboBox.getSelectedItem().toString();
         boolean activo = ActivoCheckBox.isSelected();
-        boolean contraseñaCorrecta = false;
-        boolean admin = false;
+        boolean añadido = false;
 
-        if (rol.equals("USUARIO")) {
-            admin = false;
-        } else if (rol.equals("ADMINISTRADOR")) {
-            admin = true;
-        }
-
-        try {
-            contraseña = ContraseñaTextField.getText().isEmpty() ? 0 : Integer.parseInt(ContraseñaTextField.getText());
-            contraseñaCorrecta = true;
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Debes introducir un numero entero", "Precio", JOptionPane.WARNING_MESSAGE);
-        }
-
-        if (contraseñaCorrecta) {
-
-            if (!NombreTextField.getText().trim().isEmpty() && !ContraseñaTextField.getText().trim().isEmpty()) {
-                if (!admin) {
-                    gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.USUARIO, activo);
-                } else if (admin) {
-                    gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.ADMINISTRADOR, activo);
-                }
+        if (!nombre.isEmpty() && !contraseña.isEmpty()) {
+            if (rol.equals("USUARIO")) {
+                añadido = gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.USUARIO, activo);
+            } else if (rol.equals("ADMINISTRADOR")) {
+                añadido = gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.ADMINISTRADOR, activo);
+            }
+            if (añadido) {
                 actualizarTabla();
                 vaciarTextField();
             } else {
-                JOptionPane.showMessageDialog(this, "El campo del nombre y contraseña no pueden estar vacíos", "No añadido", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No se ha podido añadir comprueba que el usuario no exista", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "El campo del nombre y contraseña no pueden estar vacíos", "No añadido", JOptionPane.WARNING_MESSAGE);
         }
 
     }//GEN-LAST:event_BotonAñadirMousePressed
@@ -271,7 +259,7 @@ public class Ventana2 extends javax.swing.JFrame {
 
             gestorUsuarios.borrarUsuarioPorNombre(nombre);
             actualizarTabla();
-                vaciarTextField();
+            vaciarTextField();
 
         } else {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
@@ -286,7 +274,8 @@ public class Ventana2 extends javax.swing.JFrame {
         if (filaSeleccionada >= 0) {
             String nombreBorrar = (String) datos[filaSeleccionada][0];
             String nombre = NombreTextField.getText();
-            int contraseña = ContraseñaTextField.getText().isEmpty() ? 0 : Integer.parseInt(ContraseñaTextField.getText());
+            String contraseña = gestorUsuarios.convertirContraseña(ContraseñaPasswordField.getPassword());
+
             String rol = RolComboBox.getSelectedItem().toString();
             boolean admin = false;
             if (rol.equals("USUARIO")) {
@@ -296,7 +285,7 @@ public class Ventana2 extends javax.swing.JFrame {
             }
             boolean activo = ActivoCheckBox.isSelected();
 
-            if (!NombreTextField.getText().trim().isEmpty() && !ContraseñaTextField.getText().trim().isEmpty()) {
+            if (!nombreBorrar.trim().isEmpty() && !contraseña.trim().isEmpty()) {
 
                 gestorUsuarios.borrarUsuarioPorNombre(nombreBorrar);
                 actualizarTabla();
@@ -321,13 +310,11 @@ public class Ventana2 extends javax.swing.JFrame {
         //Se muestra la informacion de el usuario en los campos correspondientes
 
         int filaSeleccionada = jTablaUsuarios.getSelectedRow();
-        String nombre = (String) datos[filaSeleccionada][0];
-        String contraseña = (String) datos[filaSeleccionada][1].toString();
-        String rol = (String) datos[filaSeleccionada][2].toString();
         String activo = (String) datos[filaSeleccionada][3].toString();
-        NombreTextField.setText(nombre);
-        ContraseñaTextField.setText(contraseña);
-        RolComboBox.setSelectedItem(rol);
+        NombreTextField.setText(datos[filaSeleccionada][0].toString());
+        ContraseñaPasswordField.setText(datos[filaSeleccionada][1].toString());
+        RolComboBox.setSelectedItem(datos[filaSeleccionada][2].toString());
+        
         if (activo.equals("true")) {
             ActivoCheckBox.setSelected(true);
         } else {
@@ -373,7 +360,7 @@ public class Ventana2 extends javax.swing.JFrame {
     private javax.swing.JButton BotonAñadir;
     private javax.swing.JButton BotonBorrar;
     private javax.swing.JLabel Contraseña;
-    private javax.swing.JTextField ContraseñaTextField;
+    private javax.swing.JPasswordField ContraseñaPasswordField;
     private javax.swing.JLabel Nombre;
     private javax.swing.JTextField NombreTextField;
     private javax.swing.JPanel Panel1;
@@ -385,7 +372,6 @@ public class Ventana2 extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     //Se actualiza la tabla con los datos de el array [][]
-    
     private void actualizarTabla() {
         datos = gestorUsuarios.convertirBDOADTM();
         listaProductos = new DefaultTableModel(datos, nomCols) {
@@ -402,6 +388,6 @@ public class Ventana2 extends javax.swing.JFrame {
     //se vacian los camposs
     public void vaciarTextField() {
         NombreTextField.setText("");
-        ContraseñaTextField.setText("");
+        ContraseñaPasswordField.setText("");
     }
 }

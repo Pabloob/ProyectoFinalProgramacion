@@ -159,8 +159,7 @@
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                                  <Component id="ContraseñaTextField" alignment="0" min="-2" pref="159" max="-2" attributes="0"/>
+                              <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
                                       <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="1" attributes="0">
@@ -169,6 +168,7 @@
                                       </Group>
                                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                                   </Group>
+                                  <Component id="ContraseñaPasswordField" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
                                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -205,9 +205,9 @@
                   <Component id="NombreTextField" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   <Component id="Contraseña" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="ContraseñaTextField" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                  <Component id="ContraseñaPasswordField" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="Activo" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="Rol" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -287,8 +287,6 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="Contrase&#xf1;aTextField">
-        </Component>
         <Component class="javax.swing.JLabel" name="Rol">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -318,6 +316,8 @@
           </AuxValues>
         </Component>
         <Component class="javax.swing.JTextField" name="NombreTextField">
+        </Component>
+        <Component class="javax.swing.JPasswordField" name="Contrase&#xf1;aPasswordField">
         </Component>
       </SubComponents>
     </Container>
