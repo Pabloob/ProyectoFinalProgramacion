@@ -106,7 +106,7 @@ public class GestorEstilosGUI {
                 ois = new ObjectInputStream(fis);
                 datosEstilos = (Object[][]) ois.readObject();
                 for (Object[] dato : datosEstilos) {
-                    String tituloArchivo = (String) dato[1];
+                    String tituloArchivo = (String) dato[2];
                     if (titulo.equalsIgnoreCase(tituloArchivo)) {
                         String rgbColor = (String) dato[colorBuscar];
                         String[] rgb = rgbColor.replaceAll("[^0-9,]", "").split(",");
@@ -137,46 +137,6 @@ public class GestorEstilosGUI {
         return matrizObjeto;
     }
 
-    public boolean cargarEstilosDeFicheroXML(String nomArchivo) {
-        boolean correcto = false;
-
-        FileInputStream fis;
-        XMLDecoder xmld;
-        Object[][] datos;
-        try {
-            fis = new FileInputStream(nomArchivo);
-            xmld = new XMLDecoder(fis);
-            datos = (Object[][]) xmld.readObject();
-            xmld.close();
-            for (Object[] dato : datos) {
-                String titulo = (String) dato[0];
-                int id = (int) dato[1];
-                String usr = (String) dato[2];
-                Color colorTexto = conseguirColorPorRGB((String) dato[3]);
-                Color colorFondo = conseguirColorPorRGB((String) dato[4]);
-                añadirEstilo(id, usr, titulo, colorFondo, colorTexto);
-            }
-            correcto = true;
-        } catch (FileNotFoundException e) {
-        }
-        return correcto;
-    }
-
-    public boolean guardarEstilosEnFicheroXML(Object[][] datos, String nomArchivo) {
-        boolean correcto = false;
-
-        FileOutputStream fos;
-        XMLEncoder xmle;
-
-        try {
-            fos = new FileOutputStream(nomArchivo);
-            xmle = new XMLEncoder(new BufferedOutputStream(fos));
-            xmle.writeObject(datos);
-            xmle.close();
-            correcto = true;
-        } catch (FileNotFoundException e) {
-        }
-        return correcto;
-    }
+    
 
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="22.0.1" class="java.beans.XMLDecoder">
+ <array class="[Ljava.lang.Object;" length="1">
+  <void index="0">
+   <array class="java.lang.Object" length="4">
+    <void index="0">
+     <string>asd</string>
+    </void>
+    <void index="1">
+     <string>123.0€</string>
+    </void>
+    <void index="2">
+     <int>13</int>
+    </void>
+    <void index="3">
+     <object class="javax.swing.JLabel">
+      <void property="location">
+       <object class="java.awt.Point" id="Point0">
+        <void class="java.awt.Point" method="getField">
+         <string>x</string>
+         <void method="set">
+          <object idref="Point0"/>
+          <int>-112</int>
+         </void>
+        </void>
+        <void class="java.awt.Point" method="getField">
+         <string>y</string>
+         <void method="set">
+          <object idref="Point0"/>
+          <int>-100</int>
+         </void>
+        </void>
+       </object>
+      </void>
+      <void property="text">
+       <string>NO HAY IMAGEN</string>
+      </void>
+     </object>
+    </void>
+   </array>
+  </void>
+ </array>
+</java>

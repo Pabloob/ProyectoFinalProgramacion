@@ -8,16 +8,16 @@ public class Producto implements Serializable {
     private String nombre;
     private float precio;
     private int cantidad;
-    private byte [] imagen;
+    private String rutaImagen;
 
     public Producto() {
     }
 
-    public Producto(String nombre, float precio, int cantidad,byte[] imagen) {
+    public Producto(String nombre, float precio, int cantidad,String rutaImagen) {
         this.nombre = nombre;
         this.precio = precio;
         this.cantidad = cantidad;
-        this.imagen = imagen;
+        this.rutaImagen = rutaImagen;
     }
 
     public int getCantidad() {
@@ -44,12 +44,12 @@ public class Producto implements Serializable {
         this.precio = precio;
     }
 
-    public byte[] getImagen() {
-        return imagen;
+    public String getrutaImagen() {
+        return rutaImagen;
     }
 
-    public void setImagen(byte[] imagen) {
-        this.imagen = imagen;
+    public void setrutaImagen(String imagen) {
+        this.rutaImagen = imagen;
     }
     
 }

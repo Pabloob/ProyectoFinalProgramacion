@@ -1,12 +1,18 @@
 package CONTROLADORES;
 
 import MODELOS.Producto;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -78,12 +84,7 @@ public class GestorBDR {
             preparedStatement.setString(1, producto.getNombre());
             preparedStatement.setFloat(2, producto.getPrecio());
             preparedStatement.setInt(3, producto.getCantidad());
-
-            if (producto.getImagen() != null) {
-                preparedStatement.setBytes(4, producto.getImagen());
-            } else {
-                preparedStatement.setNull(4, 0);
-            }
+            preparedStatement.setString(4, producto.getrutaImagen());
 
             int filasAfectadas = preparedStatement.executeUpdate();
             if (filasAfectadas > 0) {
@@ -121,7 +122,7 @@ public class GestorBDR {
                 producto.setNombre(rs.getString("NOMBRE"));
                 producto.setPrecio(rs.getFloat("PRECIO"));
                 producto.setCantidad(rs.getInt("CANTIDAD"));
-                producto.setImagen(rs.getBytes("IMAGEN"));
+                producto.setrutaImagen(rs.getString("IMAGEN"));
                 datos.add(producto);
             }
 
@@ -131,49 +132,49 @@ public class GestorBDR {
         return datos;
     }
 
-    public boolean guardarProductosEnFichero(Object[][] datos, String nomArchivo) throws IOException {
+    public boolean cargarProductosDeFicheroXML(String nomArchivo) {
         boolean correcto = false;
-        try (FileOutputStream fos = new FileOutputStream(nomArchivo); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-            oos.writeObject(datos);
-            correcto = true;
-        } catch (IOException e) {
-        }
-        return correcto;
-    }
 
-    public boolean cargarProductosDeFichero(String nomArchivo) throws ClassNotFoundException, IOException {
-        boolean correcto = false;
-        try (FileInputStream fis = new FileInputStream(nomArchivo); ObjectInputStream ois = new ObjectInputStream(fis)) {
-            Object[][] datos = (Object[][]) ois.readObject();
+        FileInputStream fis;
+        XMLDecoder xmld;
+        Object[][] datos;
+        try {
+            fis = new FileInputStream(nomArchivo);
+            xmld = new XMLDecoder(fis);
+            datos = (Object[][]) xmld.readObject();
+            xmld.close();
             for (Object[] dato : datos) {
                 Producto producto = new Producto();
                 producto.setNombre((String) dato[0]);
-                producto.setPrecio(Float.parseFloat(dato[1].toString()));
-                producto.setCantidad(Integer.parseInt(dato[2].toString()));
-                producto.setImagen(jLbalelABytes((JLabel) dato[3]));
+                producto.setPrecio((float) dato[1]);
+                producto.setCantidad((int) dato[2]);
+                producto.setrutaImagen((String) dato[3]);
+
                 añadirProducto(producto);
             }
             correcto = true;
-        } catch (ClassNotFoundException | IOException e) {
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
         return correcto;
     }
 
-    public byte[] jLbalelABytes(JLabel jlbl) {
-        byte[] bytesImagen = null;
+    public boolean guardarProductosEnFicheroXML(Object[][] datos, String nomArchivo) {
+        boolean correcto = false;
+
+        FileOutputStream fos;
+        XMLEncoder xmle;
+
         try {
-            ImageIcon icono = (ImageIcon) jlbl.getIcon();
-            Image imagen = icono.getImage();
-            BufferedImage bufferedImage = new BufferedImage(imagen.getWidth(null), imagen.getHeight(null), BufferedImage.TYPE_INT_RGB);
-            Graphics g = bufferedImage.getGraphics();
-            g.drawImage(imagen, 0, 0, null);
-            g.dispose();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "png", baos);
-            bytesImagen = baos.toByteArray();
-        } catch (Exception e) {
+            fos = new FileOutputStream(nomArchivo);
+            xmle = new XMLEncoder(new BufferedOutputStream(fos));
+            xmle.writeObject(datos);
+            xmle.close();
+            correcto = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        return bytesImagen;
+        return correcto;
     }
 
     public Object[][] ordenarNombre(Object[][] datos) {
@@ -216,5 +217,51 @@ public class GestorBDR {
 
         Arrays.sort(datos, comparador);
         return datos;
+    }
+
+    public String copiarImagen(String nombreFich) {
+        String[] partes = nombreFich.split("\\\\");
+        String nombreArchivo = partes[partes.length - 1];
+        String[] partesNombre = nombreArchivo.split("\\.");
+        String nombreSinExtension = partesNombre[0];
+        String extension = partesNombre[1];
+        String rutaCopia = null;
+        int numFoto = 1;
+        try {
+            File ficheroContenido = new File(nombreFich);
+
+            if (ficheroContenido.exists()) {
+                while (ficheroContenido.exists()) {
+                    rutaCopia = "IMAGENES\\" + nombreSinExtension + numFoto + "." + extension;
+                    File ficheroCopia = new File(rutaCopia);
+                    if (!ficheroCopia.exists()) {
+                        break;
+                    }
+                    numFoto++;
+                }
+            } else {
+                rutaCopia = "IMAGENES\\" + nombreSinExtension + "." + extension;
+            }
+
+            FileInputStream inputStream = new FileInputStream(nombreFich);
+            FileOutputStream outputStream = new FileOutputStream(rutaCopia);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            inputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rutaCopia;
+    }
+
+    public void borrarImagen(String ruta) {
+        if (ruta != null) {
+            File archivo = new File(ruta);
+            archivo.delete();
+        }
     }
 }

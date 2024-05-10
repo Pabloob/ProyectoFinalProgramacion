@@ -21,8 +21,8 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
     GestorUsuariosBDO gestorUsuarios = new GestorUsuariosBDO();
     
     //Nombre archivo de estilos
-    String nomArchivo = "estilos.dat";
-    String nomArchivoxml = "exportar.xml";
+    String nomArchivo = "ARCHIVOS\\estilos.dat";
+    String nomArchivoxml = "ARCHIVOS\\exportar.xml";
 
     //Nombre de las columnas
     String[] nomCols = {"ID","USR. CREADOR",  "TITULO", "COLOR FONDO", "COLOR TEXTO", "FECHA"};
@@ -63,8 +63,6 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         VaciarButton = new javax.swing.JButton();
         ActualizarButton = new javax.swing.JButton();
         AñadirButton = new javax.swing.JButton();
-        GUARDAR = new javax.swing.JButton();
-        CARGAR = new javax.swing.JButton();
         Tabla = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablaEstilos = new javax.swing.JTable();
@@ -231,38 +229,17 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             }
         });
 
-        GUARDAR.setText("GUARDAR");
-        GUARDAR.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                GUARDARMousePressed(evt);
-            }
-        });
-
-        CARGAR.setText("CARGAR");
-        CARGAR.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                CARGARMousePressed(evt);
-            }
-        });
-
         javax.swing.GroupLayout BotonesBorrarLayout = new javax.swing.GroupLayout(BotonesBorrar);
         BotonesBorrar.setLayout(BotonesBorrarLayout);
         BotonesBorrarLayout.setHorizontalGroup(
             BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BotonesBorrarLayout.createSequentialGroup()
-                .addGroup(BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(BotonesBorrarLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(VaciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BorrarSeleccionadoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(AñadirButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(BotonesBorrarLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(GUARDAR)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CARGAR)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(VaciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(BorrarSeleccionadoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(AñadirButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ActualizarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -279,11 +256,7 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
                     .addComponent(AñadirButton)
                     .addComponent(BorrarSeleccionadoButton)
                     .addComponent(CargarEjemplosButton))
-                .addGap(28, 28, 28)
-                .addGroup(BotonesBorrarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(GUARDAR)
-                    .addComponent(CARGAR))
-                .addContainerGap(69, Short.MAX_VALUE))
+                .addContainerGap(121, Short.MAX_VALUE))
         );
 
         Tabla.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -490,26 +463,6 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
         TextoPrevisualizacion.setForeground(color);
     }//GEN-LAST:event_ColoresTextoButtonMousePressed
 
-    private void GUARDARMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_GUARDARMousePressed
-        if (gestorEstilos.guardarEstilosEnFicheroXML(datos, nomArchivoxml)) {
-            JOptionPane.showMessageDialog(this, "Se han guardado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-            actualizarTabla();
-        } else {
-            JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-    }//GEN-LAST:event_GUARDARMousePressed
-
-    private void CARGARMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CARGARMousePressed
-        if (gestorEstilos.cargarEstilosDeFicheroXML(nomArchivoxml)) {
-            JOptionPane.showMessageDialog(this, "Se han cargado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-            actualizarTabla();
-        } else {
-            JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-    }//GEN-LAST:event_CARGARMousePressed
-
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -531,14 +484,12 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
     private javax.swing.JButton AñadirButton;
     private javax.swing.JButton BorrarSeleccionadoButton;
     private javax.swing.JPanel BotonesBorrar;
-    private javax.swing.JButton CARGAR;
     private javax.swing.JButton CargarEjemplosButton;
     private javax.swing.JLabel ColorFondo;
     private javax.swing.JLabel ColorTexto;
     private javax.swing.JToggleButton ColoresFondoButton;
     private javax.swing.JToggleButton ColoresTextoButton;
     private javax.swing.JPanel Datos;
-    private javax.swing.JButton GUARDAR;
     private javax.swing.JPanel PanelPrevisualizacion;
     private javax.swing.JPanel PanelPrincipal;
     private javax.swing.JLabel TITULO;
