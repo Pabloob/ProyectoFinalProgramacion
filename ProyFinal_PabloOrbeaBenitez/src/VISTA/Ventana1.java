@@ -55,7 +55,9 @@ public class Ventana1 extends javax.swing.JFrame {
 
     //Ruta imagen a añadir
     String ruta;
-
+    
+    String nombreUsuario;
+    
     //Se conecta la base de datos y se inicia la ventana
     public Ventana1() {
         if (gestorBDR.conectarPorFicheroBDR(ficheroUsrContUrl)) {
@@ -322,13 +324,13 @@ public class Ventana1 extends javax.swing.JFrame {
                     .addComponent(DiseñoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ActualizarEstilos)
                     .addComponent(ImagenButton))
-                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(Panel2Layout.createSequentialGroup()
                         .addGap(170, 170, 170)
                         .addComponent(HORA, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(19, 19, 19))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
+                    .addGroup(Panel2Layout.createSequentialGroup()
+                        .addGap(75, 75, 75)
                         .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(BotonAñadir)
                             .addComponent(BotonEliminar)
@@ -571,6 +573,7 @@ public class Ventana1 extends javax.swing.JFrame {
         //Boton activar la ventana 3
         Ventana3 ventana = new Ventana3();
         ventana.setVisible(true);
+        ventana.setNombreUsuario(nombreUsuario);
 
     }//GEN-LAST:event_BotonConfigurarpantallaMousePressed
 
@@ -798,6 +801,10 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         } catch (IOException | ClassNotFoundException e) {
         }
+    }
+    
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 
 }

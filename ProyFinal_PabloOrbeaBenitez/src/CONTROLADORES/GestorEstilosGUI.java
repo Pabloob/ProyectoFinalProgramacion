@@ -1,6 +1,5 @@
 package CONTROLADORES;
 
-import LIBRERIAS.MisUtiles;
 import MODELOS.ConfigPantalla;
 import java.awt.Color;
 import java.beans.XMLDecoder;
@@ -52,11 +51,6 @@ public class GestorEstilosGUI {
     public boolean borrarEstilo(String nombre) {
         boolean correcto = false;
         try {
-            for (ConfigPantalla estilo : estilos) {
-                System.out.println(estilo.getTitulo());
-            }
-
-            System.out.println(nombre);
             estilos.remove(new ConfigPantalla(nombre));
             correcto = true;
         } catch (Exception e) {
@@ -133,8 +127,8 @@ public class GestorEstilosGUI {
         int id = 0;
         for (ConfigPantalla conf : this.estilos) {
             matrizObjeto[id][0] = conf.getID();
-            matrizObjeto[id][1] = conf.getTitulo();
-            matrizObjeto[id][2] = conf.getUsuarioCrea();
+                        matrizObjeto[id][1] = conf.getUsuarioCrea();
+            matrizObjeto[id][2] = conf.getTitulo();
             matrizObjeto[id][3] = conf.getColorFondo();
             matrizObjeto[id][4] = conf.getColorTexto();
             matrizObjeto[id][5] = conf.getFechaHora();

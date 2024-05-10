@@ -152,13 +152,4 @@ public class GestorUsuariosBDO implements Serializable {
         return contraseña.trim();
     }
 
-    public void setUsrIniciaSesion(String usr) {
-        this.usuarioIniciaSesion = usr;
-    }
-
-    public String getUsrIniciaSesion() {
-        return this.usuarioIniciaSesion;
-
-    }
-
 }

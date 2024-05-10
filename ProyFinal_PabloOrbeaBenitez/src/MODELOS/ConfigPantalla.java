@@ -24,7 +24,7 @@ public class ConfigPantalla extends Configuracion {
         return "[r=" + colorFondo.getRed() + ",g=" + colorFondo.getGreen() + ",b=" + colorFondo.getBlue() + "]";
     }
 
-    public ConfigPantalla(int ID, String titulo, String UsuarioCrea, Color colorFondo, Color colorTexto, Date fechaHora) {
+    public ConfigPantalla(int ID,String UsuarioCrea, String titulo,  Color colorFondo, Color colorTexto, Date fechaHora) {
         super(titulo, ID, UsuarioCrea, fechaHora);
         this.colorFondo = colorFondo;
         this.colorTexto = colorTexto;
