@@ -11,6 +11,7 @@ import javax.persistence.TypedQuery;
 
 public class GestorUsuariosBDO implements Serializable {
 
+    String usuarioIniciaSesion;
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/ProyFinal.odb");
     EntityManager em = emf.createEntityManager();
 
@@ -29,12 +30,11 @@ public class GestorUsuariosBDO implements Serializable {
             int indice = 0;
             for (Usuario usuario : usuarios) {
                 if (usuario.getNombre().equals(nomUsuario) && usuario.getContraseña().equals(contraseña)) {
-                                       inicioSesion = true; 
+                    inicioSesion = true;
                 }
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return inicioSesion;
@@ -57,7 +57,7 @@ public class GestorUsuariosBDO implements Serializable {
             for (Usuario usuario : usuarios) {
                 usuarioRol[indice][0] = usuario.getNombre();
                 usuarioRol[indice][1] = usuario.getRol();
-                
+
                 indice++;
             }
             for (Object[] usuario : usuarioRol) {
@@ -66,25 +66,26 @@ public class GestorUsuariosBDO implements Serializable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return administrador;
     }
 
-    public boolean añadirUsuario(String nombre, String contraseña, Usuario.Rol rol, boolean activo) {
-        Usuario u1 = new Usuario(nombre, contraseña, rol, activo);
+    public boolean añadirUsuario(Usuario u1) {
+        boolean correcto = false;
+
         try {
             em.getTransaction().begin();
             em.persist(u1);
             em.getTransaction().commit();
-            return true;
+            correcto = true;
         } catch (Exception e) {
-            return false;
         }
+        return correcto;
     }
 
     public boolean borrarUsuarioPorNombre(String nombre) {
+        boolean correcto = false;
         try {
             em.getTransaction().begin();
             String jpql = "DELETE FROM Usuario u WHERE u.nombre= :nombre";
@@ -92,37 +93,31 @@ public class GestorUsuariosBDO implements Serializable {
             qModif.setParameter("nombre", nombre);
             int filasEliminadas = qModif.executeUpdate();
             em.getTransaction().commit();
-            return filasEliminadas > 0;
+            if (filasEliminadas > 0) {
+                correcto = true;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
         }
+        return correcto;
     }
 
     public boolean vaciarUsuarios() {
+        boolean correcto = false;
         try {
             em.getTransaction().begin();
             String jpql = "DELETE FROM Usuario u";
             Query qModif = em.createQuery(jpql);
             int filasEliminadas = qModif.executeUpdate();
             em.getTransaction().commit();
-            return filasEliminadas > 0;
+            if (filasEliminadas > 0) {
+                correcto = true;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
         }
-    }
-
-    public void cargarUsuario() {
-        Usuario u1 = new Usuario("Pablo", "1234", Usuario.Rol.ADMINISTRADOR, true);
-        em.getTransaction().begin();
-        em.persist(u1);
-        em.getTransaction().commit();
+        return correcto;
     }
 
     public Object[][] convertirBDOADTM() {
-        boolean inicioSesion = false;
-
         Object datos[][] = null;
         try {
             TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) FROM Usuario u", Long.class);
@@ -143,7 +138,6 @@ public class GestorUsuariosBDO implements Serializable {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return datos;
@@ -153,9 +147,18 @@ public class GestorUsuariosBDO implements Serializable {
     public String convertirContraseña(char caracteresContraseña[]) {
         String contraseña = "";
         for (char c : caracteresContraseña) {
-            contraseña = contraseña+ c;
+            contraseña = contraseña + c;
         }
         return contraseña.trim();
+    }
+
+    public void setUsrIniciaSesion(String usr) {
+        this.usuarioIniciaSesion = usr;
+    }
+
+    public String getUsrIniciaSesion() {
+        return this.usuarioIniciaSesion;
+
     }
 
 }

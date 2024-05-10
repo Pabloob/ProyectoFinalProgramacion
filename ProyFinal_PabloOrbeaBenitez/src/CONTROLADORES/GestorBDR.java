@@ -4,10 +4,11 @@ import MODELOS.Producto;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -20,6 +21,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -28,23 +30,49 @@ public class GestorBDR {
 
     private Connection conexion;
 
-    public void conectarBDR(String url, String usuario, String clave) {
-        try {
-            conexion = DriverManager.getConnection(url, usuario, clave);
-        } catch (SQLException e) {
+    public boolean conectarPorFicheroBDR(String fichero) {
+        boolean correcto = false;
+        String url, usuario, clave;
+        List<String> datosFichero = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fichero))) {
+            String linea;
+
+            while ((linea = reader.readLine()) != null) {
+                String[] partes = linea.split("=");
+
+                if (partes.length >= 2) {
+                    datosFichero.add(partes[1].trim());
+                }
+            }
+            usuario = datosFichero.get(0);
+            clave = datosFichero.get(1);
+            url = datosFichero.get(2);
+            try {
+                conexion = DriverManager.getConnection(url, usuario, clave);
+                correcto = true;
+            } catch (SQLException e) {
+            }
+        } catch (IOException e) {
         }
+
+        return correcto;
     }
 
-    public void desconectarBDR() {
+    public boolean desconectarBDR() {
+        boolean correcto = false;
         try {
             conexion.close();
+            correcto = true;
         } catch (SQLException e) {
         }
+        return correcto;
     }
 
     public boolean añadirProducto(Producto producto) {
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         String SQL_AGREGAR = "INSERT INTO productos (NOMBRE, PRECIO, CANTIDAD, IMAGEN) VALUES (?, ?, ?, ?)";
+        boolean correcto = false;
         try {
             preparedStatement = conexion.prepareStatement(SQL_AGREGAR);
             preparedStatement.setString(1, producto.getNombre());
@@ -58,22 +86,26 @@ public class GestorBDR {
             }
 
             int filasAfectadas = preparedStatement.executeUpdate();
-            return (filasAfectadas > 0);
+            if (filasAfectadas > 0) {
+                correcto = true;
+            }
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
         }
+        return correcto;
     }
 
     public boolean borrarProductoPorNombre(String nombre) {
+        boolean correcto = false;
         try {
             Statement sentencia = conexion.createStatement();
             String sql = "DELETE FROM productos WHERE NOMBRE ='" + nombre + "'";
             int filasAfectadas = sentencia.executeUpdate(sql);
-            return filasAfectadas > 0;
+            if (filasAfectadas > 0) {
+                correcto = true;
+            }
         } catch (SQLException e) {
-            return false;
         }
+        return correcto;
     }
 
     public ArrayList convertirBDRADTM() {
@@ -94,23 +126,23 @@ public class GestorBDR {
             }
 
         } catch (Exception e) {
-            return null;
         }
 
         return datos;
     }
 
     public boolean guardarProductosEnFichero(Object[][] datos, String nomArchivo) throws IOException {
+        boolean correcto = false;
         try (FileOutputStream fos = new FileOutputStream(nomArchivo); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(datos);
-            return true;
+            correcto = true;
         } catch (IOException e) {
-            e.printStackTrace();
-            return false;
         }
+        return correcto;
     }
 
     public boolean cargarProductosDeFichero(String nomArchivo) throws ClassNotFoundException, IOException {
+        boolean correcto = false;
         try (FileInputStream fis = new FileInputStream(nomArchivo); ObjectInputStream ois = new ObjectInputStream(fis)) {
             Object[][] datos = (Object[][]) ois.readObject();
             for (Object[] dato : datos) {
@@ -121,15 +153,14 @@ public class GestorBDR {
                 producto.setImagen(jLbalelABytes((JLabel) dato[3]));
                 añadirProducto(producto);
             }
-            return true;
+            correcto = true;
         } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
-            return false;
         }
+        return correcto;
     }
 
     public byte[] jLbalelABytes(JLabel jlbl) {
-
+        byte[] bytesImagen = null;
         try {
             ImageIcon icono = (ImageIcon) jlbl.getIcon();
             Image imagen = icono.getImage();
@@ -139,12 +170,10 @@ public class GestorBDR {
             g.dispose();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", baos);
-            byte[] bytesImagen = baos.toByteArray();
-            return bytesImagen;
+            bytesImagen = baos.toByteArray();
         } catch (Exception e) {
-            return null;
         }
-
+        return bytesImagen;
     }
 
     public Object[][] ordenarNombre(Object[][] datos) {
@@ -153,7 +182,7 @@ public class GestorBDR {
             public int compare(Object[] fila1, Object[] fila2) {
                 String nombre1 = (String) fila1[0];
                 String nombre2 = (String) fila2[0];
-                return nombre1.compareTo(nombre2);
+                return nombre1.toLowerCase().compareTo(nombre2.toLowerCase());
             }
         };
         Arrays.sort(datos, comparador);

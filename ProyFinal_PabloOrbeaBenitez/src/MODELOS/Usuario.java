@@ -33,6 +33,12 @@ public class Usuario implements Serializable {
         this.rol = rol;
     }
 
+    public Usuario(String nombre, String contraseña, boolean activo) {
+        this.nombre = nombre;
+        this.contraseña = contraseña;
+        this.activo = activo;
+    }
+
     public String getNombre() {
         return nombre;
     }

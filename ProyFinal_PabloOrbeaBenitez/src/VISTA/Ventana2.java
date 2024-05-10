@@ -229,23 +229,25 @@ public class Ventana2 extends javax.swing.JFrame {
         String contraseña = gestorUsuarios.convertirContraseña(ContraseñaPasswordField.getPassword());
         String rol = RolComboBox.getSelectedItem().toString();
         boolean activo = ActivoCheckBox.isSelected();
-        boolean añadido = false;
 
         if (!nombre.isEmpty() && !contraseña.isEmpty()) {
+            Usuario usr = new Usuario(nombre, contraseña, activo);
+
             if (rol.equals("USUARIO")) {
-                añadido = gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.USUARIO, activo);
+                usr.setRol(Usuario.Rol.USUARIO);
             } else if (rol.equals("ADMINISTRADOR")) {
-                añadido = gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.ADMINISTRADOR, activo);
+                usr.setRol(Usuario.Rol.ADMINISTRADOR);
             }
-            if (añadido) {
+
+            if (gestorUsuarios.añadirUsuario(usr)) {
                 actualizarTabla();
                 vaciarTextField();
             } else {
-                JOptionPane.showMessageDialog(this, "No se ha podido añadir comprueba que el usuario no exista", "No añadido", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No se ha podido añadir comprueba que el usuario no exista ya", "Error", JOptionPane.WARNING_MESSAGE);
             }
 
         } else {
-            JOptionPane.showMessageDialog(this, "El campo del nombre y contraseña no pueden estar vacíos", "No añadido", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "El campo del nombre y contraseña no pueden estar vacíos", "Error", JOptionPane.WARNING_MESSAGE);
         }
 
     }//GEN-LAST:event_BotonAñadirMousePressed
@@ -256,13 +258,15 @@ public class Ventana2 extends javax.swing.JFrame {
         int filaSeleccionado = jTablaUsuarios.getSelectedRow();
         if (filaSeleccionado >= 0) {
             String nombre = (String) datos[filaSeleccionado][0];
-
-            gestorUsuarios.borrarUsuarioPorNombre(nombre);
-            actualizarTabla();
-            vaciarTextField();
+            if (gestorUsuarios.borrarUsuarioPorNombre(nombre)) {
+                actualizarTabla();
+                vaciarTextField();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se ha podido borrar el usuario", "Error", JOptionPane.WARNING_MESSAGE);
+            }
 
         } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Error", JOptionPane.INFORMATION_MESSAGE);
         }
 
     }//GEN-LAST:event_BotonBorrarMousePressed
@@ -275,34 +279,31 @@ public class Ventana2 extends javax.swing.JFrame {
             String nombreBorrar = (String) datos[filaSeleccionada][0];
             String nombre = NombreTextField.getText();
             String contraseña = gestorUsuarios.convertirContraseña(ContraseñaPasswordField.getPassword());
-
             String rol = RolComboBox.getSelectedItem().toString();
-            boolean admin = false;
-            if (rol.equals("USUARIO")) {
-                admin = false;
-            } else if (rol.equals("ADMINISTRADOR")) {
-                admin = true;
-            }
             boolean activo = ActivoCheckBox.isSelected();
 
             if (!nombreBorrar.trim().isEmpty() && !contraseña.trim().isEmpty()) {
+                Usuario usr = new Usuario(nombre, contraseña, activo);
 
-                gestorUsuarios.borrarUsuarioPorNombre(nombreBorrar);
-                actualizarTabla();
-                if (!admin) {
-                    gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.USUARIO, activo);
-                } else if (admin) {
-                    gestorUsuarios.añadirUsuario(nombre, contraseña, Usuario.Rol.ADMINISTRADOR, activo);
+                if (rol.equals("USUARIO")) {
+                    usr.setRol(Usuario.Rol.USUARIO);
+                } else if (rol.equals("ADMINISTRADOR")) {
+                    usr.setRol(Usuario.Rol.ADMINISTRADOR);
                 }
-                actualizarTabla();
-                vaciarTextField();
+                if (gestorUsuarios.borrarUsuarioPorNombre(nombreBorrar) && gestorUsuarios.añadirUsuario(usr)) {
+                    actualizarTabla();
+                    vaciarTextField();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se ha podido actualizar el usuario", "Error", JOptionPane.WARNING_MESSAGE);
+                }
+
             } else {
                 JOptionPane.showMessageDialog(this, "El campo del nombre y contraseña no pueden estar vacíos", "No añadido", JOptionPane.WARNING_MESSAGE);
             }
+            vaciarTextField();
         } else {
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun producto", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
-        vaciarTextField();
 
     }//GEN-LAST:event_BotonActualizarMousePressed
 
@@ -314,7 +315,7 @@ public class Ventana2 extends javax.swing.JFrame {
         NombreTextField.setText(datos[filaSeleccionada][0].toString());
         ContraseñaPasswordField.setText(datos[filaSeleccionada][1].toString());
         RolComboBox.setSelectedItem(datos[filaSeleccionada][2].toString());
-        
+
         if (activo.equals("true")) {
             ActivoCheckBox.setSelected(true);
         } else {

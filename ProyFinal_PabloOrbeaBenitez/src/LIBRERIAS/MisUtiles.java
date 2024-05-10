@@ -1,5 +1,9 @@
 package LIBRERIAS;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
 public class MisUtiles {
 
     public static int comprobarIntPositivo(String num) {
@@ -25,6 +29,35 @@ public class MisUtiles {
             } catch (Exception e) {
             }
         return numero;
+    }
+        
+    
+    public static byte[] conseguirImagenPorRuta(String Ruta) {
+        if (Ruta != null) {
+            File imagen = new File(Ruta);
+            try {
+                byte[] icono = new byte[(int) imagen.length()];
+                InputStream input = new FileInputStream(imagen);
+                input.read(icono);
+                return icono;
+            } catch (Exception ex) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+    
+    public static int calcularNumMayor(Object datos[][],int posNum){
+        
+        int num = 0;
+        for (Object numero [] : datos) {
+            int tempNum = (int) numero[posNum];
+            if (num == tempNum) {
+                num++;
+            }
+        }
+        return num;
     }
     
 }

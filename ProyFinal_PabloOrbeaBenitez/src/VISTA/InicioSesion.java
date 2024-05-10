@@ -6,17 +6,18 @@ import java.io.IOException;
 public class InicioSesion {
     
     public static void main(String[] args) throws IOException {
-        GestorUsuariosBDO gestor = new GestorUsuariosBDO();
+        GestorUsuariosBDO gestorUsuarios = new GestorUsuariosBDO();
         int fallos = 4;
         boolean inicioCorrecto = false;
         do {
             String nombre = LIBRERIAS.Leer.leerCadena("Introduce el nombre: ", 20);
             String contraseña = LIBRERIAS.Leer.leerCadena("Introduce la contraseña: ",20);
             
-            if (gestor.comprobarInicioSesion(nombre, contraseña)) {
+            if (gestorUsuarios.comprobarInicioSesion(nombre, contraseña)) {
                 Ventana1 ventana = new Ventana1();
                 ventana.setVisible(true);
-                ventana.setAdministrador(gestor.comprobarUsuarioAdministrador(nombre));
+                ventana.setAdministrador(gestorUsuarios.comprobarUsuarioAdministrador(nombre));
+                gestorUsuarios.setUsrIniciaSesion(nombre);
                 inicioCorrecto = true;
             } else {
                 fallos--;
@@ -25,5 +26,6 @@ public class InicioSesion {
             
         } while (fallos > 0 && !inicioCorrecto);
     }
+    
     
 }

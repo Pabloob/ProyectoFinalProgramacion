@@ -9,18 +9,15 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -61,20 +58,26 @@ public class Ventana1 extends javax.swing.JFrame {
 
     //Se conecta la base de datos y se inicia la ventana
     public Ventana1() {
-        conectarBDR(ficheroUsrContUrl);
-        setTitle("Control inventario tienda");
-        initComponents();
-        actualizarTabla();
-        setAlwaysOnTop(true);
-        setLocationRelativeTo(null);
-        eventoOrdenar();
-        eventoEstilos();
-        reloj.start();
-        jTablaProductos.setRowHeight(100);
-        jTablaProductos.getColumnModel().getColumn(0).setPreferredWidth(100);
-        jTablaProductos.getColumnModel().getColumn(1).setPreferredWidth(100);
-        jTablaProductos.getColumnModel().getColumn(2).setPreferredWidth(100);
-        jTablaProductos.getColumnModel().getColumn(3).setPreferredWidth(100);
+        if (gestorBDR.conectarPorFicheroBDR(ficheroUsrContUrl)) {
+            setTitle("Control inventario tienda");
+            initComponents();
+            actualizarTabla();
+            setAlwaysOnTop(true);
+            setLocationRelativeTo(null);
+            eventoOrdenar();
+            eventoEstilos();
+            reloj.start();
+            jTablaProductos.setRowHeight(100);
+            jTablaProductos.getColumnModel().getColumn(0).setPreferredWidth(100);
+            jTablaProductos.getColumnModel().getColumn(1).setPreferredWidth(100);
+            jTablaProductos.getColumnModel().getColumn(2).setPreferredWidth(100);
+            jTablaProductos.getColumnModel().getColumn(3).setPreferredWidth(100);
+        } else {
+            JOptionPane.showMessageDialog(this, "Ha habido un error al conectar con la base datos comprueba"
+                    + " que los datos son correctos", "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -413,7 +416,6 @@ public class Ventana1 extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Se han guardado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
-
             }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
@@ -430,9 +432,7 @@ public class Ventana1 extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
 
             }
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -486,7 +486,7 @@ public class Ventana1 extends javax.swing.JFrame {
         String nombre = TextFieldNombre.getText();
         float precio = MisUtiles.comprobarFloatPositivo(TextFieldPrecio.getText());
         int cantidad = MisUtiles.comprobarIntPositivo(TextFieldCantidad.getText());
-        byte img[] = conseguirImagenPorRuta(ruta);
+        byte img[] = MisUtiles.conseguirImagenPorRuta(ruta);
 
         if (precio > 0 && cantidad > 0) {
             if (!nombre.isEmpty()) {
@@ -497,7 +497,7 @@ public class Ventana1 extends javax.swing.JFrame {
                 if (img == null) {
                     producto.setImagen(null);
                 } else {
-                    producto.setImagen(conseguirImagenPorRuta(ruta));
+                    producto.setImagen(MisUtiles.conseguirImagenPorRuta(ruta));
                 }
                 if (gestorBDR.añadirProducto(producto)) {
                     actualizarTabla();
@@ -797,46 +797,6 @@ public class Ventana1 extends javax.swing.JFrame {
                 DiseñoComboBox.addItem(titulo);
             }
         } catch (IOException | ClassNotFoundException e) {
-        }
-    }
-
-    //Metodo de conectar con la base de datos con los datos de un fichero 
-    private void conectarBDR(String fichero) {
-        String url, usuario, clave;
-
-        List<String> datosFichero = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(fichero))) {
-            String linea;
-
-            while ((linea = reader.readLine()) != null) {
-                String[] partes = linea.split("=");
-
-                if (partes.length >= 2) {
-                    datosFichero.add(partes[1].trim());
-                }
-            }
-        } catch (IOException e) {
-        }
-        usuario = datosFichero.get(0);
-        clave = datosFichero.get(1);
-        url = datosFichero.get(2);
-        gestorBDR.conectarBDR(url, usuario, clave);
-    }
-
-    public byte[] conseguirImagenPorRuta(String Ruta) {
-        if (Ruta != null) {
-            File imagen = new File(Ruta);
-            try {
-                byte[] icono = new byte[(int) imagen.length()];
-                InputStream input = new FileInputStream(imagen);
-                input.read(icono);
-                return icono;
-            } catch (Exception ex) {
-                return null;
-            }
-        } else {
-            return null;
         }
     }
 
