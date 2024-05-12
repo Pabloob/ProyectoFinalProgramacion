@@ -2,15 +2,11 @@ package CONTROLADORES;
 
 import MODELOS.ConfigPantalla;
 import java.awt.Color;
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.TreeSet;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,6 +39,7 @@ public class GestorEstilosGUI {
             estilos.add(config);
             correcto = true;
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return correcto;
 
@@ -54,12 +51,11 @@ public class GestorEstilosGUI {
             estilos.remove(new ConfigPantalla(nombre));
             correcto = true;
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return correcto;
     }
 
-    public boolean cambiarColorFondo(JPanel[] paneles, Color color) {
+    public boolean cambiarColor(JPanel[] paneles, Color color) {
         boolean correcto = false;
         try {
             for (JPanel panel : paneles) {
@@ -71,7 +67,7 @@ public class GestorEstilosGUI {
         return correcto;
     }
 
-    public boolean cambiarColorTexto(JLabel[] textos, Color color) {
+    public boolean cambiarColor(JLabel[] textos, Color color) {
         boolean correcto = false;
         try {
             for (JLabel texto : textos) {
@@ -90,11 +86,11 @@ public class GestorEstilosGUI {
         r = Integer.parseInt(rgb[0]);
         g = Integer.parseInt(rgb[1]);
         b = Integer.parseInt(rgb[2]);
-
-        return color = new Color(r, g, b);
+        color = new Color(r, g, b);
+        return color;
     }
 
-    public Color buscarColorEnFichero(String titulo, int colorBuscar, String nomArchivoEstilos, Object[][] datosEstilos) {
+    public Color buscarColorEnFichero(String titulo, int indice, String nomArchivoEstilos, Object[][] datosEstilos) {
         Color color = null;
         if (titulo != null) {
             int r, g, b;
@@ -108,7 +104,7 @@ public class GestorEstilosGUI {
                 for (Object[] dato : datosEstilos) {
                     String tituloArchivo = (String) dato[2];
                     if (titulo.equalsIgnoreCase(tituloArchivo)) {
-                        String rgbColor = (String) dato[colorBuscar];
+                        String rgbColor = (String) dato[indice];
                         String[] rgb = rgbColor.replaceAll("[^0-9,]", "").split(",");
                         r = Integer.parseInt(rgb[0]);
                         g = Integer.parseInt(rgb[1]);
@@ -124,10 +120,12 @@ public class GestorEstilosGUI {
 
     public Object[][] convertirListaADTM() {
         Object[][] matrizObjeto = new Object[estilos.size()][6];
+        Iterator<ConfigPantalla> iterator = estilos.iterator();
         int id = 0;
-        for (ConfigPantalla conf : this.estilos) {
+        while (iterator.hasNext()) {
+            ConfigPantalla conf = iterator.next();
             matrizObjeto[id][0] = conf.getID();
-                        matrizObjeto[id][1] = conf.getUsuarioCrea();
+            matrizObjeto[id][1] = conf.getUsuarioCrea();
             matrizObjeto[id][2] = conf.getTitulo();
             matrizObjeto[id][3] = conf.getColorFondo();
             matrizObjeto[id][4] = conf.getColorTexto();
@@ -136,7 +134,9 @@ public class GestorEstilosGUI {
         }
         return matrizObjeto;
     }
-
     
-
+    public void vaciar(){
+    estilos.removeAll(estilos);
+    }
+    
 }

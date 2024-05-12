@@ -8,16 +8,12 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -49,9 +45,9 @@ public class Ventana1 extends javax.swing.JFrame {
     };
 
     //Nombres de ficheros
-    String nomArchivo = "ARCHIVOS\\exportar.xml";
-    String ficheroUsrContUrl = "ARCHIVOS\\ConexionBD.txt";
-    String nomArchivoEstilos = "ARCHIVOS\\estilos.dat";
+    public static final String nombreFicheroXMLProductos = "ARCHIVOS\\Productos.xml";
+    public static final String nombreFicheroConectarBDR = "ARCHIVOS\\ConexionBDR.txt";
+    public static final String nombreFicheroEstilos = "ARCHIVOS\\estilos.dat";
 
     //Ruta imagen a añadir
     String ruta;
@@ -60,7 +56,7 @@ public class Ventana1 extends javax.swing.JFrame {
 
     //Se conecta la base de datos y se inicia la ventana
     public Ventana1() {
-        if (gestorBDR.conectarPorFicheroBDR(ficheroUsrContUrl)) {
+        if (gestorBDR.conectarPorFicheroBDR(nombreFicheroConectarBDR)) {
             setTitle("Control inventario tienda");
             initComponents();
             actualizarTabla();
@@ -75,8 +71,7 @@ public class Ventana1 extends javax.swing.JFrame {
             jTablaProductos.getColumnModel().getColumn(2).setPreferredWidth(100);
             jTablaProductos.getColumnModel().getColumn(3).setPreferredWidth(100);
         } else {
-            JOptionPane.showMessageDialog(this, "Ha habido un error al conectar con la base datos comprueba"
-                    + " que los datos son correctos", "Error", JOptionPane.ERROR_MESSAGE);
+            mostrarMensajeError("Se ha producido un error al conectar con la base de datos");
             System.exit(0);
         }
 
@@ -94,7 +89,7 @@ public class Ventana1 extends javax.swing.JFrame {
         Precio = new javax.swing.JLabel();
         Cantidad = new javax.swing.JLabel();
         BotonAñadir = new javax.swing.JButton();
-        BotonEliminar = new javax.swing.JButton();
+        BotonEliminarSeleccionado = new javax.swing.JButton();
         BotonActualizar = new javax.swing.JButton();
         BotonGuardar = new javax.swing.JButton();
         BotonCargar = new javax.swing.JButton();
@@ -109,6 +104,7 @@ public class Ventana1 extends javax.swing.JFrame {
         ActualizarEstilos = new javax.swing.JToggleButton();
         ImagenButton = new javax.swing.JButton();
         ImagenLabel = new javax.swing.JLabel();
+        BotonEliminarPorNombre = new javax.swing.JButton();
         Panel1 = new javax.swing.JPanel();
         TablaProductos = new javax.swing.JScrollPane();
         jTablaProductos = new javax.swing.JTable();
@@ -147,11 +143,11 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         });
 
-        BotonEliminar.setBackground(new java.awt.Color(255, 255, 255));
-        BotonEliminar.setText("ELIMINAR");
-        BotonEliminar.addMouseListener(new java.awt.event.MouseAdapter() {
+        BotonEliminarSeleccionado.setBackground(new java.awt.Color(255, 255, 255));
+        BotonEliminarSeleccionado.setText("ELIMINAR");
+        BotonEliminarSeleccionado.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                BotonEliminarMousePressed(evt);
+                BotonEliminarSeleccionadoMousePressed(evt);
             }
         });
 
@@ -238,63 +234,76 @@ public class Ventana1 extends javax.swing.JFrame {
             }
         });
 
+        BotonEliminarPorNombre.setBackground(new java.awt.Color(255, 255, 255));
+        BotonEliminarPorNombre.setText("ELIMINAR");
+        BotonEliminarPorNombre.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonEliminarPorNombreMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout Panel2Layout = new javax.swing.GroupLayout(Panel2);
         Panel2.setLayout(Panel2Layout);
         Panel2Layout.setHorizontalGroup(
             Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel2Layout.createSequentialGroup()
+                .addComponent(BotonGestionarUsuarios)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(BotonConfigurarpantalla)
+                .addGap(18, 18, 18)
+                .addComponent(BotonCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(BotonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(HORA, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addGroup(Panel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
                         .addComponent(BotonAñadir, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BotonEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BotonEliminarSeleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BotonActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(240, 240, 240)
-                        .addComponent(HORA, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
-                        .addGap(0, 48, Short.MAX_VALUE)
-                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(Panel2Layout.createSequentialGroup()
-                                .addComponent(Precio, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(TextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(Panel2Layout.createSequentialGroup()
-                                .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(TextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(Panel2Layout.createSequentialGroup()
-                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, Panel2Layout.createSequentialGroup()
-                                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(Cantidad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(ORDENAR, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(OrdenarPor, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(TextFieldCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(Panel2Layout.createSequentialGroup()
-                                        .addComponent(DISEÑO, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(DiseñoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(18, 18, 18)
-                                .addComponent(ActualizarEstilos)))
-                        .addGap(15, 15, 15)
-                        .addComponent(ImagenLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
-                        .addComponent(BotonGestionarUsuarios)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BotonConfigurarpantalla)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
-                        .addComponent(BotonCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BotonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BotonEliminarPorNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addComponent(BotonActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(68, 68, 68)
+                        .addComponent(FECHA, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ImagenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(FECHA, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(Panel2Layout.createSequentialGroup()
+                                        .addComponent(Precio, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(TextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(Panel2Layout.createSequentialGroup()
+                                        .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(TextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(Panel2Layout.createSequentialGroup()
+                                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, Panel2Layout.createSequentialGroup()
+                                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(Cantidad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(ORDENAR, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                    .addComponent(OrdenarPor, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(TextFieldCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addGroup(Panel2Layout.createSequentialGroup()
+                                                .addComponent(DISEÑO, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(DiseñoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(ActualizarEstilos)))
+                                .addGap(15, 15, 15)
+                                .addComponent(ImagenLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                                .addComponent(ImagenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(9, 9, 9))))))
         );
         Panel2Layout.setVerticalGroup(
             Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -324,25 +333,27 @@ public class Ventana1 extends javax.swing.JFrame {
                     .addComponent(DiseñoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ActualizarEstilos)
                     .addComponent(ImagenButton))
-                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(Panel2Layout.createSequentialGroup()
-                        .addGap(170, 170, 170)
-                        .addComponent(HORA, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19))
-                    .addGroup(Panel2Layout.createSequentialGroup()
-                        .addGap(75, 75, 75)
+                        .addGap(141, 141, 141)
                         .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(BotonAñadir)
-                            .addComponent(BotonEliminar)
-                            .addComponent(BotonActualizar))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BotonConfigurarpantalla)
-                    .addComponent(BotonGestionarUsuarios)
-                    .addComponent(FECHA, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
-                    .addComponent(BotonGuardar)
-                    .addComponent(BotonCargar))
-                .addContainerGap())
+                            .addComponent(BotonEliminarSeleccionado)
+                            .addComponent(BotonActualizar)
+                            .addComponent(BotonEliminarPorNombre))
+                        .addGap(55, 55, 55))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(FECHA, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(BotonConfigurarpantalla)
+                        .addComponent(BotonGestionarUsuarios)
+                        .addComponent(BotonGuardar)
+                        .addComponent(BotonCargar))
+                    .addComponent(HORA, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         Panel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -413,20 +424,19 @@ public class Ventana1 extends javax.swing.JFrame {
 
     private void BotonGuardarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonGuardarMousePressed
         //Se guardan los datos de los productos en el nombre del archivo
-        if (gestorBDR.guardarProductosEnFicheroXML(datosProductos, nomArchivo)) {
-            JOptionPane.showMessageDialog(this, "Se han guardado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+        if (gestorBDR.guardarProductosEnFicheroXML(datosProductos, nombreFicheroXMLProductos)) {
+            mostrarMensajeInformacion("Se han guardado los productos correctamente");
         } else {
-            JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
+            mostrarMensajeError("Se ha producido un error al guardar los productos");
         }
     }//GEN-LAST:event_BotonGuardarMousePressed
 
     private void BotonCargarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonCargarMousePressed
         //Se guardan los datos de los productos en el nombre del archivo
-        if (gestorBDR.cargarProductosDeFicheroXML(nomArchivo)) {
-            JOptionPane.showMessageDialog(this, "Se han cargado los datos", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+        if (gestorBDR.cargarProductosDeFicheroXML(nombreFicheroXMLProductos)) {
+            mostrarMensajeInformacion("Se han cargado los productos correctamente");
         } else {
-            JOptionPane.showMessageDialog(this, "Ha habido un error", "Error", JOptionPane.ERROR_MESSAGE);
-            
+            mostrarMensajeError("Se ha producido un error cargar los productos");
         }
 
 
@@ -444,43 +454,47 @@ public class Ventana1 extends javax.swing.JFrame {
         try {
             JLabel imagenLabel = (JLabel) datosProductos[filaSeleccionada][3];
             ImageIcon imagenIcono = (ImageIcon) imagenLabel.getIcon();
-            Image imagenOriginal = imagenIcono.getImage();
-            Image imagenEscalada = imagenOriginal.getScaledInstance(ImagenLabel.getWidth(), ImagenLabel.getHeight(), Image.SCALE_SMOOTH);
-            ImageIcon imagenEscaladaIcono = new ImageIcon(imagenEscalada);
-            ImagenLabel.setIcon(imagenEscaladaIcono);
+            if (imagenIcono == null) {
+                ImagenLabel.setIcon(null);
+                ImagenLabel.setText("NO HAY IMAGEN DISPONIBLE");
+            } else {
+                Image imagenOriginal = imagenIcono.getImage();
+                Image imagenEscalada = imagenOriginal.getScaledInstance(ImagenLabel.getWidth(), ImagenLabel.getHeight(), Image.SCALE_SMOOTH);
+                ImageIcon imagenEscaladaIcono = new ImageIcon(imagenEscalada);
+                ImagenLabel.setIcon(imagenEscaladaIcono);
+            }
+
         } catch (Exception e) {
-            ImagenLabel.setIcon(null);
-            ImagenLabel.setText("NO HAY IMAGEN DISPONIBLE");
+            e.printStackTrace();
         }
 
 
     }//GEN-LAST:event_jTablaProductosMousePressed
 
-    private void BotonEliminarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonEliminarMousePressed
+    private void BotonEliminarSeleccionadoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonEliminarSeleccionadoMousePressed
         //Se verifica si se ha seleccionado alguna fila y se borra el producto
 
         int filaSeleccionado = jTablaProductos.getSelectedRow();
-        ArrayList productos = gestorBDR.convertirBDRADTM();
-        Producto producto = (Producto) productos.get(filaSeleccionado);
-
         if (filaSeleccionado >= 0) {
+            ArrayList productos = gestorBDR.convertirBDRALista();
+            Producto producto = (Producto) productos.get(filaSeleccionado);
             String nombre = (String) datosProductos[filaSeleccionado][0];
             if (gestorBDR.borrarProductoPorNombre(nombre)) {
-                gestorBDR.borrarImagen(producto.getrutaImagen());
+                MisUtiles.borrarImagen(producto.getrutaImagen());
                 actualizarTabla();
+                vaciarTextField();
             } else {
-                JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Message", JOptionPane.INFORMATION_MESSAGE);
+                mostrarMensajeError("Se ha producido un error al borrar el producto");
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Message", JOptionPane.INFORMATION_MESSAGE);
+            mostrarMensajeError("No se ha seleccionado ninguna fila");
         }
-        vaciarTextField();
-    }//GEN-LAST:event_BotonEliminarMousePressed
+    }//GEN-LAST:event_BotonEliminarSeleccionadoMousePressed
 
     private void BotonAñadirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAñadirMousePressed
         //Se añade un producto con los datos de los textfields y se comprueban los datos
 
-        String nombre = TextFieldNombre.getText();
+        String nombre = TextFieldNombre.getText().strip();
         float precio = MisUtiles.comprobarFloatPositivo(TextFieldPrecio.getText());
         int cantidad = MisUtiles.comprobarIntPositivo(TextFieldCantidad.getText());
         if (precio > 0 && cantidad > 0) {
@@ -498,14 +512,14 @@ public class Ventana1 extends javax.swing.JFrame {
                     actualizarTabla();
                     vaciarTextField();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Message", JOptionPane.INFORMATION_MESSAGE);
+                    mostrarMensajeError("Se ha producido un error al añadir el producto");
                 }
-
             } else {
-                JOptionPane.showMessageDialog(this, "No puede haber ningun campo vacio", "No añadido", JOptionPane.WARNING_MESSAGE);
+                mostrarMensajeError("El campo nombre no puede estar vacio");
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Los numeros deben ser positivos y validos", "No añadido", JOptionPane.WARNING_MESSAGE);
+            mostrarMensajeError("Comprueba que precio y cantidad estan rellenados "
+                    + "con valores positivos y sin datos que no sean numeros");
         }
 
     }//GEN-LAST:event_BotonAñadirMousePressed
@@ -513,49 +527,48 @@ public class Ventana1 extends javax.swing.JFrame {
     private void BotonActualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonActualizarMousePressed
         //Se muestran los datos de el producto seleccionado en los texfields y se cogen los nuevos datos actualizando el producto 
         int filaSeleccionada = jTablaProductos.getSelectedRow();
-        ArrayList productos = gestorBDR.convertirBDRADTM();
-        Producto producto = (Producto) productos.get(filaSeleccionada);
 
         if (filaSeleccionada >= 0) {
+            ArrayList productos = gestorBDR.convertirBDRALista();
+            Producto producto = (Producto) productos.get(filaSeleccionada);
             Producto productoAñadir = new Producto();
             String nombreBorrar = (String) datosProductos[filaSeleccionada][0];
 
-            String nombre = TextFieldNombre.getText();
+            String nombre = TextFieldNombre.getText().strip();
             float precio = MisUtiles.comprobarFloatPositivo(TextFieldPrecio.getText());
             int cantidad = MisUtiles.comprobarIntPositivo(TextFieldCantidad.getText());
 
             if (precio > 0 && cantidad > 0) {
 
                 if (!nombre.isEmpty()) {
-                    if (gestorBDR.borrarProductoPorNombre(nombreBorrar)) {
-                        gestorBDR.borrarImagen(producto.getrutaImagen());
-                        actualizarTabla();
-                        productoAñadir.setNombre(nombre);
-                        productoAñadir.setPrecio(precio);
-                        productoAñadir.setCantidad(cantidad);
-                        if (ruta == null) {
-                            productoAñadir.setrutaImagen(null);
-                        } else {
-                            productoAñadir.setrutaImagen(ruta);
-                        }
-                        if (gestorBDR.añadirProducto(productoAñadir)) {
-                            actualizarTabla();
-                            vaciarTextField();
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Message", JOptionPane.INFORMATION_MESSAGE);
-                        }
+                    productoAñadir.setNombre(nombre);
+                    productoAñadir.setPrecio(precio);
+                    productoAñadir.setCantidad(cantidad);
+                    if (ruta == null) {
+                        productoAñadir.setrutaImagen(null);
                     } else {
-                        JOptionPane.showMessageDialog(this, "Ha ocurrido un error", "Message", JOptionPane.INFORMATION_MESSAGE);
+                        productoAñadir.setrutaImagen(ruta);
+                    }
+
+                    if (gestorBDR.borrarProductoPorNombre(nombreBorrar) && gestorBDR.añadirProducto(productoAñadir)) {
+                        MisUtiles.borrarImagen(producto.getrutaImagen());
+                        actualizarTabla();
+
+                        vaciarTextField();
+                    } else {
+                        mostrarMensajeError("Se ha producido un error actualizando el "
+                                + "producto al actualizar los datos");
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "Debes rellenar todos los campos", "No añadido", JOptionPane.WARNING_MESSAGE);
+                    mostrarMensajeError("El campo nombre no puede estar vacio");
                 }
 
             } else {
-                JOptionPane.showMessageDialog(this, "Los numeros deben ser positivos y validos", "No añadido", JOptionPane.WARNING_MESSAGE);
+                mostrarMensajeError("Comprueba que precio y cantidad estan rellenados "
+                        + "con valores positivos y sin datos que no sean numeros");
             }
         } else {
-            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun producto", "Message", JOptionPane.INFORMATION_MESSAGE);
+            mostrarMensajeError("No se ha seleccionado ninguna fila");
         }
     }//GEN-LAST:event_BotonActualizarMousePressed
 
@@ -585,7 +598,7 @@ public class Ventana1 extends javax.swing.JFrame {
 
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             ruta = fileChooser.getSelectedFile().getAbsolutePath();
-            ruta = gestorBDR.copiarImagen(ruta);
+            ruta = MisUtiles.copiarImagen(ruta, "IMAGENES\\");
             Image mImagen = new ImageIcon(ruta).getImage();
             ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(ImagenLabel.getWidth(), ImagenLabel.getHeight(), 0));
             ImagenLabel.setIcon(mIcono);
@@ -599,6 +612,29 @@ public class Ventana1 extends javax.swing.JFrame {
         ImagenLabel.setText(null);
         ruta = null;
     }//GEN-LAST:event_ImagenLabelMousePressed
+
+    private void BotonEliminarPorNombreMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonEliminarPorNombreMousePressed
+
+        String nombre = JOptionPane.showInputDialog(this, "Introduce el nombre exacto del producto", "Borrar", JOptionPane.YES_NO_CANCEL_OPTION);
+        if (nombre != null) {
+            ArrayList productos = gestorBDR.convertirBDRALista();
+
+            for (int i = 0; i < productos.size(); i++) {
+                Producto producto = (Producto) productos.get(i);
+                if (producto.getNombre().equals(nombre)) {
+                    MisUtiles.borrarImagen(producto.getrutaImagen());
+                }
+            }
+
+            if (gestorBDR.borrarProductoPorNombre(nombre)) {
+                actualizarTabla();
+            } else {
+                mostrarMensajeError("Se ha producido un error al borrar un usuario por nombre, "
+                        + "verifica que el usuario es correcto");
+            }
+        }
+
+    }//GEN-LAST:event_BotonEliminarPorNombreMousePressed
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -636,7 +672,8 @@ public class Ventana1 extends javax.swing.JFrame {
     private javax.swing.JButton BotonAñadir;
     private javax.swing.JButton BotonCargar;
     private javax.swing.JButton BotonConfigurarpantalla;
-    private javax.swing.JButton BotonEliminar;
+    private javax.swing.JButton BotonEliminarPorNombre;
+    private javax.swing.JButton BotonEliminarSeleccionado;
     private javax.swing.JButton BotonGestionarUsuarios;
     private javax.swing.JButton BotonGuardar;
     private javax.swing.JLabel Cantidad;
@@ -663,7 +700,7 @@ public class Ventana1 extends javax.swing.JFrame {
     private void actualizarTabla() {
         jTablaProductos.setDefaultRenderer(Object.class, new ImagenTabla());
 
-        ArrayList productos = gestorBDR.convertirBDRADTM();
+        ArrayList productos = gestorBDR.convertirBDRALista();
         Producto producto;
         datosProductos = new Object[productos.size()][4];
 
@@ -702,8 +739,6 @@ public class Ventana1 extends javax.swing.JFrame {
 
     }
 
-    //se actualizan los datos de la tabla con los datos de los productos 
-    //Este metodo se usa solamente para ordenar los productos
     private void actualizarTablaOrdenada() {
         listaProductos.setDataVector(datosProductos, nomCols);
     }
@@ -754,16 +789,16 @@ public class Ventana1 extends javax.swing.JFrame {
                 opcion = (String) OrdenarPor.getSelectedItem();
                 switch (opcion.toUpperCase()) {
                     case "NOMBRE":
-                        datosProductos = gestorBDR.ordenarNombre(datosProductos);
+                        datosProductos = MisUtiles.ordenarNombre(datosProductos);
                         break;
                     case "PRECIO":
-                        datosProductos = gestorBDR.ordenarPrecio(datosProductos);
+                        datosProductos = MisUtiles.ordenarPrecio(datosProductos);
                         break;
                     case "CANTIDAD":
-                        datosProductos = gestorBDR.ordenarCantidad(datosProductos);
+                        datosProductos = MisUtiles.ordenarCantidad(datosProductos);
                         break;
                     default:
-                        throw new AssertionError();
+                        throw new AssertionError(); 
                 }
                 actualizarTablaOrdenada();
             }
@@ -782,11 +817,10 @@ public class Ventana1 extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 opcion = (String) DiseñoComboBox.getSelectedItem();
-                System.out.println(opcion);
-                color = gestorEstilos.buscarColorEnFichero(opcion, 3, nomArchivoEstilos, datosEstilos);
-                gestorEstilos.cambiarColorFondo(paneles, color);
-                color = gestorEstilos.buscarColorEnFichero(opcion, 4, nomArchivoEstilos, datosEstilos);
-                gestorEstilos.cambiarColorTexto(textos, color);
+                color = gestorEstilos.buscarColorEnFichero(opcion, 3, nombreFicheroEstilos, datosEstilos);
+                gestorEstilos.cambiarColor(paneles, color);
+                color = gestorEstilos.buscarColorEnFichero(opcion, 4, nombreFicheroEstilos, datosEstilos);
+                gestorEstilos.cambiarColor(textos, color);
 
             }
         });
@@ -795,7 +829,7 @@ public class Ventana1 extends javax.swing.JFrame {
     private void actualizarOpcionesEstilos() {
         try {
             DiseñoComboBox.removeAllItems();
-            FileInputStream fis = new FileInputStream(nomArchivoEstilos);
+            FileInputStream fis = new FileInputStream(nombreFicheroEstilos);
             ObjectInputStream ois = new ObjectInputStream(fis);
             datosEstilos = (Object[][]) ois.readObject();
             for (Object[] dato : datosEstilos) {
@@ -808,6 +842,14 @@ public class Ventana1 extends javax.swing.JFrame {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
+    }
+
+    private void mostrarMensajeError(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void mostrarMensajeInformacion(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, "ERROR", JOptionPane.INFORMATION_MESSAGE);
     }
 
 }

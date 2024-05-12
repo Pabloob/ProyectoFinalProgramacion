@@ -10,15 +10,21 @@ public class InicioSesion {
         int fallos = 4;
         boolean inicioCorrecto = false;
         do {
-            String nombre = LIBRERIAS.Leer.leerCadena("Introduce el nombre: ", 20);
-            String contraseña = LIBRERIAS.Leer.leerCadena("Introduce la contraseña: ", 20);
+            String nombre = LIBRERIAS.Leer.leerCadena("Introduce el nombre: ");
+            String contraseña = LIBRERIAS.Leer.leerCadena("Introduce la contraseña: ");
 
             if (gestorUsuarios.comprobarInicioSesion(nombre, contraseña)) {
                 Ventana1 ventana = new Ventana1();
                 ventana.setVisible(true);
                 ventana.setAdministrador(gestorUsuarios.comprobarUsuarioAdministrador(nombre));
-                                ventana.setNombreUsuario(nombre);
-                inicioCorrecto = true;
+                ventana.setNombreUsuario(nombre);
+                if (gestorUsuarios.comprobarUsuarioActivo(nombre)) {
+                    System.out.println("activo");
+                } else {
+                    System.out.println("mal");
+                }
+                    inicioCorrecto = true;
+
             } else {
                 fallos--;
                 System.out.println("Error el usuario o contraseña son incorrectos tienes " + fallos + " fallos más");

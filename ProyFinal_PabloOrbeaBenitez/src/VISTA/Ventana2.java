@@ -1,11 +1,20 @@
 package VISTA;
 
 import CONTROLADORES.GestorUsuariosBDO;
+import LIBRERIAS.MisUtiles;
 import MODELOS.Usuario;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Ventana2 extends javax.swing.JFrame {
+
+    public static final String nombreFicheroEstilos = "ARCHIVOS\\estilos.dat";
 
     GestorUsuariosBDO gestorUsuarios = new GestorUsuariosBDO();
 
@@ -225,9 +234,9 @@ public class Ventana2 extends javax.swing.JFrame {
 
     private void BotonAñadirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAñadirMousePressed
         //Boton que añade un usuario comprobando sus datos y pidiendo siempre usuario y contraseña
-        String nombre = NombreTextField.getText().trim();
-        String contraseña = gestorUsuarios.convertirContraseña(ContraseñaPasswordField.getPassword());
-        String rol = RolComboBox.getSelectedItem().toString();
+        String nombre = NombreTextField.getText().strip();
+        String contraseña = MisUtiles.arrayCharAString(ContraseñaPasswordField.getPassword());
+        String rol = RolComboBox.getSelectedItem().toString().strip();
         boolean activo = ActivoCheckBox.isSelected();
 
         if (!nombre.isEmpty() && !contraseña.isEmpty()) {
@@ -243,11 +252,10 @@ public class Ventana2 extends javax.swing.JFrame {
                 actualizarTabla();
                 vaciarTextField();
             } else {
-                JOptionPane.showMessageDialog(this, "No se ha podido añadir comprueba que el usuario no exista ya", "Error", JOptionPane.WARNING_MESSAGE);
+                mostrarMensajeError("Se ha producido un erro al borrar el añadir el usuario comprueba que no exista ya");
             }
-
         } else {
-            JOptionPane.showMessageDialog(this, "El campo del nombre y contraseña no pueden estar vacíos", "Error", JOptionPane.WARNING_MESSAGE);
+            mostrarMensajeError("El campo del nombre y contraseña no pueden estar vacíos");
         }
 
     }//GEN-LAST:event_BotonAñadirMousePressed
@@ -262,11 +270,22 @@ public class Ventana2 extends javax.swing.JFrame {
                 actualizarTabla();
                 vaciarTextField();
             } else {
-                JOptionPane.showMessageDialog(this, "No se ha podido borrar el usuario", "Error", JOptionPane.WARNING_MESSAGE);
+                mostrarMensajeError("Se ha producido un erro al borrar el usuario");
             }
+            Ventana3 ventana3 = new Ventana3();
+            Object datosTemp[][] = ventana3.getDatos();
+            List<Object[]> nuevosDatos = new ArrayList<>();
+
+            for (Object[] dato : datosTemp) {
+                if (!nombre.equalsIgnoreCase((String) dato[1])) {
+                    nuevosDatos.add(dato);
+                }
+            }
+            Object[][] nuevosDatosArray = nuevosDatos.toArray(new Object[0][]);
+            ventana3.setDatos(nuevosDatosArray);
 
         } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un registro", "Error", JOptionPane.INFORMATION_MESSAGE);
+            mostrarMensajeError("No se ha seleccionado ninguna fila");
         }
 
     }//GEN-LAST:event_BotonBorrarMousePressed
@@ -277,9 +296,9 @@ public class Ventana2 extends javax.swing.JFrame {
         int filaSeleccionada = jTablaUsuarios.getSelectedRow();
         if (filaSeleccionada >= 0) {
             String nombreBorrar = (String) datos[filaSeleccionada][0];
-            String nombre = NombreTextField.getText();
-            String contraseña = gestorUsuarios.convertirContraseña(ContraseñaPasswordField.getPassword());
-            String rol = RolComboBox.getSelectedItem().toString();
+            String nombre = NombreTextField.getText().strip();
+            String contraseña = MisUtiles.arrayCharAString(ContraseñaPasswordField.getPassword());
+            String rol = RolComboBox.getSelectedItem().toString().strip();
             boolean activo = ActivoCheckBox.isSelected();
 
             if (!nombreBorrar.trim().isEmpty() && !contraseña.trim().isEmpty()) {
@@ -294,15 +313,13 @@ public class Ventana2 extends javax.swing.JFrame {
                     actualizarTabla();
                     vaciarTextField();
                 } else {
-                    JOptionPane.showMessageDialog(this, "No se ha podido actualizar el usuario", "Error", JOptionPane.WARNING_MESSAGE);
+                    mostrarMensajeError("Se ha producido un error al actualizar los datos del usuario");
                 }
-
             } else {
-                JOptionPane.showMessageDialog(this, "El campo del nombre y contraseña no pueden estar vacíos", "No añadido", JOptionPane.WARNING_MESSAGE);
+                mostrarMensajeError("El campo del nombre y contraseña no pueden estar vacíos");
             }
-            vaciarTextField();
         } else {
-            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun producto", "Message", JOptionPane.INFORMATION_MESSAGE);
+            mostrarMensajeError("No se ha seleccionado ninguna fila");
         }
 
     }//GEN-LAST:event_BotonActualizarMousePressed
@@ -390,5 +407,9 @@ public class Ventana2 extends javax.swing.JFrame {
     public void vaciarTextField() {
         NombreTextField.setText("");
         ContraseñaPasswordField.setText("");
+    }
+
+    private void mostrarMensajeError(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
 }

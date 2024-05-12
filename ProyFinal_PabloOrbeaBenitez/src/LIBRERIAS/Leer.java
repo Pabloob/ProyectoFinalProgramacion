@@ -3,13 +3,204 @@ package LIBRERIAS;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Leer {
 
-    //Metodo que lee un nombre de menos de 10 digitos
-    public static String leerCadena(String msj, int maxCaracteres) throws IOException {
+    public static int leerEntero(String msj) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        int valor = 0;
+        String auxiliar;
+        boolean correcto;
+        do {
+            correcto = false;
+            System.out.print(msj);
+            try {
+                auxiliar = teclado.readLine().strip();
+                valor = Integer.parseInt(auxiliar);
+                correcto = true;
+            } catch (IOException | NumberFormatException e) {
+                System.out.println("Error introduce una opcion valida");
+            }
+        } while (!correcto);
+        return valor;
+    }
+
+    public static int leerEnteroMayorACero(String msj) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        int valor = 0;
+        String auxiliar;
+        boolean correcto;
+        do {
+            correcto = false;
+            System.out.print(msj);
+            try {
+                auxiliar = teclado.readLine().strip();
+                valor = Integer.parseInt(auxiliar);
+                if (valor > 0) {
+                    correcto = true;
+                }
+            } catch (IOException | NumberFormatException e) {
+                System.out.println("Error introduce una opcion valida");
+            }
+        } while (!correcto);
+        return valor;
+    }
+
+    public static int leerEnetroEntreXeY(String msj, int x, int y) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        int valor = 0;
+        String auxiliar;
+        boolean correcto;
+        do {
+            correcto = false;
+            System.out.print(msj);
+            try {
+                auxiliar = teclado.readLine().strip();
+                valor = Integer.parseInt(auxiliar);
+                if (valor >= x && valor <= y) {
+                    correcto = true;
+                }
+            } catch (IOException | NumberFormatException e) {
+                System.out.println("Error introduce una opcion valida");
+            }
+
+        } while (!correcto);
+        return valor;
+    }
+
+    public static float leerDecimal(String msj) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        float valor = 0;
+        String auxiliar;
+        boolean correcto;
+        do {
+            correcto = false;
+            System.out.print(msj);
+            try {
+                auxiliar = teclado.readLine().strip();
+                valor = Float.parseFloat(auxiliar);
+                correcto = true;
+            } catch (IOException | NumberFormatException e) {
+                System.out.println("Error introduce una opcion valida");
+            }
+        } while (!correcto);
+        return valor;
+    }
+
+    public static float leerDecimalMayorACero(String msj) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        float valor = 0;
+        String auxiliar;
+        boolean correcto;
+        do {
+            correcto = false;
+            System.out.print(msj);
+            try {
+                auxiliar = teclado.readLine().strip();
+                valor = Float.parseFloat(auxiliar);
+                if (valor > 0) {
+                    correcto = true;
+                }
+            } catch (IOException | NumberFormatException e) {
+                System.out.println("Error introduce una opcion valida");
+            }
+        } while (!correcto);
+        return valor;
+    }
+
+    public static float leerDecimalEntreXeY(String msj, int x, int y) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        float valor = 0;
+        String auxiliar;
+        boolean correcto;
+        do {
+            correcto = false;
+            System.out.print(msj);
+            try {
+                auxiliar = teclado.readLine().strip();
+                valor = Float.parseFloat(auxiliar);
+                if (valor >= x && valor <= y) {
+                    correcto = true;
+                }
+            } catch (IOException | NumberFormatException e) {
+                System.out.println("Error introduce una opcion valida");
+            }
+
+        } while (!correcto);
+        return valor;
+    }
+
+    public static char leerLetra(String msj) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        char letra = 0;
+        boolean correcto;
+
+        do {
+            correcto = true;
+            try {
+                System.out.print(msj);
+                String valor = teclado.readLine().strip();
+                if (valor.length() != 1) {
+                    System.out.println("\tPor favor, introduce una letra válida");
+                    correcto = false;
+                } else {
+                    letra = Character.toUpperCase(valor.charAt(0));
+                }
+            } catch (IOException e) {
+                System.out.println("\tError al leer la entrada. Introduce una letra válida");
+                correcto = false;
+            }
+        } while (!correcto);
+
+        return letra;
+    }
+
+    public static char leerLetraAZ(String msj) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        char letra = 0;
+        boolean correcto;
+
+        do {
+            correcto = true;
+            try {
+                System.out.print(msj);
+                String valor = teclado.readLine().strip();
+                if (valor.length() != 1 || !Character.isLetter(valor.charAt(0))) {
+                    System.out.println("\tPor favor, introduce una letra válida");
+                    correcto = false;
+                } else {
+                    letra = Character.toUpperCase(valor.charAt(0));
+                }
+            } catch (IOException e) {
+                System.out.println("\tError al leer la entrada. Introduce una letra válida");
+                correcto = false;
+            }
+        } while (!correcto);
+
+        return letra;
+    }
+
+    public static String leerCadena(String msj) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        String valor;
+        System.out.print(msj);
+        valor = teclado.readLine().strip();
+        return valor;
+    }
+
+    public static String leerCadenaNoVacía(String msj) throws IOException {
         InputStreamReader flujo = new InputStreamReader(System.in);
         BufferedReader teclado = new BufferedReader(flujo);
         String valor;
@@ -17,39 +208,11 @@ public class Leer {
         do {
             correcto = false;
             System.out.print(msj);
-            valor = teclado.readLine().trim().replaceAll("\\s", "");
-            if (valor.isEmpty()) {
+            valor = teclado.readLine().strip();
+            if (!valor.isEmpty()) {
                 correcto = true;
-                System.err.println("\tError: No puedes introducir un nombre vacio");
-            } else if (valor.length() > maxCaracteres) {
-                correcto = true;
-                System.out.println("\tEl nombre no puede tener mas de " + maxCaracteres + " caracteres");
             }
-        } while (correcto);
-        return valor;
-    }
-
-    //Metodo que lee un numero de telefono hasta que tenga 9 cifras
-    public static String leerNumeroTelefono(String msj) throws IOException {
-        InputStreamReader flujo = new InputStreamReader(System.in);
-        BufferedReader teclado = new BufferedReader(flujo);
-        String valor = null;
-        boolean correcto;
-        do {
-            correcto = false;
-            System.out.print(msj);
-            try {
-                valor = teclado.readLine().trim().replaceAll("\\s", "");
-                if (valor.length() != 9) {
-                    System.out.println("\tIntroduce un numero de telefono con sus 9 digitos");
-                    correcto = true;
-                }
-            } catch (IOException e) {
-                correcto = true;
-                System.out.println("Error introduce una opcion valida");
-            }
-
-        } while (correcto);
+        } while (!correcto);
         return valor;
     }
 
@@ -87,72 +250,24 @@ public class Leer {
         } while (!correcto);
         return valor;
     }
-
-    //Pide 2 numeros uno minimo y otro maximo y lee el numero entre estos dos 
-    public static int leerNumeroEntreMinMax(String msj, int min, int max) throws IOException {
-        InputStreamReader flujo = new InputStreamReader(System.in);
-        BufferedReader teclado = new BufferedReader(flujo);
-        int valor = 0;
-        String auxiliar;
-        boolean correcto;
-        do {
-            correcto = false;
-            System.out.print(msj);
-            try {
-                auxiliar = teclado.readLine().trim();
-                valor = Integer.parseInt(auxiliar);
-                if (valor < min || valor > max) {
-                    correcto = true;
-                    System.out.println("Introduce una opcion valida");
-                }
-            } catch (IOException | NumberFormatException e) {
-                correcto = true;
-                System.out.println("Error introduce una opcion valida");
-            }
-
-        } while (correcto);
-        return valor;
-    }
-
-    public static int leerNumero(String msj) throws IOException {
-        InputStreamReader flujo = new InputStreamReader(System.in);
-        BufferedReader teclado = new BufferedReader(flujo);
-        int valor = 0;
-        String auxiliar;
-        boolean correcto;
-        do {
-            correcto = false;
-            System.out.print(msj);
-            try {
-                auxiliar = teclado.readLine().trim();
-                valor = Integer.parseInt(auxiliar);
-            } catch (IOException | NumberFormatException e) {
-                correcto = true;
-                System.out.println("Error introduce una opcion valida");
-            }
-        } while (correcto);
-        return valor;
-    }
     
-    //Lee un numero 
-    public static int leerNumero(String msj, int max) throws IOException {
+    //Metodo que lee un numero de telefono hasta que tenga 9 cifras
+    public static String leerNumeroTelefono(String msj) throws IOException {
         InputStreamReader flujo = new InputStreamReader(System.in);
         BufferedReader teclado = new BufferedReader(flujo);
-        int valor = 0;
-        String auxiliar;
+        String valor = null;
         boolean correcto;
         do {
-            correcto = false;
+            correcto = true;
             System.out.print(msj);
             try {
-                auxiliar = teclado.readLine().trim();
-                valor = Integer.parseInt(auxiliar);
-                if (valor > max) {
-                    correcto = true;
-                    System.out.println("Introduce una opcion valida");
+                valor = teclado.readLine().trim().replaceAll("\\s", "");
+                if (valor.length() != 9) {
+                    System.out.println("\tIntroduce un numero de telefono con sus 9 digitos");
+                    correcto = false;
                 }
-            } catch (IOException | NumberFormatException e) {
-                correcto = true;
+            } catch (IOException e) {
+                correcto = false;
                 System.out.println("Error introduce una opcion valida");
             }
 
@@ -160,30 +275,5 @@ public class Leer {
         return valor;
     }
 
-    //Metodo que lee un booleano
-    public static boolean leerBoolean(String msj, String FEM, String MASC) throws IOException {
-        InputStreamReader flujo = new InputStreamReader(System.in);
-        BufferedReader teclado = new BufferedReader(flujo);
-        boolean sexoMasc = false;
-        boolean correcto = false;
-
-        do {
-            System.out.print(msj);
-            String auxiliar = teclado.readLine().toLowerCase().trim();
-
-            if (auxiliar.equals(FEM)) {
-                sexoMasc = false;
-                correcto = true;
-            } else if (auxiliar.equals(MASC)) {
-                sexoMasc = true;
-                correcto = true;
-            } else {
-                System.err.println("\tError: Debe introducir " + FEM + " o " + MASC);
-            }
-
-        } while (!correcto);
-        
-        return sexoMasc;
-    }
-
+    
 }

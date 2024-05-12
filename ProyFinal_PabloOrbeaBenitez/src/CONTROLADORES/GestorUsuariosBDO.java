@@ -11,25 +11,18 @@ import javax.persistence.TypedQuery;
 
 public class GestorUsuariosBDO implements Serializable {
 
-    String usuarioIniciaSesion;
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/ProyFinal.odb");
     EntityManager em = emf.createEntityManager();
 
     public boolean comprobarInicioSesion(String nomUsuario, String contraseña) {
         boolean inicioSesion = false;
-        Object[][] usuarioContraseña;
         try {
-            TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) FROM Usuario u", Long.class);
-            long numUsuarios = countQuery.getSingleResult();
-
             TypedQuery<Usuario> query = em.createQuery("SELECT u FROM Usuario u", Usuario.class);
             List<Usuario> usuarios = query.getResultList();
 
-            usuarioContraseña = new Object[(int) numUsuarios][2];
 
-            int indice = 0;
             for (Usuario usuario : usuarios) {
-                if (usuario.getNombre().equals(nomUsuario) && usuario.getContraseña().equals(contraseña)) {
+                if (usuario.getNombre().equals(nomUsuario) && usuario.getContraseña().equals(contraseña) && usuario.isActivo()) {
                     inicioSesion = true;
                 }
             }
@@ -69,6 +62,35 @@ public class GestorUsuariosBDO implements Serializable {
         }
 
         return administrador;
+    }
+    public boolean comprobarUsuarioActivo(String nomUsuario) {
+        boolean activo = false;
+
+        Object[][] usuarioRol;
+        try {
+            TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) FROM Usuario u", Long.class);
+            long numUsuarios = countQuery.getSingleResult();
+
+            TypedQuery<Usuario> query = em.createQuery("SELECT u FROM Usuario u", Usuario.class);
+            List<Usuario> usuarios = query.getResultList();
+
+            usuarioRol = new Object[(int) numUsuarios][2];
+
+            int indice = 0;
+            for (Usuario usuario : usuarios) {
+                usuarioRol[indice][0] = usuario.getNombre();
+                usuarioRol[indice][1] = usuario.isActivo();
+                indice++;
+            }
+            for (Object[] usuario : usuarioRol) {
+                if (usuario[0].equals(nomUsuario) && usuario[1].equals("true")) {
+                    activo = true;
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        return activo;
     }
 
     public boolean añadirUsuario(Usuario u1) {
@@ -142,14 +164,6 @@ public class GestorUsuariosBDO implements Serializable {
 
         return datos;
 
-    }
-
-    public String convertirContraseña(char caracteresContraseña[]) {
-        String contraseña = "";
-        for (char c : caracteresContraseña) {
-            contraseña = contraseña + c;
-        }
-        return contraseña.trim();
     }
 
 }

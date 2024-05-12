@@ -24,7 +24,7 @@ public class ConfigPantalla extends Configuracion {
         return "[r=" + colorFondo.getRed() + ",g=" + colorFondo.getGreen() + ",b=" + colorFondo.getBlue() + "]";
     }
 
-    public ConfigPantalla(int ID,String UsuarioCrea, String titulo,  Color colorFondo, Color colorTexto, Date fechaHora) {
+    public ConfigPantalla(int ID, String UsuarioCrea, String titulo, Color colorFondo, Color colorTexto, Date fechaHora) {
         super(titulo, ID, UsuarioCrea, fechaHora);
         this.colorFondo = colorFondo;
         this.colorTexto = colorTexto;
@@ -37,4 +37,15 @@ public class ConfigPantalla extends Configuracion {
     public ConfigPantalla() {
     }
 
+    public void presentarInformacion() {
+        String format = "%-5s%-15s%-15s%-20s%-20s%-30s%n";
+        System.out.printf(format, "ID", "Usuario Creador", "Título", "Color de Fondo", "Color de Texto", "Fecha y Hora");
+        System.out.printf(format, getID(), getUsuarioCrea(), getTitulo(), getColorFondo(), getColorTexto(), getFechaHora());
+    }
+
+    @Override
+    public void presentarTabulado() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
 }
