@@ -14,12 +14,19 @@ public class GestorUsuariosBDO implements Serializable {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/ProyFinal.odb");
     EntityManager em = emf.createEntityManager();
 
+    /**
+     * Se comprueba si el usuario y contraseña son iguales a algun usuario de la
+     * BDO y si el usuario esta activo
+     *
+     * @param nomUsuario
+     * @param contraseña
+     * @return Se devuelve si el inicio de sesion es correcto
+     */
     public boolean comprobarInicioSesion(String nomUsuario, String contraseña) {
         boolean inicioSesion = false;
         try {
             TypedQuery<Usuario> query = em.createQuery("SELECT u FROM Usuario u", Usuario.class);
             List<Usuario> usuarios = query.getResultList();
-
 
             for (Usuario usuario : usuarios) {
                 if (usuario.getNombre().equals(nomUsuario) && usuario.getContraseña().equals(contraseña) && usuario.isActivo()) {
@@ -33,6 +40,12 @@ public class GestorUsuariosBDO implements Serializable {
         return inicioSesion;
     }
 
+    /**
+     * Se comprueba si el usuario es administrador
+     *
+     * @param nomUsuario
+     * @return Se devuelve si el usuario es administrador o no
+     */
     public boolean comprobarUsuarioAdministrador(String nomUsuario) {
         boolean administrador = false;
 
@@ -63,36 +76,12 @@ public class GestorUsuariosBDO implements Serializable {
 
         return administrador;
     }
-    public boolean comprobarUsuarioActivo(String nomUsuario) {
-        boolean activo = false;
 
-        Object[][] usuarioRol;
-        try {
-            TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) FROM Usuario u", Long.class);
-            long numUsuarios = countQuery.getSingleResult();
-
-            TypedQuery<Usuario> query = em.createQuery("SELECT u FROM Usuario u", Usuario.class);
-            List<Usuario> usuarios = query.getResultList();
-
-            usuarioRol = new Object[(int) numUsuarios][2];
-
-            int indice = 0;
-            for (Usuario usuario : usuarios) {
-                usuarioRol[indice][0] = usuario.getNombre();
-                usuarioRol[indice][1] = usuario.isActivo();
-                indice++;
-            }
-            for (Object[] usuario : usuarioRol) {
-                if (usuario[0].equals(nomUsuario) && usuario[1].equals("true")) {
-                    activo = true;
-                }
-            }
-        } catch (Exception e) {
-        }
-
-        return activo;
-    }
-
+    /**
+     * Se añade el usuario recibiendo como parametro el usuario
+     * @param u1
+     * @return Se devuelve si se ha añadido correctamente
+     */
     public boolean añadirUsuario(Usuario u1) {
         boolean correcto = false;
 
@@ -106,6 +95,11 @@ public class GestorUsuariosBDO implements Serializable {
         return correcto;
     }
 
+    /**
+     * Se borra un usuario por nombre
+     * @param nombre
+     * @return Se devuelve si se ha borrado correctamente
+     */
     public boolean borrarUsuarioPorNombre(String nombre) {
         boolean correcto = false;
         try {
@@ -123,22 +117,10 @@ public class GestorUsuariosBDO implements Serializable {
         return correcto;
     }
 
-    public boolean vaciarUsuarios() {
-        boolean correcto = false;
-        try {
-            em.getTransaction().begin();
-            String jpql = "DELETE FROM Usuario u";
-            Query qModif = em.createQuery(jpql);
-            int filasEliminadas = qModif.executeUpdate();
-            em.getTransaction().commit();
-            if (filasEliminadas > 0) {
-                correcto = true;
-            }
-        } catch (Exception e) {
-        }
-        return correcto;
-    }
-
+    /**
+     * Se convierten los datos de la BDO a array[][]
+     * @return Se devuelve el array[][]
+     */
     public Object[][] convertirBDOADTM() {
         Object datos[][] = null;
         try {

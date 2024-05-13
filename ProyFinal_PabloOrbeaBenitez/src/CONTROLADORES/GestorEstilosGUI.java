@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -15,13 +16,19 @@ public class GestorEstilosGUI {
 
     private TreeSet<ConfigPantalla> estilos = new TreeSet<>();
     private Date hora = new Date();
+    private SimpleDateFormat formato = new SimpleDateFormat("d-M-y HH:mm");
 
+    /**
+     * Se añaden dos ejemplos de estilos
+     *
+     * @return Se devuelve si se han añadido correctamente
+     */
     public boolean añadirEjemplosEstilos() {
         boolean correcto = false;
 
         try {
-            ConfigPantalla c1 = new ConfigPantalla(0, "Pablo", "CLARO", Color.WHITE, Color.BLACK, hora);
-            ConfigPantalla c2 = new ConfigPantalla(1, "Prueba", "OSCURO", Color.BLACK, Color.WHITE, hora);
+            ConfigPantalla c1 = new ConfigPantalla(0, "Pablo", "CLARO", Color.WHITE, Color.BLACK, formato.format(hora));
+            ConfigPantalla c2 = new ConfigPantalla(1, "Pablo", "OSCURO", Color.BLACK, Color.WHITE, formato.format(hora));
 
             estilos.add(c1);
             estilos.add(c2);
@@ -32,19 +39,57 @@ public class GestorEstilosGUI {
 
     }
 
+    /**
+     * Metodo sobrecargado Se añade un estilo con los datos de el estilo como
+     * parametro y la fecha de cuando se ha añadido o modificado
+     *
+     * @param id
+     * @param usr
+     * @param titulo
+     * @param colorFondo
+     * @param colorTexto
+     * @return Se devuelve si se ha añadido correctamente
+     */
     public boolean añadirEstilo(int id, String usr, String titulo, Color colorFondo, Color colorTexto) {
         boolean correcto = false;
         try {
-            ConfigPantalla config = new ConfigPantalla(id, usr, titulo.toUpperCase(), colorFondo, colorTexto, hora);
+            ConfigPantalla config = new ConfigPantalla(id, usr, titulo.toUpperCase(), colorFondo, colorTexto, formato.format(hora));
             estilos.add(config);
             correcto = true;
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return correcto;
-
     }
 
+    /**
+     * Metodo sobrecargado Se añade un estilo con los datos de el estilo como
+     * parametro incluida la fecha
+     *
+     * @param id
+     * @param usr
+     * @param titulo
+     * @param colorFondo
+     * @param colorTexto
+     * @param fechaEstilo
+     * @return Se devuelve si se ha añadido correctamente
+     */
+    public boolean añadirEstilo(int id, String usr, String titulo, Color colorFondo, Color colorTexto, String fechaEstilo) {
+        boolean correcto = false;
+        try {
+            ConfigPantalla config = new ConfigPantalla(id, usr, titulo.toUpperCase(), colorFondo, colorTexto, fechaEstilo);
+            estilos.add(config);
+            correcto = true;
+        } catch (Exception e) {
+        }
+        return correcto;
+    }
+
+    /**
+     * Se borra un estilo por nombre
+     *
+     * @param nombre
+     * @return Se devuelve si se ha borrado correctamente
+     */
     public boolean borrarEstilo(String nombre) {
         boolean correcto = false;
         try {
@@ -55,6 +100,13 @@ public class GestorEstilosGUI {
         return correcto;
     }
 
+    /**
+     * Metodo sobrecargado
+     * Se cambia el color de los paneles recibidos como parametro y el color
+     * @param paneles
+     * @param color
+     * @return Se devuelve si se ha cambiado el color correctamente
+     */
     public boolean cambiarColor(JPanel[] paneles, Color color) {
         boolean correcto = false;
         try {
@@ -67,6 +119,13 @@ public class GestorEstilosGUI {
         return correcto;
     }
 
+    /**
+     * Metodo sobrecargado
+     * Se cambia el color de los textos recibidos como parametro y el color
+     * @param textos
+     * @param color
+     * @return Se devuelve si se ha cambiado el color correctamente
+     */
     public boolean cambiarColor(JLabel[] textos, Color color) {
         boolean correcto = false;
         try {
@@ -79,6 +138,11 @@ public class GestorEstilosGUI {
         return correcto;
     }
 
+    /**
+     * Se consigue el color de un parametro rgb haciendo un split de las partes r,g,b y sacando solamente los numeros
+     * @param rgbColor
+     * @return Se devuelve el color
+     */
     public Color conseguirColorPorRGB(String rgbColor) {
         Color color;
         int r, g, b;
@@ -90,6 +154,14 @@ public class GestorEstilosGUI {
         return color;
     }
 
+    /**
+     * Se busca un color en un fichero por su nombre con la posicion en el array que ocupa el color en el array
+     * @param titulo
+     * @param indice
+     * @param nomArchivoEstilos
+     * @param datosEstilos
+     * @return Se devuelve el color
+     */
     public Color buscarColorEnFichero(String titulo, int indice, String nomArchivoEstilos, Object[][] datosEstilos) {
         Color color = null;
         if (titulo != null) {
@@ -118,6 +190,10 @@ public class GestorEstilosGUI {
         return color;
     }
 
+    /**
+     * Se convierten los datos de la lista a array[][] con un iterador
+     * @return Se devuelve el array[][]
+     */
     public Object[][] convertirListaADTM() {
         Object[][] matrizObjeto = new Object[estilos.size()][6];
         Iterator<ConfigPantalla> iterator = estilos.iterator();
@@ -134,9 +210,12 @@ public class GestorEstilosGUI {
         }
         return matrizObjeto;
     }
-    
-    public void vaciar(){
-    estilos.removeAll(estilos);
+
+    /**
+     * Se vacian todos los datos de la lista
+     */
+    public void vaciar() {
+        estilos.removeAll(estilos);
     }
-    
+
 }

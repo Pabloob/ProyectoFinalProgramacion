@@ -20,9 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GestorBDR {
-
+    
     private Connection conexion;
-
+    
+    /**
+     * Se conecta con la BDR por recibiendo una ruta de fichero como parametro separando las partes de usuario, clave y url
+     * @param fichero
+     * @return Se devuelve si la conecxion se ha realizado correctamente o hay algun error
+     */
     public boolean conectarPorFicheroBDR(String fichero) {
         boolean correcto = false;
         String url, usuario, clave;
@@ -47,25 +52,31 @@ public class GestorBDR {
             } catch (SQLException e) {
             }
         } catch (IOException e) {
-                        e.printStackTrace();
-
         }
 
         return correcto;
     }
 
+    /**
+     * Se cierra la conecxion con la base de datos
+     * @return 
+     */
     public boolean desconectarBDR() {
         boolean correcto = false;
         try {
             conexion.close();
             correcto = true;
         } catch (SQLException e) {
-                        e.printStackTrace();
 
         }
         return correcto;
     }
-
+    
+    /**
+     * Se añade un producto a la BDR recibiendo un producto como parametro y añadiendo los valores de este
+     * @param producto
+     * @return Se devuelve si se ha añadido correctamente el producto
+     */
     public boolean añadirProducto(Producto producto) {
         PreparedStatement preparedStatement;
         String SQL_AGREGAR = "INSERT INTO productos (NOMBRE, PRECIO, CANTIDAD, IMAGEN) VALUES (?, ?, ?, ?)";
@@ -82,12 +93,16 @@ public class GestorBDR {
                 correcto = true;
             }
         } catch (SQLException ex) {
-                        ex.printStackTrace();
 
         }
         return correcto;
     }
-
+    
+    /**
+     * Se borra un producto eliminandolo por su nombre 
+     * @param nombre
+     * @return se devuelve si se ha borrado correctamente
+     */
     public boolean borrarProductoPorNombre(String nombre) {
         boolean correcto = false;
         try {
@@ -98,12 +113,15 @@ public class GestorBDR {
                 correcto = true;
             }
         } catch (SQLException e) {
-                        e.printStackTrace();
 
         }
         return correcto;
     }
 
+    /**
+     * Se convierten los datos de la BDR a un arraylist
+     * @return Se devuelve el arraylist con los datos de la BDR
+     */
     public ArrayList convertirBDRALista() {
         ArrayList datos = new ArrayList();
         Statement sentencia;
@@ -122,13 +140,16 @@ public class GestorBDR {
             }
 
         } catch (SQLException e) {
-                        e.printStackTrace();
-
         }
 
         return datos;
     }
 
+    /**
+     * Se añaden a la BDR los productos de un fichero xml a traves de la ruta
+     * @param nomArchivo
+     * @return se devuelve si los datos han sido cargados correctamente
+     */
     public boolean cargarProductosDeFicheroXML(String nomArchivo) {
         boolean correcto = false;
 
@@ -151,12 +172,16 @@ public class GestorBDR {
             }
             correcto = true;
         } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-
         }
         return correcto;
     }
-
+    
+    /**
+     * Se guardan los productos en un fichero XML con los datos de el array[][] y la ruta del archivo
+     * @param datos
+     * @param nomArchivo
+     * @return Se devuelve si se han guardado correctamente los datos
+     */
     public boolean guardarProductosEnFicheroXML(Object[][] datos, String nomArchivo) {
         boolean correcto = false;
 
@@ -170,8 +195,6 @@ public class GestorBDR {
             xmle.close();
             correcto = true;
         } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-
         }
         return correcto;
     }

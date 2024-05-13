@@ -2,7 +2,6 @@ package VISTA;
 
 import CONTROLADORES.GestorEstilosGUI;
 import LIBRERIAS.MisUtiles;
-import MODELOS.ConfigPantalla;
 import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,8 +9,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -216,6 +213,7 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             }
         });
 
+        BorrarSeleccionadoButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         BorrarSeleccionadoButton.setText("Borrar");
         BorrarSeleccionadoButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -279,8 +277,8 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
             TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TablaLayout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 453, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 701, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         TablaLayout.setVerticalGroup(
             TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -530,9 +528,10 @@ public class Ventana3 extends javax.swing.JFrame implements Serializable {
                 String titulo = (String) dato[2];
                 String fondo = (String) dato[3];
                 String texto = (String) dato[4];
+                String fecha = (String) dato[5];
                 colorFondo = gestorEstilos.conseguirColorPorRGB(fondo);
                 colorTexto = gestorEstilos.conseguirColorPorRGB(texto);
-                gestorEstilos.añadirEstilo(id, usuario, titulo, colorFondo, colorTexto);
+                gestorEstilos.añadirEstilo(id, usuario, titulo, colorFondo, colorTexto, fecha);
                 actualizarTabla();
             }
         } catch (IOException | ClassNotFoundException e) {

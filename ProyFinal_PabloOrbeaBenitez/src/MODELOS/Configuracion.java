@@ -1,14 +1,18 @@
 package MODELOS;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public abstract class Configuracion implements Comparable<Configuracion>, Serializable, MostrarInfo {
 
-    protected String titulo;
-    protected int ID;
-    protected String UsuarioCrea;
-    protected Date fechaHora;
+    private String titulo;
+    private int ID;
+    private String UsuarioCrea;
+    private String fechaHora;
+    private static final int version = 1;
+
+    public static int getVersion() {
+        return version;
+    }
 
     public String getTitulo() {
         return titulo;
@@ -18,15 +22,15 @@ public abstract class Configuracion implements Comparable<Configuracion>, Serial
         this.titulo = titulo;
     }
 
-    public Date getFechaHora() {
+    public String getFechaHora() {
         return fechaHora;
     }
 
-    public void setFechaHora(Date fechaHora) {
+    public void setFechaHora(String fechaHora) {
         this.fechaHora = fechaHora;
     }
 
-    public Configuracion(String titulo, int ID, String UsuarioCrea, Date fechaHora) {
+    public Configuracion(String titulo, int ID, String UsuarioCrea, String fechaHora) {
         this.titulo = titulo;
         this.ID = ID;
         this.UsuarioCrea = UsuarioCrea;
@@ -62,5 +66,6 @@ public abstract class Configuracion implements Comparable<Configuracion>, Serial
     }
 
     public abstract void presentarInformacion();
+    
 
 }
