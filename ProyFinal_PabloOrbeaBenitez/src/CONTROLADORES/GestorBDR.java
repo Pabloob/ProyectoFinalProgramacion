@@ -146,6 +146,20 @@ public class GestorBDR {
     }
 
     /**
+     * Se convierten los datos de la BDR a un arraylist
+     */
+    public void vaciar() {
+        Statement sentencia;
+        ResultSet rs;
+        try {
+            sentencia = conexion.createStatement();
+            rs = sentencia.executeQuery("Delete * FROM productos");
+        } catch (SQLException e) {
+        }
+
+    }
+    
+    /**
      * Se añaden a la BDR los productos de un fichero xml a traves de la ruta
      * @param nomArchivo
      * @return se devuelve si los datos han sido cargados correctamente
@@ -167,7 +181,6 @@ public class GestorBDR {
                 producto.setPrecio((float) dato[1]);
                 producto.setCantidad((int) dato[2]);
                 producto.setrutaImagen((String) dato[3]);
-
                 añadirProducto(producto);
             }
             correcto = true;

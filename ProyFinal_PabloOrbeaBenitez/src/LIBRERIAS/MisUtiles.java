@@ -10,6 +10,11 @@ import java.util.Comparator;
 
 public class MisUtiles {
 
+    /**
+     * Se comprueba si un numero int es mayor a 0 
+     * @param num
+     * @return 
+     */
     public static int comprobarIntPositivo(String num) {
         int numero = -1;
         try {
@@ -23,6 +28,11 @@ public class MisUtiles {
         return numero;
     }
 
+    /**
+     * Se comprueba si un numero float es mayor a 0
+     * @param num
+     * @return 
+     */
     public static float comprobarFloatPositivo(String num) {
         float numero = -1;
 
@@ -37,6 +47,11 @@ public class MisUtiles {
         return numero;
     }
 
+    /**
+     * Se consiguen los bytes de una imagen a traves de su ruta
+     * @param Ruta
+     * @return 
+     */
     public static byte[] conseguirImagenPorRuta(String Ruta) {
         if (Ruta != null) {
             File imagen = new File(Ruta);
@@ -54,6 +69,12 @@ public class MisUtiles {
         }
     }
 
+    /**
+     * Se calcula el numero mayor de un array en una posicion
+     * @param datos
+     * @param posNum
+     * @return 
+     */
     public static int calcularNumMayor(Object datos[][], int posNum) {
 
         int num = 0;
@@ -66,6 +87,11 @@ public class MisUtiles {
         return num;
     }
 
+    /**
+     * Metodo para comparar los datos de un array por nombre
+     * @param datos
+     * @return 
+     */
     public static Object[][] ordenarNombre(Object[][] datos) {
         Comparator<Object[]> comparador = new Comparator<Object[]>() {
             @Override
@@ -79,6 +105,11 @@ public class MisUtiles {
         return datos;
     }
 
+    /**
+     * Metodo para comparar los datos de un array por numero float 
+     * @param datos
+     * @return 
+     */
     public static Object[][] ordenarPrecio(Object[][] datos) {
         Comparator<Object[]> comparador = new Comparator<Object[]>() {
             @Override
@@ -94,6 +125,11 @@ public class MisUtiles {
         return datos;
     }
 
+    /**
+     * Metodo para comparar los datos de un array por numero int
+     * @param datos
+     * @return 
+     */
     public static Object[][] ordenarCantidad(Object[][] datos) {
         Comparator<Object[]> comparador = new Comparator<Object[]>() {
             @Override
@@ -108,6 +144,12 @@ public class MisUtiles {
         return datos;
     }
 
+    /**
+     * Metodo para copiar imagenes de una ruta a otra
+     * @param nombreFich
+     * @param directorioCopiar
+     * @return 
+     */
     public static String copiarImagen(String nombreFich, String directorioCopiar) {
         String[] partes = nombreFich.split("\\\\");
         String nombreArchivo = partes[partes.length - 1];
@@ -147,13 +189,11 @@ public class MisUtiles {
         return rutaCopia;
     }
 
-    public static void borrarImagen(String ruta) {
-        if (ruta != null) {
-            File archivo = new File(ruta);
-            archivo.delete();
-        }
-    }
-
+    /**
+     * Metodo pasar un array de char a String
+     * @param caracteresContraseña
+     * @return 
+     */
     public static String arrayCharAString(char caracteresContraseña[]) {
         String contraseña = "";
         for (char c : caracteresContraseña) {
@@ -162,6 +202,9 @@ public class MisUtiles {
         return contraseña.strip();
     }
 
+    /**
+     * Metodo para limpiar pantalla
+     */
     public void limpiarPantalla() {
         for (int i = 0; i < 20; i++) {
             System.out.println();

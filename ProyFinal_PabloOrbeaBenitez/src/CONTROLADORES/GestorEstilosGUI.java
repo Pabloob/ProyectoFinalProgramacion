@@ -23,12 +23,12 @@ public class GestorEstilosGUI {
      *
      * @return Se devuelve si se han añadido correctamente
      */
-    public boolean añadirEjemplosEstilos() {
+    public boolean añadirEjemplosEstilos(String usr) {
         boolean correcto = false;
 
         try {
-            ConfigPantalla c1 = new ConfigPantalla(0, "Pablo", "CLARO", Color.WHITE, Color.BLACK, formato.format(hora));
-            ConfigPantalla c2 = new ConfigPantalla(1, "Pablo", "OSCURO", Color.BLACK, Color.WHITE, formato.format(hora));
+            ConfigPantalla c1 = new ConfigPantalla(0, usr, "CLARO", Color.WHITE, Color.BLACK, formato.format(hora));
+            ConfigPantalla c2 = new ConfigPantalla(1, usr, "OSCURO", Color.BLACK, Color.WHITE, formato.format(hora));
 
             estilos.add(c1);
             estilos.add(c2);

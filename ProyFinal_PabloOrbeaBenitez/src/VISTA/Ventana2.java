@@ -10,8 +10,6 @@ import javax.swing.table.DefaultTableModel;
 
 public class Ventana2 extends javax.swing.JFrame {
 
-    public static final String nombreFicheroEstilos = "ARCHIVOS\\estilos.dat";
-
     GestorUsuariosBDO gestorUsuarios = new GestorUsuariosBDO();
 
     //Nombres de las columnas
@@ -22,6 +20,9 @@ public class Ventana2 extends javax.swing.JFrame {
 
     //Objeto tabla interfaz
     DefaultTableModel listaProductos = new DefaultTableModel(datos, nomCols);
+
+    //Variables
+    int filaSeleccionadaAnteriormente;
 
     public Ventana2() {
         setTitle("Control usuarios");
@@ -229,24 +230,27 @@ public class Ventana2 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BotonAñadirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAñadirMousePressed
-        //Boton que añade un usuario comprobando sus datos y pidiendo siempre usuario y contraseña
+        //Se guardan los datos 
         String nombre = NombreTextField.getText().strip();
         String contraseña = MisUtiles.arrayCharAString(ContraseñaPasswordField.getPassword());
         String rol = RolComboBox.getSelectedItem().toString().strip();
         boolean activo = ActivoCheckBox.isSelected();
 
+        //Se comrprueba que ni el nombre ni la contraseña esten vacios
         if (!nombre.isEmpty() && !contraseña.isEmpty()) {
             Usuario usr = new Usuario(nombre, contraseña, activo);
 
+            //Se comprueba el rol del usuario
             if (rol.equals("USUARIO")) {
                 usr.setRol(Usuario.Rol.USUARIO);
             } else if (rol.equals("ADMINISTRADOR")) {
                 usr.setRol(Usuario.Rol.ADMINISTRADOR);
             }
 
+            //se añade el usuario
             if (gestorUsuarios.añadirUsuario(usr)) {
                 actualizarTabla();
-                vaciarTextField();
+                vaciarDatos();
             } else {
                 mostrarMensajeError("Se ha producido un erro al borrar el añadir el usuario comprueba que no exista ya");
             }
@@ -257,17 +261,19 @@ public class Ventana2 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonAñadirMousePressed
 
     private void BotonBorrarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonBorrarMousePressed
-        //Se borra el usuario seleccionado
-
         int filaSeleccionado = jTablaUsuarios.getSelectedRow();
+
+        //Se comprueba si se ha seleccionado alguna fila
         if (filaSeleccionado >= 0) {
             String nombre = (String) datos[filaSeleccionado][0];
             if (gestorUsuarios.borrarUsuarioPorNombre(nombre)) {
                 actualizarTabla();
-                vaciarTextField();
+                vaciarDatos();
             } else {
                 mostrarMensajeError("Se ha producido un erro al borrar el usuario");
             }
+
+            //Se comrpueba si el usuario tenia creado algun estilo y de ser asi elimina los estilos de ese usuario
             Ventana3 ventana3 = new Ventana3();
             Object datosTemp[][] = ventana3.getDatos();
             List<Object[]> nuevosDatos = new ArrayList<>();
@@ -287,17 +293,19 @@ public class Ventana2 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonBorrarMousePressed
 
     private void BotonActualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonActualizarMousePressed
-        //Se modifican los datos con los datos nuevos que se hayan insertado
-
         int filaSeleccionada = jTablaUsuarios.getSelectedRow();
+
+        //Se comprueba que se ha seleccionado alguna fila
         if (filaSeleccionada >= 0) {
+            //Se añaden los datos necesarios
             String nombreBorrar = (String) datos[filaSeleccionada][0];
             String nombre = NombreTextField.getText().strip();
             String contraseña = MisUtiles.arrayCharAString(ContraseñaPasswordField.getPassword());
             String rol = RolComboBox.getSelectedItem().toString().strip();
             boolean activo = ActivoCheckBox.isSelected();
 
-            if (!nombreBorrar.trim().isEmpty() && !contraseña.trim().isEmpty()) {
+            //Se comprueba que ni el nombre ni la contraseña esten vacios
+            if (!nombreBorrar.isEmpty() && !contraseña.isEmpty()) {
                 Usuario usr = new Usuario(nombre, contraseña, activo);
 
                 if (rol.equals("USUARIO")) {
@@ -305,9 +313,11 @@ public class Ventana2 extends javax.swing.JFrame {
                 } else if (rol.equals("ADMINISTRADOR")) {
                     usr.setRol(Usuario.Rol.ADMINISTRADOR);
                 }
+
+                //Se borra el usuario y se añade el actualizado
                 if (gestorUsuarios.borrarUsuarioPorNombre(nombreBorrar) && gestorUsuarios.añadirUsuario(usr)) {
                     actualizarTabla();
-                    vaciarTextField();
+                    vaciarDatos();
                 } else {
                     mostrarMensajeError("Se ha producido un error al actualizar los datos del usuario");
                 }
@@ -321,19 +331,28 @@ public class Ventana2 extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonActualizarMousePressed
 
     private void jTablaUsuariosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablaUsuariosMousePressed
-        //Se muestra la informacion de el usuario en los campos correspondientes
 
         int filaSeleccionada = jTablaUsuarios.getSelectedRow();
-        String activo = (String) datos[filaSeleccionada][3].toString();
-        NombreTextField.setText(datos[filaSeleccionada][0].toString());
-        ContraseñaPasswordField.setText(datos[filaSeleccionada][1].toString());
-        RolComboBox.setSelectedItem(datos[filaSeleccionada][2].toString());
 
-        if (activo.equals("true")) {
-            ActivoCheckBox.setSelected(true);
+        //Se comprueba que la fila seleccionada no sea la misma que la anterior
+        if (filaSeleccionada != filaSeleccionadaAnteriormente) {
+            //Se muestra la informacion de el usuario en los campos correspondientes si no es la misma que la anterior
+            String activo = (String) datos[filaSeleccionada][3].toString();
+            NombreTextField.setText(datos[filaSeleccionada][0].toString());
+            ContraseñaPasswordField.setText(datos[filaSeleccionada][1].toString());
+            RolComboBox.setSelectedItem(datos[filaSeleccionada][2].toString());
+
+            if (activo.equals("true")) {
+                ActivoCheckBox.setSelected(true);
+            } else {
+                ActivoCheckBox.setSelected(false);
+            }
+            filaSeleccionadaAnteriormente = filaSeleccionada;
         } else {
-            ActivoCheckBox.setSelected(false);
+            //Si es la misma se vaciaran los campos y se pondra como fila seleccionada anteriormente una que nunca se podra elegir
+            vaciarDatos();
         }
+
 
     }//GEN-LAST:event_jTablaUsuariosMousePressed
 
@@ -400,11 +419,13 @@ public class Ventana2 extends javax.swing.JFrame {
     }
 
     //se vacian los camposs
-    public void vaciarTextField() {
+    public void vaciarDatos() {
         NombreTextField.setText("");
         ContraseñaPasswordField.setText("");
+        filaSeleccionadaAnteriormente = -1;
     }
 
+    //Se muestra mensaje de error
     private void mostrarMensajeError(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
