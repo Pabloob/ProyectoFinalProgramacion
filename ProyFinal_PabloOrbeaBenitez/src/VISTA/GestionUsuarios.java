@@ -1,0 +1,454 @@
+package VISTA;
+
+import CONTROLADORES.GestorUsuariosBDO;
+import LIBRERIAS.MisUtiles;
+import MODELOS.Usuario;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+public class GestionUsuarios extends javax.swing.JFrame {
+
+    GestorUsuariosBDO gestorUsuarios = new GestorUsuariosBDO();
+
+    //Nombres de las columnas
+    String[] nomCols = {"NOMBRE", "CONTRASEÑA", "ROL", "ACTIVO"};
+
+    //Array de datos
+    Object[][] datos;
+
+    //Objeto tabla interfaz
+    DefaultTableModel listaProductos = new DefaultTableModel(datos, nomCols);
+
+    //Variables
+    int filaSeleccionadaAnteriormente=-1;
+
+    public GestionUsuarios() {
+        setTitle("Configuracion de usuarios");
+        initComponents();
+        setAlwaysOnTop(true);
+        actualizarTabla();
+        setLocationRelativeTo(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        Panel1 = new javax.swing.JPanel();
+        TablaUsuarios = new javax.swing.JScrollPane();
+        jTablaUsuarios = new javax.swing.JTable();
+        Panel2 = new javax.swing.JPanel();
+        BotonAñadir = new javax.swing.JButton();
+        BotonBorrar = new javax.swing.JButton();
+        BotonActualizar = new javax.swing.JButton();
+        Nombre = new javax.swing.JLabel();
+        Contraseña = new javax.swing.JLabel();
+        Activo = new javax.swing.JLabel();
+        ActivoCheckBox = new javax.swing.JCheckBox();
+        Rol = new javax.swing.JLabel();
+        RolComboBox = new javax.swing.JComboBox<>();
+        NombreTextField = new javax.swing.JTextField();
+        ContraseñaPasswordField = new javax.swing.JPasswordField();
+
+        setMaximumSize(new java.awt.Dimension(970, 430));
+        setPreferredSize(new java.awt.Dimension(970, 430));
+        setResizable(false);
+
+        Panel1.setBackground(new java.awt.Color(255, 255, 255));
+        Panel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        TablaUsuarios.setBackground(new java.awt.Color(255, 255, 255));
+
+        jTablaUsuarios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "NOMBRE", "CONTRASEÑA", "ROL", "ACTIVO"
+            }
+        ));
+        jTablaUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTablaUsuariosMousePressed(evt);
+            }
+        });
+        TablaUsuarios.setViewportView(jTablaUsuarios);
+
+        javax.swing.GroupLayout Panel1Layout = new javax.swing.GroupLayout(Panel1);
+        Panel1.setLayout(Panel1Layout);
+        Panel1Layout.setHorizontalGroup(
+            Panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(TablaUsuarios, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        Panel1Layout.setVerticalGroup(
+            Panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(TablaUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        Panel2.setBackground(new java.awt.Color(255, 255, 255));
+        Panel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        BotonAñadir.setBackground(new java.awt.Color(255, 255, 255));
+        BotonAñadir.setText("AÑADIR");
+        BotonAñadir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonAñadirMousePressed(evt);
+            }
+        });
+
+        BotonBorrar.setBackground(new java.awt.Color(255, 255, 255));
+        BotonBorrar.setText("BORRAR");
+        BotonBorrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonBorrarMousePressed(evt);
+            }
+        });
+
+        BotonActualizar.setBackground(new java.awt.Color(255, 255, 255));
+        BotonActualizar.setText("ACTUALIZAR");
+        BotonActualizar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                BotonActualizarMousePressed(evt);
+            }
+        });
+
+        Nombre.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        Nombre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Nombre.setText("NOMBRE");
+
+        Contraseña.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        Contraseña.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        Contraseña.setText("CONTRASEÑA");
+
+        Activo.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        Activo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        Activo.setText("ACTIVO");
+
+        ActivoCheckBox.setBackground(new java.awt.Color(255, 255, 255));
+        ActivoCheckBox.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        ActivoCheckBox.setForeground(new java.awt.Color(204, 204, 204));
+
+        Rol.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        Rol.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Rol.setText("ROL");
+
+        RolComboBox.setBackground(new java.awt.Color(255, 255, 255));
+        RolComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "USUARIO", "ADMINISTRADOR"}));
+        RolComboBox.setMaximumSize(new java.awt.Dimension(20, 26));
+        RolComboBox.setMinimumSize(new java.awt.Dimension(20, 26));
+        RolComboBox.setPreferredSize(new java.awt.Dimension(20, 26));
+
+        NombreTextField.setBackground(new java.awt.Color(204, 204, 204));
+
+        ContraseñaPasswordField.setBackground(new java.awt.Color(204, 204, 204));
+
+        javax.swing.GroupLayout Panel2Layout = new javax.swing.GroupLayout(Panel2);
+        Panel2.setLayout(Panel2Layout);
+        Panel2Layout.setHorizontalGroup(
+            Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel2Layout.createSequentialGroup()
+                .addContainerGap(51, Short.MAX_VALUE)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addComponent(BotonAñadir, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(BotonBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(BotonActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                                    .addGap(14, 14, 14)
+                                    .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(18, 18, 18))
+                                .addComponent(ContraseñaPasswordField))
+                            .addGroup(Panel2Layout.createSequentialGroup()
+                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(Rol, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(RolComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                                        .addComponent(ActivoCheckBox)
+                                        .addGap(20, 20, 20))
+                                    .addComponent(Activo))
+                                .addGap(5, 5, 5)))
+                        .addGap(114, 114, 114))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addComponent(NombreTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(143, 143, 143))))
+        );
+        Panel2Layout.setVerticalGroup(
+            Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel2Layout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addComponent(Nombre)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(NombreTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36)
+                .addComponent(Contraseña)
+                .addGap(18, 18, 18)
+                .addComponent(ContraseñaPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Activo)
+                    .addComponent(Rol))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(RolComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ActivoCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BotonAñadir)
+                    .addComponent(BotonBorrar)
+                    .addComponent(BotonActualizar))
+                .addGap(22, 22, 22))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(Panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Panel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Panel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void BotonAñadirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonAñadirMousePressed
+        //Se guardan los datos 
+        String nombre = NombreTextField.getText().strip();
+        String contraseña = MisUtiles.arrayCharAString(ContraseñaPasswordField.getPassword());
+        String rol = RolComboBox.getSelectedItem().toString().strip();
+        boolean activo = ActivoCheckBox.isSelected();
+
+        //Se comrprueba que ni el nombre ni la contraseña esten vacios
+        if (!nombre.isEmpty() && !contraseña.isEmpty()) {
+            Usuario usr = new Usuario(nombre, contraseña, activo);
+
+            //Se comprueba el rol del usuario
+            if (rol.equals("USUARIO")) {
+                usr.setRol(Usuario.Rol.USUARIO);
+            } else if (rol.equals("ADMINISTRADOR")) {
+                usr.setRol(Usuario.Rol.ADMINISTRADOR);
+            }
+
+            //se añade el usuario
+            if (gestorUsuarios.añadirUsuario(usr)) {
+                actualizarTabla();
+                vaciarDatos();
+            } else {
+                mostrarMensajeError("Se ha producido un erro al borrar el añadir el usuario comprueba que no exista ya");
+            }
+        } else {
+            mostrarMensajeError("El campo del nombre y contraseña no pueden estar vacíos");
+        }
+
+    }//GEN-LAST:event_BotonAñadirMousePressed
+
+    private void BotonBorrarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonBorrarMousePressed
+        int filaSeleccionado = jTablaUsuarios.getSelectedRow();
+
+        //Se comprueba si se ha seleccionado alguna fila
+        if (filaSeleccionado >= 0) {
+            String nombre = (String) datos[filaSeleccionado][0];
+            if (gestorUsuarios.borrarUsuarioPorNombre(nombre)) {
+                actualizarTabla();
+                vaciarDatos();
+            } else {
+                mostrarMensajeError("Se ha producido un erro al borrar el usuario");
+            }
+
+            //Se comrpueba si el usuario tenia creado algun estilo y de ser asi elimina los estilos de ese usuario
+            GestionConfiguracionesGraficas ventanaEstilos = new GestionConfiguracionesGraficas();
+            Object datosTemp[][] = ventanaEstilos.getDatos();
+            List<Object[]> nuevosDatos = new ArrayList<>();
+
+            for (Object[] dato : datosTemp) {
+                if (!nombre.equalsIgnoreCase((String) dato[1])) {
+                    nuevosDatos.add(dato);
+                }
+            }
+            Object[][] nuevosDatosArray = nuevosDatos.toArray(new Object[0][]);
+            ventanaEstilos.setDatos(nuevosDatosArray);
+
+        } else {
+            mostrarMensajeError("No se ha seleccionado ninguna fila");
+        }
+
+    }//GEN-LAST:event_BotonBorrarMousePressed
+
+    private void BotonActualizarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonActualizarMousePressed
+        int filaSeleccionada = jTablaUsuarios.getSelectedRow();
+
+        //Se comprueba que se ha seleccionado alguna fila
+        if (filaSeleccionada >= 0) {
+            //Se añaden los datos necesarios
+            String nombreBorrar = (String) datos[filaSeleccionada][0];
+            String nombre = NombreTextField.getText().strip();
+            String contraseña = MisUtiles.arrayCharAString(ContraseñaPasswordField.getPassword());
+            String rol = RolComboBox.getSelectedItem().toString().strip();
+            boolean activo = ActivoCheckBox.isSelected();
+
+            //Se comprueba que ni el nombre ni la contraseña esten vacios
+            if (!nombreBorrar.isEmpty() && !contraseña.isEmpty()) {
+                Usuario usr = new Usuario(nombre, contraseña, activo);
+
+                if (rol.equals("USUARIO")) {
+                    usr.setRol(Usuario.Rol.USUARIO);
+                } else if (rol.equals("ADMINISTRADOR")) {
+                    usr.setRol(Usuario.Rol.ADMINISTRADOR);
+                }
+
+                //Se borra el usuario y se añade el actualizado
+                if (gestorUsuarios.borrarUsuarioPorNombre(nombreBorrar) && gestorUsuarios.añadirUsuario(usr)) {
+                    actualizarTabla();
+                    vaciarDatos();
+                } else {
+                    mostrarMensajeError("Se ha producido un error al actualizar los datos del usuario");
+                }
+            } else {
+                mostrarMensajeError("El campo del nombre y contraseña no pueden estar vacíos");
+            }
+        } else {
+            mostrarMensajeError("No se ha seleccionado ninguna fila");
+        }
+
+    }//GEN-LAST:event_BotonActualizarMousePressed
+
+    private void jTablaUsuariosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablaUsuariosMousePressed
+
+        int filaSeleccionada = jTablaUsuarios.getSelectedRow();
+
+        //Se comprueba que la fila seleccionada no sea la misma que la anterior
+        if (filaSeleccionada != filaSeleccionadaAnteriormente) {
+            //Se muestra la informacion de el usuario en los campos correspondientes si no es la misma que la anterior
+            String activo = (String) datos[filaSeleccionada][3].toString();
+            NombreTextField.setText(datos[filaSeleccionada][0].toString());
+            ContraseñaPasswordField.setText(datos[filaSeleccionada][1].toString());
+            RolComboBox.setSelectedItem(datos[filaSeleccionada][2].toString());
+
+            if (activo.equals("true")) {
+                ActivoCheckBox.setSelected(true);
+            } else {
+                ActivoCheckBox.setSelected(false);
+            }
+            filaSeleccionadaAnteriormente = filaSeleccionada;
+        } else {
+            //Si es la misma se vaciaran los campos y se pondra como fila seleccionada anteriormente una que nunca se podra elegir
+            vaciarDatos();
+        }
+
+
+    }//GEN-LAST:event_jTablaUsuariosMousePressed
+
+    public static void main(String args[]) {
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(GestionUsuarios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(GestionUsuarios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(GestionUsuarios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(GestionUsuarios.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new GestionUsuarios().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Activo;
+    private javax.swing.JCheckBox ActivoCheckBox;
+    private javax.swing.JButton BotonActualizar;
+    private javax.swing.JButton BotonAñadir;
+    private javax.swing.JButton BotonBorrar;
+    private javax.swing.JLabel Contraseña;
+    private javax.swing.JPasswordField ContraseñaPasswordField;
+    private javax.swing.JLabel Nombre;
+    private javax.swing.JTextField NombreTextField;
+    private javax.swing.JPanel Panel1;
+    private javax.swing.JPanel Panel2;
+    private javax.swing.JLabel Rol;
+    private javax.swing.JComboBox<String> RolComboBox;
+    private javax.swing.JScrollPane TablaUsuarios;
+    private javax.swing.JTable jTablaUsuarios;
+    // End of variables declaration//GEN-END:variables
+
+    //Se actualiza la tabla con los datos de el array [][]
+    private void actualizarTabla() {
+        datos = gestorUsuarios.convertirBDOADTM();
+        listaProductos = new DefaultTableModel(datos, nomCols) {
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return false;
+            }
+        };
+
+        jTablaUsuarios.setModel(listaProductos);
+
+    }
+
+    //se vacian los camposs
+    public void vaciarDatos() {
+        NombreTextField.setText("");
+        ContraseñaPasswordField.setText("");
+        filaSeleccionadaAnteriormente = -1;
+    }
+
+    //Se muestra mensaje de error
+    private void mostrarMensajeError(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+}

@@ -11,7 +11,7 @@ import javax.persistence.TypedQuery;
 
 public class GestorUsuariosBDO implements Serializable {
 
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/ProyFinal.odb");
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("BDO/ProyFinal.odb");
     EntityManager em = emf.createEntityManager();
 
     /**

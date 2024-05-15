@@ -8,11 +8,6 @@ public abstract class Configuracion implements Comparable<Configuracion>, Serial
     private int ID;
     private String UsuarioCrea;
     private String fechaHora;
-    private static final int version = 1;
-
-    public static int getVersion() {
-        return version;
-    }
 
     public String getTitulo() {
         return titulo;
@@ -65,7 +60,7 @@ public abstract class Configuracion implements Comparable<Configuracion>, Serial
         return this.titulo.compareTo(conf.titulo);
     }
 
-    public abstract void presentarInformacion();
+    public abstract void presentarInformacionResumida();
     
 
 }

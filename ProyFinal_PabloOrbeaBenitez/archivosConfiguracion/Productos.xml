@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="21.0.1" class="java.beans.XMLDecoder">
+ <array class="[Ljava.lang.Object;" length="1">
+  <void index="0">
+   <array class="java.lang.Object" length="4">
+    <void index="0">
+     <string>a</string>
+    </void>
+    <void index="1">
+     <float>1.0</float>
+    </void>
+    <void index="2">
+     <int>3</int>
+    </void>
+    <void index="3">
+     <string>IMAGENES\pera1.jpg</string>
+    </void>
+   </array>
+  </void>
+ </array>
+</java>

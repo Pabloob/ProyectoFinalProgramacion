@@ -1,19 +1,22 @@
 package LIBRERIAS;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Comparator;
 
 public class MisUtiles {
 
     /**
-     * Se comprueba si un numero int es mayor a 0 
+     * Se comprueba si un numero int es mayor a 0
+     *
      * @param num
-     * @return 
+     * @return
      */
     public static int comprobarIntPositivo(String num) {
         int numero = -1;
@@ -30,8 +33,9 @@ public class MisUtiles {
 
     /**
      * Se comprueba si un numero float es mayor a 0
+     *
      * @param num
-     * @return 
+     * @return
      */
     public static float comprobarFloatPositivo(String num) {
         float numero = -1;
@@ -49,8 +53,9 @@ public class MisUtiles {
 
     /**
      * Se consiguen los bytes de una imagen a traves de su ruta
+     *
      * @param Ruta
-     * @return 
+     * @return
      */
     public static byte[] conseguirImagenPorRuta(String Ruta) {
         if (Ruta != null) {
@@ -71,9 +76,10 @@ public class MisUtiles {
 
     /**
      * Se calcula el numero mayor de un array en una posicion
+     *
      * @param datos
      * @param posNum
-     * @return 
+     * @return
      */
     public static int calcularNumMayor(Object datos[][], int posNum) {
 
@@ -89,8 +95,9 @@ public class MisUtiles {
 
     /**
      * Metodo para comparar los datos de un array por nombre
+     *
      * @param datos
-     * @return 
+     * @return
      */
     public static Object[][] ordenarNombre(Object[][] datos) {
         Comparator<Object[]> comparador = new Comparator<Object[]>() {
@@ -106,9 +113,10 @@ public class MisUtiles {
     }
 
     /**
-     * Metodo para comparar los datos de un array por numero float 
+     * Metodo para comparar los datos de un array por numero float
+     *
      * @param datos
-     * @return 
+     * @return
      */
     public static Object[][] ordenarPrecio(Object[][] datos) {
         Comparator<Object[]> comparador = new Comparator<Object[]>() {
@@ -127,8 +135,9 @@ public class MisUtiles {
 
     /**
      * Metodo para comparar los datos de un array por numero int
+     *
      * @param datos
-     * @return 
+     * @return
      */
     public static Object[][] ordenarCantidad(Object[][] datos) {
         Comparator<Object[]> comparador = new Comparator<Object[]>() {
@@ -146,9 +155,10 @@ public class MisUtiles {
 
     /**
      * Metodo para copiar imagenes de una ruta a otra
+     *
      * @param nombreFich
      * @param directorioCopiar
-     * @return 
+     * @return
      */
     public static String copiarImagen(String nombreFich, String directorioCopiar) {
         String[] partes = nombreFich.split("\\\\");
@@ -191,8 +201,9 @@ public class MisUtiles {
 
     /**
      * Metodo pasar un array de char a String
+     *
      * @param caracteresContraseña
-     * @return 
+     * @return
      */
     public static String arrayCharAString(char caracteresContraseña[]) {
         String contraseña = "";
@@ -205,10 +216,21 @@ public class MisUtiles {
     /**
      * Metodo para limpiar pantalla
      */
-    public void limpiarPantalla() {
+    public static void limpiarPantalla() {
         for (int i = 0; i < 20; i++) {
             System.out.println();
         }
     }
 
+    /**
+     * Metodo para hacer una pausa hasta que el usuario pulse una tecla
+     * @param msj
+     * @throws java.io.IOException
+     */
+    public static void pausa(String msj) throws IOException {
+        InputStreamReader flujo = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(flujo);
+        System.out.println(msj);
+        teclado.readLine();
+    }
 }

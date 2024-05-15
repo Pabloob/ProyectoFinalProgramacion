@@ -210,6 +210,8 @@ public class Leer {
             valor = teclado.readLine().strip();
             if (!valor.isEmpty()) {
                 correcto = true;
+            }else{
+                            System.err.println("\tError: No has introducido ningun dato");
             }
         } while (!correcto);
         return valor;

@@ -1,3 +1,0 @@
-usuario = Pablo
-clave = 1234
-url = jdbc:mysql://localhost:3306/proyfinal_datos

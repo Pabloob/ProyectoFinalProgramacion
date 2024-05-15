@@ -16,14 +16,14 @@ public class Usuario implements Serializable {
     public enum Rol {
         ADMINISTRADOR, USUARIO
     };
+    private String contraseña;
+    private Rol rol;
+    private boolean activo;
 
     public Usuario(String nombre, String contraseña) {
         this.nombre = nombre;
         this.contraseña = contraseña;
     }
-    private String contraseña;
-    private Rol rol;
-    private boolean activo;
 
     public Rol getRol() {
         return rol;
@@ -31,12 +31,6 @@ public class Usuario implements Serializable {
 
     public void setRol(Rol rol) {
         this.rol = rol;
-    }
-
-    public Usuario(String nombre, String contraseña, boolean activo) {
-        this.nombre = nombre;
-        this.contraseña = contraseña;
-        this.activo = activo;
     }
 
     public String getNombre() {
@@ -86,6 +80,12 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
         this.contraseña = contraseña;
         this.rol = rol;
+        this.activo = activo;
+    }
+
+    public Usuario(String nombre, String contraseña, boolean activo) {
+        this.nombre = nombre;
+        this.contraseña = contraseña;
         this.activo = activo;
     }
 

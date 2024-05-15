@@ -35,17 +35,21 @@ public class ConfigPantalla extends Configuracion {
 
     public ConfigPantalla() {
     }
-
+    
+    //Metodo heredado de Configuracion
     @Override
-    public void presentarInformacion() {
+    public void presentarInformacionResumida() {
+        String format = "%-5s%-20s%-30s%n";
+        System.out.printf(format, "ID", "Usuario Creador", "Título");
+        System.out.printf(format, getID(), getUsuarioCrea(), getTitulo());
+    }
+
+    //Metodo de interfaz
+    @Override
+    public void presentarInformacionTabulada() {
         String format = "%-5s%-15s%-15s%-20s%-20s%-30s%n";
         System.out.printf(format, "ID", "Usuario Creador", "Título", "Color de Fondo", "Color de Texto", "Fecha y Hora");
         System.out.printf(format, getID(), getUsuarioCrea(), getTitulo(), getColorFondo(), getColorTexto(), getFechaHora());
     }
 
-    @Override
-    public void presentarTabulado() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
 }
