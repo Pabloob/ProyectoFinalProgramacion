@@ -39,7 +39,8 @@ public class ControlAcceso {
             } else {
                 //Si el inicio de sesion ha sido incorrecto se resta un fallo y se muestran los fallos que quedan
                 fallos--;
-                MisUtiles.pausa("Error el usuario o contraseña son incorrectos tienes " + fallos + " fallos más"
+                MisUtiles.pausa("Error el usuario o contraseña son incorrectos o no esta activo "
+                        + "\nTienes " + fallos + " fallos más"
                         + "\nPulsa cualquier tecla para continuar......");
                 MisUtiles.limpiarPantalla();
             }

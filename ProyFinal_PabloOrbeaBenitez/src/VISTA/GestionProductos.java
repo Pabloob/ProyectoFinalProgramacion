@@ -286,11 +286,9 @@ public class GestionProductos extends javax.swing.JFrame {
         TextFieldCantidad.setBackground(new java.awt.Color(204, 204, 204));
 
         OrdenarPor.setBackground(new java.awt.Color(255, 255, 255));
-        OrdenarPor.setForeground(new java.awt.Color(255, 255, 255));
         OrdenarPor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NOMBRE", "PRECIO", "CANTIDAD"}));
 
         DiseñoComboBox.setBackground(new java.awt.Color(255, 255, 255));
-        DiseñoComboBox.setForeground(new java.awt.Color(255, 255, 255));
         DiseñoComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
         ImagenButton.setBackground(new java.awt.Color(255, 255, 255));

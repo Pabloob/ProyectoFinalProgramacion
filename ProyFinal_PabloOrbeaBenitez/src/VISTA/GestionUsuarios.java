@@ -63,10 +63,7 @@ public class GestionUsuarios extends javax.swing.JFrame {
 
         jTablaUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "NOMBRE", "CONTRASEÑA", "ROL", "ACTIVO"

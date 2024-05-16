@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 public class GestorEstilosGUI {
 
     private TreeSet<ConfigPantalla> estilos = new TreeSet<>();
-    private Date hora = new Date();
     private SimpleDateFormat formato = new SimpleDateFormat("d-M-y HH:mm");
 
     /**
@@ -25,10 +24,10 @@ public class GestorEstilosGUI {
      */
     public boolean añadirEjemplosEstilos(String usr) {
         boolean correcto = false;
-
+        Date fecha = new Date();
         try {
-            ConfigPantalla c1 = new ConfigPantalla(0, usr, "CLARO", Color.WHITE, Color.BLACK, formato.format(hora));
-            ConfigPantalla c2 = new ConfigPantalla(1, usr, "OSCURO", Color.BLACK, Color.WHITE, formato.format(hora));
+            ConfigPantalla c1 = new ConfigPantalla(0, usr, "CLARO", Color.WHITE, Color.BLACK, formato.format(fecha));
+            ConfigPantalla c2 = new ConfigPantalla(1, usr, "OSCURO", Color.BLACK, Color.WHITE, formato.format(fecha));
 
             estilos.add(c1);
             estilos.add(c2);
@@ -52,8 +51,9 @@ public class GestorEstilosGUI {
      */
     public boolean añadirEstilo(int id, String usr, String titulo, Color colorFondo, Color colorTexto) {
         boolean correcto = false;
+                Date fecha = new Date();
         try {
-            ConfigPantalla config = new ConfigPantalla(id, usr, titulo.toUpperCase(), colorFondo, colorTexto, formato.format(hora));
+            ConfigPantalla config = new ConfigPantalla(id, usr, titulo.toUpperCase(), colorFondo, colorTexto, formato.format(fecha));
             estilos.add(config);
             correcto = true;
         } catch (Exception e) {
@@ -217,5 +217,7 @@ public class GestorEstilosGUI {
     public void vaciar() {
         estilos.removeAll(estilos);
     }
-
+    
+    
+    
 }

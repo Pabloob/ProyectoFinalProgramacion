@@ -2,6 +2,7 @@ package VISTA;
 
 import CONTROLADORES.GestorEstilosGUI;
 import LIBRERIAS.MisUtiles;
+import static VISTA.GestionProductos.nombreFicheroEstilos;
 import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,7 +13,6 @@ import java.io.Serializable;
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import static VISTA.GestionProductos.nombreFicheroEstilos;
 
 public class GestionConfiguracionesGraficas extends javax.swing.JFrame implements Serializable {
 
@@ -267,10 +267,7 @@ public class GestionConfiguracionesGraficas extends javax.swing.JFrame implement
 
         jTablaEstilos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "ID", "USR. CREADOR", "Titulo", "Color fondo", "Color texto", "Fecha"
@@ -626,5 +623,5 @@ public class GestionConfiguracionesGraficas extends javax.swing.JFrame implement
         }
         actualizarTabla();
     }
-
+    
 }
